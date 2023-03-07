@@ -1,0 +1,53 @@
+.scannerwork
+sonar-*.properties
+*.pid
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+.gradle
+/.gradle/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### log ###
+*.log
+
+### node ###
+/node_modules/
+/build/nodejs/
+/build/npm/
+/build/libs/**
+/build/tmp/**
+/build/publications/**
+
+### maven ###
+/**/**/target/
+
+### vscode ###
+.vscode
+
+### mac ###
+.DS_Store
+
+### runtime ###
+hs_err_*
+*.pid
