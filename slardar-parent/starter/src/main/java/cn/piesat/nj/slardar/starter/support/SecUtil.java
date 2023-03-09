@@ -63,7 +63,7 @@ public final class SecUtil {
      * @return
      */
     public static boolean isFromMobile(HttpServletRequest request) {
-        String ua = request.getHeader("User-Agent");
+        String ua = request.getHeader("UserProfile-Agent");
         boolean flag = false;
         if (!ua.contains("Windows NT") || (ua.contains("Windows NT")
                 && ua.contains("compatible; MSIE 9.0;"))) {
