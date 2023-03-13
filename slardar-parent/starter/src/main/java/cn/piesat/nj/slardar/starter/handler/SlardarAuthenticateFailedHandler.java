@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.GSON;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
  * 认证失败 handler
@@ -23,7 +23,7 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.G
  * @description token失效时，自定义返回结果
 */
 @Slf4j
-public class AuthxAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
+public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {

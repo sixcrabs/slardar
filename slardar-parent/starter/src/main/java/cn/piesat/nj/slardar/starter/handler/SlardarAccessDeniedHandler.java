@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.GSON;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
  * 拒绝访问
@@ -19,7 +19,7 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.G
  * @date 2022/9/23
  * @description 当接口没有访问权限时，自定义返回结果
 */
-public class AuthxAccessDeniedHandler implements AccessDeniedHandler {
+public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {

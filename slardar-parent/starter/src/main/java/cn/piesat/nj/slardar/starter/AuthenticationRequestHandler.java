@@ -15,7 +15,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
  * @author alex
  * @version v1.0 2022/9/26
  */
-public interface AuthxAuthenticationRequestHandler {
+public interface AuthenticationRequestHandler {
 
 
     /**

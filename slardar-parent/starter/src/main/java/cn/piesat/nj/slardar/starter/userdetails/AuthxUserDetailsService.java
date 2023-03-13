@@ -5,6 +5,7 @@ import cn.piesat.v.authx.security.domain.gateway.RealmGateway;
 import cn.piesat.v.authx.security.domain.gateway.UserProfileGateway;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.annotation.Resource;
@@ -18,7 +19,7 @@ import java.util.Objects;
  * @author Alex
  * @version v1.0 2022/12/14
  */
-public class AuthxUserDetailsService {
+public class AuthxUserDetailsService implements UserDetailsService {
 
     @Resource
     private UserProfileGateway userProfileGateway;

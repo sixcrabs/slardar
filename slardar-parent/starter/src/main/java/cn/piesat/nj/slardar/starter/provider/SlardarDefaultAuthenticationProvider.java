@@ -1,11 +1,13 @@
 package cn.piesat.nj.slardar.starter.provider;
 
+import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
 import cn.piesat.v.authx.security.domain.gateway.UserProfileGateway;
 import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationProvider;
 import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
 import cn.piesat.v.authx.security.infrastructure.spring.userdetails.AuthxUserDetails;
 import cn.piesat.v.authx.security.infrastructure.spring.userdetails.AuthxUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -16,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.annotation.Resource;
 import java.util.Objects;
 
+import static cn.piesat.nj.slardar.starter.support.SecUtil.AUTH_TYPE_WXAPP;
 import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.AUTH_TYPE_WXAPP;
 
 /**
@@ -29,7 +32,7 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.A
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class AuthxDefaultAuthenticationProvider implements AuthxAuthenticationProvider {
+public class SlardarDefaultAuthenticationProvider implements SlardarAuthenticationProvider {
 
     @Autowired
     private AuthxUserDetailsService userDetailsService;
@@ -39,7 +42,7 @@ public class AuthxDefaultAuthenticationProvider implements AuthxAuthenticationPr
 
     private final PasswordEncoder passwordEncoder;
 
-    public AuthxDefaultAuthenticationProvider(PasswordEncoder passwordEncoder) {
+    public SlardarDefaultAuthenticationProvider(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 

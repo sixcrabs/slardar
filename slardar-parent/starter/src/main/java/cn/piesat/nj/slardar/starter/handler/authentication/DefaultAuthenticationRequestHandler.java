@@ -1,10 +1,8 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
-import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
-import cn.piesat.v.authx.security.infrastructure.spring.captcha.CaptchaComponent;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxRequestWrapper;
+import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -19,13 +17,13 @@ import org.springframework.util.StringUtils;
  * @version v1.0 2022/9/26
  */
 @Component
-public class AuthxDefaultAuthenticationRequestHandler implements AuthxAuthenticationRequestHandler {
+public class DefaultAuthenticationRequestHandler implements AuthenticationRequestHandler {
 
-    private final SecurityProperties properties;
+    private final SlardarProperties properties;
 
     private final CaptchaComponent captchaComponent;
 
-    public AuthxDefaultAuthenticationRequestHandler(SecurityProperties properties, CaptchaComponent captchaComponent) {
+    public DefaultAuthenticationRequestHandler(SlardarProperties properties, CaptchaComponent captchaComponent) {
         this.properties = properties;
         this.captchaComponent = captchaComponent;
     }

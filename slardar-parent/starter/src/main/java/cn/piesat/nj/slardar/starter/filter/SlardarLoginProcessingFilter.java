@@ -1,5 +1,7 @@
 package cn.piesat.nj.slardar.starter.filter;
 
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
 import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
 import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
 import cn.piesat.v.authx.security.infrastructure.spring.handler.authentication.AuthxAuthenticationRequestHandlerFactory;
@@ -28,24 +30,25 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.*
 /**
  * <p>
  * 处理身份认证的 filter
+ *  /login
  * </p>
  *
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class AuthxProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final AuthxAuthenticationRequestHandlerFactory requestHandlerFactory;
+    private final AuthenticationRequestHandlerFactory requestHandlerFactory;
 
     private boolean postOnly = true;
 
     public static final Gson GSON = new GsonBuilder().create();
 
-    public AuthxProcessingFilter(SecurityProperties securityProperties,
-                                 AuthenticationManager authenticationManager,
-                                 AuthenticationFailureHandler authenticationFailureHandler,
-                                 AuthenticationSuccessHandler authenticationSuccessHandler,
-                                 AuthxAuthenticationRequestHandlerFactory requestHandlerFactory) {
+    public SlardarLoginProcessingFilter(SlardarProperties securityProperties,
+                                        AuthenticationManager authenticationManager,
+                                        AuthenticationFailureHandler authenticationFailureHandler,
+                                        AuthenticationSuccessHandler authenticationSuccessHandler,
+                                        AuthxAuthenticationRequestHandlerFactory requestHandlerFactory) {
         super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl(), "POST"));
         this.requestHandlerFactory = requestHandlerFactory;
         setAuthenticationManager(authenticationManager);
@@ -74,13 +77,13 @@ public class AuthxProcessingFilter extends AbstractAuthenticationProcessingFilte
                         .setSessionId(request.getSession() != null ? request.getSession().getId() : "")
                         .setRequestHeaders(requestHeaders));
                 // 调用自定义实现的 provider 去实现特定的认证逻辑
-                // @see AuthxAuthenticationProvider
+                // @see SlardarAuthenticationProvider
                 return this.getAuthenticationManager().authenticate(authentication);
             } catch (AuthenticationServiceException e) {
                 throw e;
             }
         } else {
-            throw new AuthenticationServiceException("must implements interface `AuthxAuthenticationRequestHandler`");
+            throw new AuthenticationServiceException("must implements interface `AuthenticationRequestHandler`");
         }
     }
 

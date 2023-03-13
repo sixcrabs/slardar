@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter;
 
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.authx.security.infrastructure.spring.filter.AuthxProcessingFilter;
 import cn.piesat.v.authx.security.infrastructure.spring.filter.AuthxTokenFilter;
 import cn.piesat.v.authx.security.infrastructure.spring.handler.AuthxAccessDeniedHandler;
@@ -57,14 +58,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthxTokenFilter authzTokenFilter;
 
-    private final SecurityProperties properties;
+    private final SlardarProperties properties;
 
-    private final AuthxAuthenticationProvider authenticationProvider;
+    private final SlardarAuthenticationProvider authenticationProvider;
 
 
-    public SecurityConfig(SecurityProperties properties, AuthxAuthenticationProvider authxAuthenticationProvider) {
+    public SecurityConfig(SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider) {
         this.properties = properties;
-        this.authenticationProvider = authxAuthenticationProvider;
+        this.authenticationProvider = slardarAuthenticationProvider;
     }
 
     /**
@@ -145,7 +146,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthxProcessingFilter authxProcessingFilter(SecurityProperties properties,
+    public AuthxProcessingFilter authxProcessingFilter(SlardarProperties properties,
                                                        AuthenticationManager authenticationManager,
                                                        AuthenticationFailureHandler failureHandler,
                                                        AuthenticationSuccessHandler successHandler,

@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
 import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
 import cn.piesat.v.authx.security.infrastructure.spring.support.LoginDeviceType;
@@ -36,15 +37,15 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.i
  * @version v1.0 2022/9/26
  */
 @Slf4j
-public class AuthxAuthenticateSucceedHandler implements AuthenticationSuccessHandler {
+public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessHandler {
 
 
-    private final SecurityProperties securityProperties;
+    private final SlardarProperties securityProperties;
 
     @Autowired
     private AuthxTokenService tokenService;
 
-    public AuthxAuthenticateSucceedHandler(SecurityProperties securityProperties) {
+    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties) {
         this.securityProperties = securityProperties;
     }
 

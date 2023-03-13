@@ -1,7 +1,6 @@
 package cn.piesat.nj.slardar.starter.userdetails;
 
-import cn.piesat.v.authx.security.core.UserAccessStatus;
-import cn.piesat.v.authx.security.domain.entity.UserProfile;
+import cn.piesat.nj.slardar.core.entity.UserProfile;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,12 +1,13 @@
-package cn.piesat.nj.slardar.starter;
+package cn.piesat.nj.slardar.starter.config;
 
-import cn.piesat.v.authx.security.infrastructure.spring.support.LoginConcurrentPolicy;
+import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.AUTH_LOGIN_URL;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.AUTH_LOGIN_URL;
+
 
 /**
  * <p>
@@ -17,8 +18,8 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.A
  * @version v1.0 2022/9/26
  */
 @Data
-@ConfigurationProperties(prefix = "vintage.security")
-public class SecurityProperties implements Serializable {
+@ConfigurationProperties(prefix = "slardar")
+public class SlardarProperties implements Serializable {
 
     /**
      * jwt 参数

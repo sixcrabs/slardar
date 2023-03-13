@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.starter.support.captcha;
 
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.skv.core.KvStore;
-import cn.piesat.nj.slardar.starter.SecurityProperties;
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.captcha.generator.RandomGenerator;
 import cn.piesat.nj.slardar.starter.support.captcha.impl.LineCaptcha;
 import org.slf4j.Logger;
@@ -26,15 +26,15 @@ public class CaptchaComponent {
 
     private final KvStore store;
 
-    private final SecurityProperties.CaptchaSettings settings;
+    private final SlardarProperties.CaptchaSettings settings;
 
     public static final String CAPTCHA_KEY_PREFIX = "CaptchaCode_";
 
     public static final Logger log = LoggerFactory.getLogger(CaptchaComponent.class);
 
-    public CaptchaComponent(KvStore store, SecurityProperties securityProperties) {
+    public CaptchaComponent(KvStore store, SlardarProperties slardarProperties) {
         this.store = store;
-        this.settings = securityProperties.getCaptcha();
+        this.settings = slardarProperties.getCaptcha();
     }
 
     /**

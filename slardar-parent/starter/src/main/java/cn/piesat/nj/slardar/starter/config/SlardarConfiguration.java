@@ -1,13 +1,6 @@
-package cn.piesat.nj.slardar.starter;
+package cn.piesat.nj.slardar.starter.config;
 
 import cn.hutool.core.util.ArrayUtil;
-import cn.piesat.v.authx.security.infrastructure.spring.filter.AuthxTokenFilter;
-import cn.piesat.v.authx.security.infrastructure.spring.handler.AuthxAccessDeniedHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.handler.AuthxAuthenticateFailedHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.handler.AuthxAuthenticateSucceedHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.handler.authentication.AuthxAuthenticationRequestHandlerFactory;
-import cn.piesat.v.authx.security.infrastructure.spring.provider.AuthxDefaultAuthenticationProvider;
-import cn.piesat.v.authx.security.infrastructure.spring.userdetails.AuthxUserDetailsService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,21 +12,22 @@ import java.util.Arrays;
 
 /**
  * <p>
- * 预先注入 manager 、 success/failure/denied handler
+ * .
  * </p>
  *
  * @author alex
- * @version v1.0 2022/9/26
+ * @version v1.0 2023/3/13
  */
 @Configuration
-@EnableConfigurationProperties(SecurityProperties.class)
-@ComponentScan(basePackages = {"cn.piesat.v"})
-public class SecurityPreConfiguration {
+@EnableConfigurationProperties(SlardarProperties.class)
+@ComponentScan(basePackages = {"cn.piesat"})
+public class SlardarConfiguration {
+
 
     /**
      * 静态资源 不拦截
      */
-    public static final String[] STATIC_RES_MATCHERS = new String[]{
+    private static final String[] STATIC_RES_MATCHERS = new String[]{
             "/",
             "/*.html",
             "/v2/api-docs/**",
@@ -67,7 +61,7 @@ public class SecurityPreConfiguration {
     }
 
     @Bean
-    public AuthxAuthenticateSucceedHandler authenticateSucceedHandler(SecurityProperties properties) {
+    public AuthxAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties) {
         return new AuthxAuthenticateSucceedHandler(properties);
     }
 
@@ -92,7 +86,7 @@ public class SecurityPreConfiguration {
     }
 
     @Bean
-    public AuthxTokenFilter authxTokenFilter(SecurityProperties properties) {
+    public AuthxTokenFilter authxTokenFilter(SlardarProperties properties) {
         // 忽略的url 包含配置的参数以及静态资源、swagger context
         String[] ignoresFromConfig = properties.getIgnores();
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
@@ -100,6 +94,4 @@ public class SecurityPreConfiguration {
         ignores = ArrayUtil.append(ignores, "/oauth2/**", properties.getLogin().getUrl());
         return new AuthxTokenFilter(ignores);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
-import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
+import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -14,17 +14,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Alex
  * @version v1.0 2023/2/3
  */
-public class AuthxAuthenticationRequestHandlerFactory {
+public class AuthenticationRequestHandlerFactory {
 
-    private static final Map<String, AuthxAuthenticationRequestHandler> CACHE = new ConcurrentHashMap<>(1);
-
-    @Resource
-    private AuthxDefaultAuthenticationRequestHandler defaultAuthenticationRequestHandler;
+    private static final Map<String, AuthenticationRequestHandler> CACHE = new ConcurrentHashMap<>(1);
 
     @Resource
-    private AuthxWxAuthenticationRequestHandler wxAuthenticationRequestHandler;
+    private DefaultAuthenticationRequestHandler defaultAuthenticationRequestHandler;
 
-    public AuthxAuthenticationRequestHandler findRequestHandler(String authType) {
+    @Resource
+    private WxAuthenticationRequestHandler wxAuthenticationRequestHandler;
+
+    public AuthenticationRequestHandler findRequestHandler(String authType) {
         return CACHE.computeIfAbsent(authType, type -> {
             switch (authType) {
                 case "wxapp":

@@ -1,7 +1,10 @@
-package cn.piesat.nj.slardar.starter.token;
+package cn.piesat.nj.slardar.starter;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.token.AuthxToken;
+import cn.piesat.nj.slardar.starter.token.JwtAuthxToken;
 import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
 import cn.piesat.v.authx.security.infrastructure.spring.support.LoginConcurrentPolicy;
 import cn.piesat.v.authx.security.infrastructure.spring.support.LoginDeviceType;
@@ -36,7 +39,7 @@ import java.util.Set;
 public class AuthxTokenService {
 
 
-    private final SecurityProperties securityProperties;
+    private final SlardarProperties slardarProperties;
 
     private final AuthxToken authToken;
 
@@ -53,10 +56,10 @@ public class AuthxTokenService {
     private final RedisSetCommands<String, String> setCommands;
 
 
-    public AuthxTokenService(SecurityProperties securityProperties, KvStore kvStore, RedisClient redisClient) {
-        this.securityProperties = securityProperties;
+    public AuthxTokenService(SlardarProperties slardarProperties, KvStore kvStore, RedisClient redisClient) {
+        this.slardarProperties = slardarProperties;
         // TBD: 应当动态注入实现
-        this.authToken = new JwtAuthxToken(securityProperties);
+        this.authToken = new JwtAuthxToken(slardarProperties);
         this.kvStore = kvStore;
         this.redisClient = redisClient;
         this.stringCommands = redisClient.connect().sync();
@@ -173,7 +176,7 @@ public class AuthxTokenService {
             log.error("[authz] 续期失败, key 为 [{}] 的token 不存在", key);
             return false;
         }
-        stringCommands.setex(key, securityProperties.getJwt().getExpiration(), existedToken);
+        stringCommands.setex(key, slardarProperties.getJwt().getExpiration(), existedToken);
         return true;
     }
 

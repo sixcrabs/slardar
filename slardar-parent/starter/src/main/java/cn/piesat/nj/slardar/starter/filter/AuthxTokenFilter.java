@@ -33,6 +33,7 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.B
 
 /**
  * 处理 token 验证
+ * 拦截所有请求
  *
  * @author JiajieZhang
  * @date 2022/9/23

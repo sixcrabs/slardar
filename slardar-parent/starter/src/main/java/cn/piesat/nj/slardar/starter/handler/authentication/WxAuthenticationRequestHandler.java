@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
 import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
 import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
 import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxRequestWrapper;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
  * @version v1.0 2023/2/3
  */
 @Component
-public class AuthxWxAuthenticationRequestHandler implements AuthxAuthenticationRequestHandler {
+public class WxAuthenticationRequestHandler implements AuthenticationRequestHandler {
 
     /**
      * 处理认证请求

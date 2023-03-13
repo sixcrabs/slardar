@@ -11,7 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
  * @author alex
  * @version v1.0 2022/9/26
  */
-public interface AuthxAuthenticationProvider extends AuthenticationProvider {
+public interface SlardarAuthenticationProvider extends AuthenticationProvider {
 
     @Override
     default boolean supports(Class<?> authentication) {
