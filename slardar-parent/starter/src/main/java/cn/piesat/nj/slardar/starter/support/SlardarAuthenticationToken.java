@@ -1,7 +1,9 @@
 package cn.piesat.nj.slardar.starter.support;
 
+import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -18,14 +20,19 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
     private SlardarUserDetails userDetails;
 
     /**
-     * 可以是 用户名 / openid
+     * 用户名
      */
-    private final Object principal;
+    private final String accountName;
 
     /**
-     * 可以是 密码
+     * openid
      */
-    private Object credentials;
+    private final String openId;
+
+    /**
+     * 密码
+     */
+    private String password;
 
     /**
      * 当前http session id
@@ -44,14 +51,35 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
     private String authType;
 
 
-
-    public SlardarAuthenticationToken(Object principal, SlardarUserDetails details) {
+    public SlardarAuthenticationToken(String accountNameOrOpenId, String authType, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
-        this.principal = principal;
+        if (Constants.AUTH_TYPE_WX_APP.equals(authType)) {
+            this.openId = accountNameOrOpenId;
+            this.accountName = null;
+        } else {
+            this.accountName = accountNameOrOpenId;
+            this.openId = null;
+        }
         this.setAuthenticated(true);
     }
 
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public SlardarAuthenticationToken setPassword(String password) {
+        this.password = password;
+        return this;
+    }
 
     public String getAuthType() {
         return authType;
@@ -71,10 +99,6 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return this;
     }
 
-    public SlardarAuthenticationToken setCredentials(Object credentials) {
-        this.credentials = credentials;
-        return this;
-    }
 
     public String getSessionId() {
         return sessionId;
@@ -96,11 +120,11 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-        return this.credentials;
+        return this.password;
     }
 
     @Override
     public Object getPrincipal() {
-        return this.principal;
+        return StringUtils.hasText(this.accountName) ? this.accountName : this.openId;
     }
 }

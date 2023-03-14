@@ -18,6 +18,7 @@ import static cn.piesat.nj.slardar.core.Constants.AUTH_TYPE_WX_APP;
 
 /**
  * <p>
+ *     TESTME:
  * 实现用户身份
  * - 密码认证
  * - openid 认证
@@ -44,17 +45,18 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
         UserDetails userDetails;
         if (AUTH_TYPE_WX_APP.equals(authenticationToken.getAuthType())) {
             // openid 认证
-            userDetails = userDetailsService.loadUserByOpenId(String.valueOf(authentication.getPrincipal()));
+            userDetails = userDetailsService.loadUserByOpenId(authenticationToken.getOpenId(), authenticationToken.getRealm());
         } else {
             // 用户密码方式认证
-            Object username = authentication.getPrincipal();
-            userDetails = userDetailsService.loadUserByAccount(String.valueOf(username), authenticationToken.getRealm());
+            String accountName = authenticationToken.getAccountName();
+            userDetails = userDetailsService.loadUserByAccount(accountName, authenticationToken.getRealm());
         }
+        // 验证密码是否正确
         if (!Objects.isNull(userDetails)) {
-            // 验证密码是否正确
-            if (passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) {
+            if (passwordEncoder.matches(authenticationToken.getPassword(), userDetails.getPassword())) {
                 try {
-                    return new SlardarAuthenticationToken(authentication.getPrincipal(), (SlardarUserDetails) userDetails);
+                    return new SlardarAuthenticationToken(String.valueOf(authenticationToken.getPrincipal()), authenticationToken.getAuthType(),
+                            (SlardarUserDetails) userDetails);
                 } catch (Exception e) {
                     throw new AuthenticationServiceException(e.getLocalizedMessage());
                 }
