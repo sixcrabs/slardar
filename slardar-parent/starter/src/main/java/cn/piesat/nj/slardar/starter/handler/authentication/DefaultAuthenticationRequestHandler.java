@@ -2,6 +2,8 @@ package cn.piesat.nj.slardar.starter.handler.authentication;
 
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
     }
 
     @Override
-    public AuthxAuthentication handle(AuthxRequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthenticationToken handle(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException {
         // 根据设置来确定是否需要启用验证码流程
         if (properties.getLogin().getCaptchaEnabled()) {
             String code = requestWrapper.getRequestParams().get("authCode");
@@ -48,7 +50,7 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new AuthenticationServiceException("`username` and `password` should not be null");
         }
-        return new AuthxAuthentication(username, null)
+        return new SlardarAuthenticationToken(username, null)
                 .setRealm(realm)
                 .setSessionId(requestWrapper.getSessionId())
                 .setCredentials(password);

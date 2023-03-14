@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static cn.piesat.nj.slardar.core.Constants.ANONYMOUS;
+import static cn.piesat.nj.slardar.core.Constants.MOBILE_AGENTS;
+
 /**
  * <p>
  * .
@@ -29,33 +32,6 @@ public final class SecUtil {
 
     public static final Gson GSON = new GsonBuilder().create();
 
-    public static final String AUTHORIZATION_HEAD = "Authorization";
-
-    public static final String BEARER = "Bearer ";
-
-    /**
-     * 默认登录地址
-     */
-    public static final String AUTH_LOGIN_URL = "/login";
-
-    /**
-     * 认证方式
-     * wxapp / password
-     */
-    public static final String AUTH_TYPE_HEADER_KEY = "Auth-Type";
-
-
-    /**
-     * 微信openid 认证类型
-     */
-    public static final String AUTH_TYPE_WXAPP = "wxapp";
-
-    public static final String ANONYMOUS = "anonymous";
-
-    /**
-     * 定义移动端请求的所有可能类型
-     */
-    private final static String[] MOBILE_AGENTS = {"Android", "iPhone", "iPod", "iPad", "Windows Phone", "MQQBrowser"};
 
     /**
      * request is from mobile
@@ -84,7 +60,7 @@ public final class SecUtil {
      * @return
      */
     public static String getCurrentUsername() {
-        AuthxAuthentication authentication = (AuthxAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return ANONYMOUS;
         } else {

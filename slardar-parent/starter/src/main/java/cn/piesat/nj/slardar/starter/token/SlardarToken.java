@@ -1,5 +1,7 @@
 package cn.piesat.nj.slardar.starter.token;
 
+import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,35 +10,49 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * .
+ * token 接口
+ * 应用方可自行实现 token
  * </p>
  *
  * @author alex
  * @version v1.0 2022/9/27
  */
-public interface AuthxToken {
+public interface SlardarToken {
 
+    /**
+     * token 类型
+     * - jwt
+     * - ...
+     * @return
+     */
+    String type();
+
+
+    /**
+     * 初始化
+     */
+    void initialize(SlardarContext context);
 
     /**
      * 生成 token
      * @param userDetails
      * @return
      */
-    Payload generateToken(UserDetails userDetails);
+    Payload generate(UserDetails userDetails);
 
     /**
      * 生成 token
      * @param username
      * @return
      */
-    Payload generateToken(String username);
+    Payload generate(String username);
 
     /**
      * 从 token 值中解析出 subject （往往是 username）
      * @param tokenValue
      * @return
      */
-    String getSubjectFromToken(String tokenValue);
+    String getSubject(String tokenValue);
 
     /**
      * 时间上是否已过期
@@ -45,6 +61,11 @@ public interface AuthxToken {
      */
     Boolean isExpired(String tokenValue);
 
+    /**
+     * 过期秒数
+     * @return
+     */
+    long getExpiration();
 
 
     @Data

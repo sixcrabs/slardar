@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.support;
 
-import cn.piesat.v.authx.security.infrastructure.spring.userdetails.AuthxUserDetails;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.util.Objects;
@@ -13,9 +13,9 @@ import java.util.Objects;
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class AuthxAuthentication extends AbstractAuthenticationToken {
+public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
 
-    private AuthxUserDetails userDetails;
+    private SlardarUserDetails userDetails;
 
     /**
      * 可以是 用户名 / openid
@@ -33,7 +33,7 @@ public class AuthxAuthentication extends AbstractAuthenticationToken {
     private String sessionId;
 
     /**
-     * 当前的租户id 如果为空 则默认是 master 租户
+     * 当前的租户信息如果为空 则默认是 master 租户
      */
     private String realm;
 
@@ -45,7 +45,7 @@ public class AuthxAuthentication extends AbstractAuthenticationToken {
 
 
 
-    public AuthxAuthentication(Object principal, AuthxUserDetails details) {
+    public SlardarAuthenticationToken(Object principal, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
         this.principal = principal;
@@ -57,21 +57,21 @@ public class AuthxAuthentication extends AbstractAuthenticationToken {
         return authType;
     }
 
-    public AuthxAuthentication setAuthType(String authType) {
+    public SlardarAuthenticationToken setAuthType(String authType) {
         this.authType = authType;
         return this;
     }
 
-    public AuthxUserDetails getUserDetails() {
+    public SlardarUserDetails getUserDetails() {
         return userDetails;
     }
 
-    public AuthxAuthentication setUserDetails(AuthxUserDetails userDetails) {
+    public SlardarAuthenticationToken setUserDetails(SlardarUserDetails userDetails) {
         this.userDetails = userDetails;
         return this;
     }
 
-    public AuthxAuthentication setCredentials(Object credentials) {
+    public SlardarAuthenticationToken setCredentials(Object credentials) {
         this.credentials = credentials;
         return this;
     }
@@ -80,7 +80,7 @@ public class AuthxAuthentication extends AbstractAuthenticationToken {
         return sessionId;
     }
 
-    public AuthxAuthentication setSessionId(String sessionId) {
+    public SlardarAuthenticationToken setSessionId(String sessionId) {
         this.sessionId = sessionId;
         return this;
     }
@@ -89,7 +89,7 @@ public class AuthxAuthentication extends AbstractAuthenticationToken {
         return realm;
     }
 
-    public AuthxAuthentication setRealm(String realm) {
+    public SlardarAuthenticationToken setRealm(String realm) {
         this.realm = realm;
         return this;
     }

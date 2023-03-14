@@ -37,7 +37,30 @@ public class Role extends BaseRealmEntity<String> {
     /**
      * 关联的用户信息
      */
-    private List<String> userIds;
+    private List<UserProfile> userProfiles;
+
+    /**
+     * 角色具有的权限列表
+     */
+    private List<Authority> authorities;
+
+    public List<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public Role setUserProfiles(List<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+        return this;
+    }
+
+    public List<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public Role setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+        return this;
+    }
 
     public String getName() {
         return name;
@@ -72,15 +95,6 @@ public class Role extends BaseRealmEntity<String> {
 
     public Role setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
-        return this;
-    }
-
-    public List<String> getUserIds() {
-        return userIds;
-    }
-
-    public Role setUserIds(List<String> userIds) {
-        this.userIds = userIds;
         return this;
     }
 }

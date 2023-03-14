@@ -1,12 +1,13 @@
 package cn.piesat.nj.slardar.starter.config;
 
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenJwtImpl;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
 
-import static cn.piesat.nj.slardar.starter.support.SecUtil.AUTH_LOGIN_URL;
+import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGIN_URL;
 
 
 /**
@@ -22,9 +23,9 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.AUTH_LOGIN_URL;
 public class SlardarProperties implements Serializable {
 
     /**
-     * jwt 参数
+     * token 类型设置
      */
-    private JwtSettings jwt = new JwtSettings();
+    private TokenSettings token = new TokenSettings();
 
     /**
      * 登录相关参数设置
@@ -109,12 +110,28 @@ public class SlardarProperties implements Serializable {
     }
 
 
+    /**
+     * token 参数设置
+     */
+    @Data
+    public static class TokenSettings {
+
+        private String type = SlardarTokenJwtImpl.NAME;
+
+        /**
+         * jwt 参数
+         */
+        private JwtSettings jwt = new JwtSettings();
+
+    }
+
+    @Data
     public static class JwtSettings {
 
         /**
          * jwt 签名 key
          */
-        private String signKey = "piesat_nj";
+        private String signKey = "piesat_nj_nync";
 
         /**
          * in seconds
@@ -122,23 +139,6 @@ public class SlardarProperties implements Serializable {
          */
         private Long expiration = 24 * 60 * 60L;
 
-        public String getSignKey() {
-            return signKey;
-        }
-
-        public JwtSettings setSignKey(String signKey) {
-            this.signKey = signKey;
-            return this;
-        }
-
-        public Long getExpiration() {
-            return expiration;
-        }
-
-        public JwtSettings setExpiration(Long expiration) {
-            this.expiration = expiration;
-            return this;
-        }
     }
 
 

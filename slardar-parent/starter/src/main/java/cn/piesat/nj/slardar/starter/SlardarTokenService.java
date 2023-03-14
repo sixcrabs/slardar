@@ -3,22 +3,24 @@ package cn.piesat.nj.slardar.starter;
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.nj.slardar.starter.token.AuthxToken;
-import cn.piesat.nj.slardar.starter.token.JwtAuthxToken;
-import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
-import cn.piesat.v.authx.security.infrastructure.spring.support.LoginConcurrentPolicy;
-import cn.piesat.v.authx.security.infrastructure.spring.support.LoginDeviceType;
+import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import cn.piesat.nj.slardar.starter.token.SlardarToken;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenJwtImpl;
 import com.google.common.base.Joiner;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.api.sync.RedisSetCommands;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 
@@ -35,13 +37,9 @@ import java.util.Set;
  * @version v1.0 2022/9/26
  */
 @Slf4j
-@Component
-public class AuthxTokenService {
-
+public class SlardarTokenService implements InitializingBean {
 
     private final SlardarProperties slardarProperties;
-
-    private final AuthxToken authToken;
 
     public static final String token_key_prefix = "account_token";
 
@@ -55,12 +53,14 @@ public class AuthxTokenService {
 
     private final RedisSetCommands<String, String> setCommands;
 
+    private final SlardarContext slardarContext;
 
-    public AuthxTokenService(SlardarProperties slardarProperties, KvStore kvStore, RedisClient redisClient) {
+
+    public SlardarTokenService(SlardarProperties slardarProperties, SlardarContext context,
+                               KvStore kvStore, RedisClient redisClient) {
         this.slardarProperties = slardarProperties;
-        // TBD: 应当动态注入实现
-        this.authToken = new JwtAuthxToken(slardarProperties);
         this.kvStore = kvStore;
+        this.slardarContext = context;
         this.redisClient = redisClient;
         this.stringCommands = redisClient.connect().sync();
         this.setCommands = redisClient.connect().sync();
@@ -74,7 +74,7 @@ public class AuthxTokenService {
      * @return
      */
     public boolean isExpired(String tokenValue, LoginDeviceType deviceType) {
-        String username = authToken.getSubjectFromToken(tokenValue);
+        String username = getTokenImpl().getSubject(tokenValue);
         return !hasFromRedis(key(username, deviceType));
     }
 
@@ -85,7 +85,7 @@ public class AuthxTokenService {
      * @return
      */
     public String getUsername(String tokenValue) {
-        String usernameWithId = authToken.getSubjectFromToken(tokenValue);
+        String usernameWithId = getTokenImpl().getSubject(tokenValue);
         return usernameWithId.split("_")[0];
     }
 
@@ -116,7 +116,7 @@ public class AuthxTokenService {
         String id = RandomUtil.simpleUUID();
         // xxx_id
         String usernameKey = UNDERLINE_JOINER.join(username, id);
-        AuthxToken.Payload payload = authToken.generateToken(usernameKey);
+        SlardarToken.Payload payload = getTokenImpl().generate(usernameKey);
         // TODO: into store
         setCommands.sadd(username, id);
         stringCommands.setex(key(usernameKey, deviceType), Duration.between(LocalDateTime.now(), payload.getExpiresAt()).getSeconds(),
@@ -151,7 +151,7 @@ public class AuthxTokenService {
      * @return
      */
     public String refreshToken(String tokenValue, LoginDeviceType deviceType) {
-        String username = authToken.getSubjectFromToken(tokenValue);
+        String username = getTokenImpl().getSubject(tokenValue);
         String key = key(username, deviceType);
         String existedToken = getFromRedis(key);
         // 生成新的
@@ -169,14 +169,16 @@ public class AuthxTokenService {
      * @return
      */
     public boolean renewToken(String tokenValue, LoginDeviceType deviceType) {
-        String username = authToken.getSubjectFromToken(tokenValue);
+        String username = getTokenImpl().getSubject(tokenValue);
         String key = key(username, deviceType);
         String existedToken = getFromRedis(key);
         if (StringUtils.isEmpty(existedToken)) {
             log.error("[authz] 续期失败, key 为 [{}] 的token 不存在", key);
             return false;
         }
-        stringCommands.setex(key, slardarProperties.getJwt().getExpiration(), existedToken);
+        // TODO: 需要转移到具体实现类里
+
+        stringCommands.setex(key,  getTokenImpl().getExpiration(), existedToken);
         return true;
     }
 
@@ -218,4 +220,19 @@ public class AuthxTokenService {
     }
 
 
+    private static final Map<String, SlardarToken> TOKEN_IMPLS = new HashMap<>(1);
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        // 获取所有的 token 实现 并存入 缓存
+        ServiceLoader<SlardarToken> impls = ServiceLoader.load(SlardarToken.class);
+        for (SlardarToken tokenImpl : impls) {
+            tokenImpl.initialize(this.slardarContext);
+            TOKEN_IMPLS.put(tokenImpl.type(), tokenImpl);
+        }
+    }
+
+    private SlardarToken getTokenImpl() {
+        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenJwtImpl());
+    }
 }

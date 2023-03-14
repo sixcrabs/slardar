@@ -18,7 +18,7 @@ public class UserProfile extends BaseRealmEntity<String> {
 
 
     /**
-     * 姓名
+     * 用户姓名
      */
     private String name;
 
@@ -53,11 +53,6 @@ public class UserProfile extends BaseRealmEntity<String> {
     private String departmentId;
 
     /**
-     * region id
-     */
-    private String regionId;
-
-    /**
      * 关联的行政区
      */
     private Region region;
@@ -66,6 +61,35 @@ public class UserProfile extends BaseRealmEntity<String> {
      * 所属部门对象
      */
     private Department department;
+
+    /**
+     * 具有的角色列表
+     */
+    private List<Role> roles;
+
+    /**
+     * 关联的权限内容列表
+     */
+    private List<Authority> authorities;
+
+
+    public List<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public UserProfile setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
+        return this;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public UserProfile setRoles(List<Role> roles) {
+        this.roles = roles;
+        return this;
+    }
 
     public String getName() {
         return name;

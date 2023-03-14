@@ -10,14 +10,17 @@ package cn.piesat.nj.slardar.core.entity.core;
  */
 public abstract class BaseRealmEntity<T> extends BaseEntity<T> {
 
-    private String realmId;
+    /**
+     * 可以是 name 或 id
+     */
+    private String realm;
 
-    public String getRealmId() {
-        return realmId;
+    public String getRealm() {
+        return realm;
     }
 
-    public BaseRealmEntity setRealmId(String realmId) {
-        this.realmId = realmId;
+    public BaseRealmEntity<T> setRealm(String realm) {
+        this.realm = realm;
         return this;
     }
 }

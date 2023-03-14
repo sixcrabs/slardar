@@ -1,5 +1,7 @@
 package cn.piesat.nj.slardar.core.entity;
 
+import cn.piesat.nj.slardar.core.entity.core.BaseEntity;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -11,26 +13,64 @@ import java.util.Map;
  * @author Alex
  * @version v1.0 2023/1/9
  */
-public class Authority implements Serializable {
+public class Authority extends BaseEntity<String> {
 
-    private String id;
+    /**
+     * 权限内容
+     * eg: read_info
+     * /home
+     * read_btn
+     */
+    private String content;
 
-    private String scopeId;
+    /**
+     * 描述
+     */
+    private String description;
 
-    private String resourceId;
-
-    private String roleId;
+    /**
+     * 备用字段
+     */
+    private String type;
 
     /**
      * 扩展属性
      */
     private Map<String, Object> attributes;
 
-    private Scope scope;
+    public String getContent() {
+        return content;
+    }
 
-    private Resource resource;
+    public Authority setContent(String content) {
+        this.content = content;
+        return this;
+    }
 
-    private Role role;
+    public String getDescription() {
+        return description;
+    }
 
+    public Authority setDescription(String description) {
+        this.description = description;
+        return this;
+    }
 
+    public String getType() {
+        return type;
+    }
+
+    public Authority setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public Authority setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
 }

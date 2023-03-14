@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.filter;
 
+import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,10 @@ public class SlardarUserDetailsProcessingFilter extends GenericFilterBean {
 
     private static ObjectMapper globalObjectMapper = new ObjectMapper();
 
-    public SlardarUserDetailsProcessingFilter(SlardarProperties properties) {
+    private final SlardarContext context;
+
+    public SlardarUserDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
+        this.context = context;
         this.requestMatcher = new AntPathRequestMatcher("/userdetails", "POST");
     }
 
@@ -42,7 +46,6 @@ public class SlardarUserDetailsProcessingFilter extends GenericFilterBean {
 
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)res;
-
         // 详细用户对象
         Map<String, Object> details = new HashMap<>(1);
 

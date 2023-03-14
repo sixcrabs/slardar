@@ -2,6 +2,7 @@ package cn.piesat.nj.slardar.core.entity;
 
 import cn.piesat.nj.slardar.core.entity.core.BaseTreeLikeEntity;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,6 +23,11 @@ public class Department extends BaseTreeLikeEntity<Department> {
     private String name;
 
     /**
+     * 别名
+     */
+    private String alias;
+
+    /**
      * 描述
      */
     private String description;
@@ -30,6 +36,29 @@ public class Department extends BaseTreeLikeEntity<Department> {
      * 扩展属性
      */
     private Map<String, Object> attributes;
+
+    /**
+     * 部门拥有的用户
+     */
+    private List<UserProfile> userProfiles;
+
+    public List<UserProfile> getUserProfiles() {
+        return userProfiles;
+    }
+
+    public Department setUserProfiles(List<UserProfile> userProfiles) {
+        this.userProfiles = userProfiles;
+        return this;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public Department setAlias(String alias) {
+        this.alias = alias;
+        return this;
+    }
 
     public String getName() {
         return name;

@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
 
 /**
@@ -15,6 +15,6 @@ public interface SlardarAuthenticationProvider extends AuthenticationProvider {
 
     @Override
     default boolean supports(Class<?> authentication) {
-        return AuthxAuthentication.class.isAssignableFrom(authentication);
+        return SlardarAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

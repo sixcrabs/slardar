@@ -1,12 +1,10 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.LoginDeviceType;
-import cn.piesat.v.authx.security.infrastructure.spring.token.AuthxTokenService;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.isFromMobile;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
  * <p>
@@ -42,11 +40,11 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 
     private final SlardarProperties securityProperties;
 
-    @Autowired
-    private AuthxTokenService tokenService;
+    private final SlardarTokenService tokenService;
 
-    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties) {
+    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarTokenService tokenService) {
         this.securityProperties = securityProperties;
+        this.tokenService = tokenService;
     }
 
     /**
@@ -62,10 +60,10 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // TESTME 生成 jwt 等
-        AuthxAuthentication authzAuthentication = (AuthxAuthentication) authentication;
+        SlardarAuthenticationToken authenticationToken = (SlardarAuthenticationToken) authentication;
         //获取token,将token存储到redis中
         //判断登录类型
-        String token = tokenService.createToken(String.valueOf(authzAuthentication.getPrincipal()),
+        String token = tokenService.createToken(String.valueOf(authenticationToken.getPrincipal()),
                 isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());
 //        //获取菜单
 //        List<UcMenuTreeCO> menuList = ucMenuGateway.selectMenuTreeByAccount(authzAuthentication.getUserDetails().getUsername(),
@@ -80,7 +78,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 //        loginCO.setIsSystemAdmin(authzAuthentication.getUserDetails().getAccount().getIsSystemAdmin());
 
         // TODO: 设置登录状态
-        authzAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         response.setStatus(HttpStatus.OK.value());

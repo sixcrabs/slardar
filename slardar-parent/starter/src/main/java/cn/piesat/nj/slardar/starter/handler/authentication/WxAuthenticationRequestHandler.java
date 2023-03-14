@@ -2,9 +2,8 @@ package cn.piesat.nj.slardar.starter.handler.authentication;
 
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxRequestWrapper;
+import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 
@@ -29,11 +28,11 @@ public class WxAuthenticationRequestHandler implements AuthenticationRequestHand
      * @throws AuthenticationServiceException
      */
     @Override
-    public AuthxAuthentication handle(AuthxRequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthenticationToken handle(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException {
         String openid = requestWrapper.getRequestParams().get("openid");
         if (StrUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");
         }
-        return new AuthxAuthentication(openid, null);
+        return new SlardarAuthenticationToken(openid, null);
     }
 }

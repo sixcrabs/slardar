@@ -1,15 +1,13 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.piesat.v.authx.security.infrastructure.spring.handler.authentication.AuthxDefaultAuthenticationRequestHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxRequestWrapper;
+import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationServiceException;
 
 /**
  * <p>
  * 处理认证请求
  * 由实际场景去实现不同处理
- * @see AuthxDefaultAuthenticationRequestHandler
  * </p>
  *
  * @author alex
@@ -24,7 +22,7 @@ public interface AuthenticationRequestHandler {
      * @return
      * @throws AuthenticationServiceException
      */
-    AuthxAuthentication handle(AuthxRequestWrapper requestWrapper) throws AuthenticationServiceException;
+    SlardarAuthenticationToken handle(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException;
 
 
 }

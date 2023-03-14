@@ -1,7 +1,9 @@
 package cn.piesat.nj.slardar.starter.token;
 
-import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
+import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.shared.timer.cron.DateTimeUtil;
+import com.google.auto.service.AutoService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
@@ -22,34 +24,57 @@ import java.util.Map;
  * @version v1.0 2022/9/27
  */
 @Slf4j
-public class JwtAuthxToken implements AuthxToken {
+@AutoService(SlardarToken.class)
+public class SlardarTokenJwtImpl implements SlardarToken {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
+
     private static final String CLAIM_KEY_CREATED = "created";
 
-    private final String secret;
+    public static final String NAME = "jwt";
 
-    private final Long expiration;
+    private String secret;
 
-    public JwtAuthxToken(SecurityProperties securityProperties) {
-        this.secret = securityProperties.getJwt().getSignKey();
-        this.expiration = securityProperties.getJwt().getExpiration();
+    private Long expiration;
+
+
+    /**
+     * token 类型
+     * - jwt
+     * - ...
+     *
+     * @return
+     */
+    @Override
+    public String type() {
+        return NAME;
+    }
+
+    /**
+     * 初始化
+     *
+     * @param context
+     */
+    @Override
+    public void initialize(SlardarContext context) {
+        secret = context.getBean(SlardarProperties.class).getToken().getJwt().getSignKey();
+        expiration = context.getBean(SlardarProperties.class).getToken().getJwt().getExpiration();
     }
 
 
     @Override
-    public Payload generateToken(UserDetails userDetails) {
-     return   generateToken(userDetails.getUsername());
+    public Payload generate(UserDetails userDetails) {
+        return generate(userDetails.getUsername());
 
     }
 
     @Override
-    public Payload generateToken(String username) {
+    public Payload generate(String username) {
         Map<String, Object> claims = new HashMap<>(16);
-        claims.put(CLAIM_KEY_USERNAME,username);
+        claims.put(CLAIM_KEY_USERNAME, username);
         claims.put(CLAIM_KEY_CREATED, new Date());
         Date expirationDate = generateExpirationDate();
-        String token = generateToken(claims, expirationDate);
+        String token = generate(claims, expirationDate);
         return new Payload()
                 .setTokenValue(token)
                 .setExpiresAt(DateTimeUtil.fromDate(expirationDate));
@@ -57,11 +82,12 @@ public class JwtAuthxToken implements AuthxToken {
 
     /**
      * get username from token value
+     *
      * @param tokenValue
      * @return
      */
     @Override
-    public String getSubjectFromToken(String tokenValue) {
+    public String getSubject(String tokenValue) {
         String subject;
         try {
             Claims claims = getClaimsFromToken(tokenValue);
@@ -91,11 +117,21 @@ public class JwtAuthxToken implements AuthxToken {
         }
     }
 
+    /**
+     * 过期秒数
+     *
+     * @return
+     */
+    @Override
+    public long getExpiration() {
+        return expiration;
+    }
+
 
     /**
      * 生成token
      */
-    private String generateToken(Map<String, Object> claims, Date expiration) {
+    private String generate(Map<String, Object> claims, Date expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())

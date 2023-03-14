@@ -1,15 +1,13 @@
 package cn.piesat.nj.slardar.starter.filter;
 
+import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
-import cn.piesat.v.authx.security.infrastructure.spring.AuthxAuthenticationRequestHandler;
-import cn.piesat.v.authx.security.infrastructure.spring.SecurityProperties;
-import cn.piesat.v.authx.security.infrastructure.spring.handler.authentication.AuthxAuthenticationRequestHandlerFactory;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxRequestWrapper;
-import cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil;
+import cn.piesat.nj.slardar.starter.support.SecUtil;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -25,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.*;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
 
 /**
  * <p>
@@ -48,7 +46,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                                         AuthenticationManager authenticationManager,
                                         AuthenticationFailureHandler authenticationFailureHandler,
                                         AuthenticationSuccessHandler authenticationSuccessHandler,
-                                        AuthxAuthenticationRequestHandlerFactory requestHandlerFactory) {
+                                        AuthenticationRequestHandlerFactory requestHandlerFactory) {
         super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl(), "POST"));
         this.requestHandlerFactory = requestHandlerFactory;
         setAuthenticationManager(authenticationManager);
@@ -61,7 +59,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         // 从请求中取出认证需要的信息 组装成 auth token
         if (requestHandlerFactory != null) {
-            if (this.postOnly && !"POST".equals(request.getMethod())) {
+            if (this.postOnly && !HttpMethod.POST.matches(request.getMethod())) {
                 throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
             }
             try {
@@ -71,19 +69,55 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 找出匹配的认证处理器
-                AuthxAuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(AUTH_TYPE_HEADER_KEY));
-                AuthxAuthentication authentication = requestHandler.handle(new AuthxRequestWrapper()
+                AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(AUTH_TYPE_HEADER_KEY));
+                SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setSessionId(request.getSession() != null ? request.getSession().getId() : "")
                         .setRequestHeaders(requestHeaders));
                 // 调用自定义实现的 provider 去实现特定的认证逻辑
                 // @see SlardarAuthenticationProvider
-                return this.getAuthenticationManager().authenticate(authentication);
+                return this.getAuthenticationManager().authenticate(authenticationToken);
             } catch (AuthenticationServiceException e) {
                 throw e;
             }
         } else {
             throw new AuthenticationServiceException("must implements interface `AuthenticationRequestHandler`");
+        }
+    }
+
+    public static class RequestWrapper {
+
+        private Map<String, String> requestParams;
+
+        private String sessionId;
+
+        private Map<String,String> requestHeaders;
+
+        public Map<String, String> getRequestParams() {
+            return requestParams;
+        }
+
+        public RequestWrapper setRequestParams(Map<String, String> requestParams) {
+            this.requestParams = requestParams;
+            return this;
+        }
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
+        public RequestWrapper setSessionId(String sessionId) {
+            this.sessionId = sessionId;
+            return this;
+        }
+
+        public Map<String, String> getRequestHeaders() {
+            return requestHeaders;
+        }
+
+        public RequestWrapper setRequestHeaders(Map<String, String> requestHeaders) {
+            this.requestHeaders = requestHeaders;
+            return this;
         }
     }
 

@@ -7,8 +7,6 @@ import java.util.List;
  * 支持树形递归的实体类型
  * {@link cn.piesat.nj.slardar.core.entity.Group}
  * {@link cn.piesat.nj.slardar.core.entity.Region}
- * {@link cn.piesat.v.authx.security.domain.entity.Department}
- * {@link cn.piesat.v.authx.security.domain.entity.Resource}
  * </p>
  *
  * @author Alex

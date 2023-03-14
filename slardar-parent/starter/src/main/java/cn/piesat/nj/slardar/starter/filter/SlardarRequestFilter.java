@@ -1,13 +1,12 @@
 package cn.piesat.nj.slardar.starter.filter;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import cn.piesat.v.authx.security.core.AuthxException;
-import cn.piesat.v.authx.security.core.ResultCode;
-import cn.piesat.v.authx.security.infrastructure.spring.support.AuthxAuthentication;
-import cn.piesat.v.authx.security.infrastructure.spring.support.LoginDeviceType;
-import cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil;
-import cn.piesat.v.authx.security.infrastructure.spring.token.AuthxTokenService;
-import cn.piesat.v.authx.security.infrastructure.spring.userdetails.AuthxUserDetails;
+import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import cn.piesat.nj.slardar.starter.support.SecUtil;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,8 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.AUTHORIZATION_HEAD;
-import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.BEARER;
+import static cn.piesat.nj.slardar.core.Constants.AUTHORIZATION_HEAD;
+import static cn.piesat.nj.slardar.core.Constants.BEARER;
 
 /**
  * 处理 token 验证
@@ -40,7 +39,7 @@ import static cn.piesat.v.authx.security.infrastructure.spring.support.SecUtil.B
  * @description token过滤器
  */
 @Slf4j
-public class AuthxTokenFilter extends OncePerRequestFilter {
+public class SlardarRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -50,7 +49,7 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
             3000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(512), new NamedThreadFactory("auth-token-%d", true));
 
     @Autowired
-    private AuthxTokenService tokenService;
+    private SlardarTokenService tokenService;
 
     /**
      * 忽略的url pattern
@@ -62,7 +61,7 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
         return ignoredUrls;
     }
 
-    public AuthxTokenFilter(String[] ignoredUrls) {
+    public SlardarRequestFilter(String[] ignoredUrls) {
         this.ignoredUrls = ignoredUrls;
     }
 
@@ -94,7 +93,7 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authToken = request.getHeader(AUTHORIZATION_HEAD);
-        AuthxException loginException = null;
+        SlardarException loginException = null;
         if (StringUtils.hasText(authToken)) {
             LoginDeviceType deviceType = SecUtil.getDeviceType(request);
             if (authToken.startsWith(BEARER)) {
@@ -104,10 +103,10 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
             if (!tokenService.isExpired(authToken, deviceType)) {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 加载详细信息
-                    AuthxUserDetails userDetails = (AuthxUserDetails) userDetailsService.loadUserByUsername(username);
+                    SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                     // 判断当前登陆人的账户是否可用
                     if (userDetails.isEnabled()) {
-                        AuthxAuthentication authenticationToken = new AuthxAuthentication(username, userDetails);
+                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
@@ -118,7 +117,7 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
 
                     } else {
                         // 账户过期
-                        loginException = new AuthxException(ResultCode.ACCOUNT_HAS_EXPIRE);
+                        loginException = new SlardarException("account has expired");
                     }
                 }
             }
@@ -141,7 +140,7 @@ public class AuthxTokenFilter extends OncePerRequestFilter {
      * @throws ServletException
      * @throws IOException
      */
-    private void forwardRequest(HttpServletRequest request, HttpServletResponse response, AuthxException e, String param, String url) throws ServletException, IOException {
+    private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
         request.setAttribute(param, e);
         request.getRequestDispatcher(url).forward(request, response);
     }
