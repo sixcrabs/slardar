@@ -4,6 +4,7 @@ server:
 
 skv:
   type: redis
+  uri: redis://localhost/0
 
 slardar:
   token:
