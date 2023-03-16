@@ -43,19 +43,23 @@ public class SlardarUserDetailsProcessingFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)res;
-        // 详细用户对象
-        Map<String, Object> details = new HashMap<>(1);
 
-        // TODO 获取 token 验证、拿到 userdetails
-        response.setStatus(HttpStatus.OK.value());
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        globalObjectMapper.writeValue(response.getWriter(), details);
-        response.getWriter().flush();
+        if (!this.requestMatcher.matches(request)) {
+            chain.doFilter(request, response);
+        } else {
+            // 详细用户对象
+            Map<String, Object> details = new HashMap<>(1);
 
-        chain.doFilter(request, response);
+            // TODO 获取 token 验证、拿到 userdetails
+            response.setStatus(HttpStatus.OK.value());
+            response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            globalObjectMapper.writeValue(response.getWriter(), details);
+            response.getWriter().flush();
+
+            chain.doFilter(request, response);
+        }
     }
 }

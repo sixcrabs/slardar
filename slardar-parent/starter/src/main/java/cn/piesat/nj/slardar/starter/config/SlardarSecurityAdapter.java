@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.config;
 
 import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
+import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarRequestFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarUserDetailsProcessingFilter;
@@ -61,6 +62,8 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final SlardarRequestFilter requestFilter;
 
+    private final SlardarCaptchaFilter captchaFilter;
+
     private final SlardarUserDetailsProcessingFilter userDetailsProcessingFilter;
 
     private final SlardarProperties properties;
@@ -69,9 +72,10 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
 
     public SlardarSecurityAdapter(SlardarRequestFilter requestFilter,
-                                  SlardarUserDetailsProcessingFilter userDetailsProcessingFilter,
+                                  SlardarCaptchaFilter captchaFilter, SlardarUserDetailsProcessingFilter userDetailsProcessingFilter,
                                   SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider) {
         this.requestFilter = requestFilter;
+        this.captchaFilter = captchaFilter;
         this.userDetailsProcessingFilter = userDetailsProcessingFilter;
         this.properties = properties;
         this.authenticationProvider = slardarAuthenticationProvider;
@@ -125,6 +129,8 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(userDetailsProcessingFilter, SlardarRequestFilter.class);
         httpSecurity.addFilterBefore(loginProcessingFilter(properties, getManagerBean(), authenticateFailedHandler, authenticateSucceedHandler, authenticationRequestHandlerFactory),
                 SlardarUserDetailsProcessingFilter.class);
+        httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
+
 
 
     }

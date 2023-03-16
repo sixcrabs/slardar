@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
+import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
@@ -8,6 +9,9 @@ import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
+import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
 
 /**
  * <p>
@@ -36,23 +40,31 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
         if (properties.getLogin().getCaptchaEnabled()) {
             String code = requestWrapper.getRequestParams().get("authCode");
             if (!StringUtils.hasLength(code)) {
-                throw new AuthenticationServiceException("需要提供验证码");
+                throw new AuthenticationServiceException("需要提供验证码[authCode]");
             }
-            boolean b = captchaComponent.verify(requestWrapper.getSessionId(), code);
-            if (!b) {
-                throw new AuthenticationServiceException("验证码无效");
+            if (!captchaComponent.verify(requestWrapper.getSessionId(), code)) {
+                throw new AuthenticationServiceException("验证码[authCode]无效");
             }
         }
         String username = requestWrapper.getRequestParams().get("username");
         String password = requestWrapper.getRequestParams().get("password");
-        // TODO: 租户id
-        String realm = requestWrapper.getRequestParams().getOrDefault("realm", "");
+        // 租户信息 默认为 master
+        String realm = getRealm(requestWrapper);
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new AuthenticationServiceException("`username` and `password` should not be null");
         }
-        return new SlardarAuthenticationToken(username, null)
+        return new SlardarAuthenticationToken(username, Constants.AUTH_TYPE_NORMAL, null)
                 .setRealm(realm)
                 .setSessionId(requestWrapper.getSessionId())
-                .setCredentials(password);
+                .setPassword(password);
+    }
+
+    private String getRealm(final SlardarLoginProcessingFilter.RequestWrapper requestWrapper) {
+        if (requestWrapper.getRequestHeaders().containsKey(HEADER_KEY_OF_REALM)) {
+            return requestWrapper.getRequestHeaders().getOrDefault(HEADER_KEY_OF_REALM, REALM_MASTER);
+        } else {
+            return requestWrapper.getRequestParams().getOrDefault("realm", REALM_MASTER);
+        }
+
     }
 }

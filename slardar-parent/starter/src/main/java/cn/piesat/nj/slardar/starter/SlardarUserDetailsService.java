@@ -38,8 +38,8 @@ public class SlardarUserDetailsService implements UserDetailsService {
      * @return
      * @throws AuthenticationException
      */
-    public UserDetails loadUserByOpenId(String openId, String realm) throws AuthenticationException {
-        Account account = accountGateway.findByOpenId(openId, realm);
+    public UserDetails loadUserByOpenId(String openId) throws AuthenticationException {
+        Account account = accountGateway.findByOpenId(openId);
         if (Objects.isNull(account)) {
             throw new UsernameNotFoundException("[" + openId + "] 对应的账户不存在");
         }

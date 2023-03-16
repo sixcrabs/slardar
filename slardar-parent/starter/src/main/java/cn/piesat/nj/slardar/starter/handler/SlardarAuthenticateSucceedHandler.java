@@ -1,9 +1,20 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.hutool.core.thread.ThreadUtil;
+import cn.piesat.nj.slardar.core.AccountInfoDTO;
+import cn.piesat.nj.slardar.core.entity.AuditLog;
+import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
+import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,12 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
  * <p>
- *     TODO:
  * 认证成功 handler
  * - 写入 jwt value
  * - 更新用户审计信息（如：记录用户登录时刻等）
@@ -37,14 +50,32 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 @Slf4j
 public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessHandler {
 
+    private static ObjectMapper globalObjectMapper = new ObjectMapper();
 
     private final SlardarProperties securityProperties;
 
     private final SlardarTokenService tokenService;
 
-    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarTokenService tokenService) {
+    private final SlardarContext context;
+
+    // 写入审计日志
+    private final AuditLogGateway auditLogGateway;
+
+    static {
+        globalObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // 处理LocalDateTime
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
+        globalObjectMapper.registerModule(javaTimeModule);
+    }
+
+    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarTokenService tokenService, SlardarContext context) {
         this.securityProperties = securityProperties;
         this.tokenService = tokenService;
+        this.context = context;
+        this.auditLogGateway = context.getAuditLogGateway();
     }
 
     /**
@@ -59,35 +90,34 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        // TESTME 生成 jwt 等
         SlardarAuthenticationToken authenticationToken = (SlardarAuthenticationToken) authentication;
+        SlardarUserDetails userDetails = authenticationToken.getUserDetails();
+        // 这里 userDetails 必须有值
+
         //获取token,将token存储到redis中
-        //判断登录类型
         String token = tokenService.createToken(String.valueOf(authenticationToken.getPrincipal()),
                 isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());
-//        //获取菜单
-//        List<UcMenuTreeCO> menuList = ucMenuGateway.selectMenuTreeByAccount(authzAuthentication.getUserDetails().getUsername(),
-//                CommonConstant.ROLE_OPEN_STATUS);
-//
-//        UcAccountLoginCO loginCO = new UcAccountLoginCO();
-//        loginCO.setToken(token);
-//        loginCO.setMenu(menuList);
-//        loginCO.setAccount(authzAuthentication.getUserDetails().getAccount().getAccount());
-//        loginCO.setPhoto(authzAuthentication.getUserDetails().getPhoto());
-//        loginCO.setName(ObjectUtils.isEmpty(authzAuthentication.getUserDetails().getAccount().getName()) ? "" : authzAuthentication.getUserDetails().getAccount().getName());
-//        loginCO.setIsSystemAdmin(authzAuthentication.getUserDetails().getAccount().getIsSystemAdmin());
-
-        // TODO: 设置登录状态
+        // 设置登录状态
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-//        response.getWriter().write(GSON.toJSONString());
-        response.getWriter().flush();
+        globalObjectMapper.writeValue(response.getWriter(),
+                new AccountInfoDTO().setAccountName(userDetails.getAccount().getName())
+                        .setAccountNonExpired(false).setAccountNonLocked(false)
+                        .setToken(token)
+                        .setUserProfile(userDetails.getAccount().getUserProfile())
+                        .setOpenId(userDetails.getAccount().getOpenId()));
+//        response.getWriter().flush();
         clearAuthenticationAttributes(request);
-        // TODO: 记录用户的登录时间
+        ThreadUtil.newThread(() -> {
+            // 记录用户的登录日志
+            auditLogGateway.create(new AuditLog()
+                    .setAccountId(userDetails.getAccount().getId())
+                    .setAccountName(userDetails.getAccount().getName()));
+
+        }, "login-success-thread");
     }
 
     private static void clearAuthenticationAttributes(HttpServletRequest request) {

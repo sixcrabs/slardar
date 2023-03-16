@@ -6,7 +6,7 @@ import cn.piesat.nj.skv.starter.config.KvAutoConfiguration;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarRequestFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarUserDetailsProcessingFilter;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
@@ -20,11 +20,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
@@ -91,8 +88,9 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties, SlardarTokenService tokenService) {
-        return new SlardarAuthenticateSucceedHandler(properties, tokenService);
+    public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties,
+                                                                        SlardarTokenService tokenService, SlardarContext context) {
+        return new SlardarAuthenticateSucceedHandler(properties, tokenService, context);
     }
 
     /**
@@ -179,6 +177,11 @@ public class SlardarBeanConfiguration {
     @Bean
     public SlardarUserDetailsProcessingFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
         return new SlardarUserDetailsProcessingFilter(properties, context);
+    }
+
+    @Bean
+    public SlardarCaptchaFilter slardarCaptchaFilter() {
+        return new SlardarCaptchaFilter();
     }
 
 

@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
 import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
@@ -33,6 +34,6 @@ public class WxAuthenticationRequestHandler implements AuthenticationRequestHand
         if (StrUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");
         }
-        return new SlardarAuthenticationToken(openid, null);
+        return new SlardarAuthenticationToken(openid, Constants.AUTH_TYPE_WX_APP, null);
     }
 }

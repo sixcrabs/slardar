@@ -22,16 +22,25 @@ public final class Constants {
     public static final String AUTH_LOGIN_URL = "/login";
 
     /**
+     * 请求头 的 租户key
+     */
+    public static final String HEADER_KEY_OF_REALM = "X-realm";
+
+    /**
      * 认证方式
      * wxapp / password
      */
-    public static final String AUTH_TYPE_HEADER_KEY = "Auth-Type";
+    public static final String HEADER_KEY_OF_AUTH_TYPE = "X-Auth-Type";
+
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 
     /**
      * 微信openid 认证类型
      */
     public static final String AUTH_TYPE_WX_APP = "wxapp";
+
+    public static final String AUTH_TYPE_NORMAL = "password";
 
     public static final String ANONYMOUS = "anonymous";
 

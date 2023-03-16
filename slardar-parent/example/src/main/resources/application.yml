@@ -1,2 +1,16 @@
 server:
   port: 9600
+
+
+skv:
+  type: redis
+
+slardar:
+  token:
+    type: jwt
+
+spring:
+  application:
+    name: slardar-demo
+swagger:
+  enabled: true

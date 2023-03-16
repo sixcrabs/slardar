@@ -23,11 +23,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
+import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
 
 /**
  * <p>
  * 处理身份认证的 filter
+ * TODO:
+ * - logout
+ *
  *  /login
  * </p>
  *
@@ -69,7 +73,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 找出匹配的认证处理器
-                AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(AUTH_TYPE_HEADER_KEY));
+                AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
                 SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setSessionId(request.getSession() != null ? request.getSession().getId() : "")

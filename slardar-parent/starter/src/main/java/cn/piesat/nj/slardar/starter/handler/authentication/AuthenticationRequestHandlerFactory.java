@@ -1,6 +1,8 @@
 package cn.piesat.nj.slardar.starter.handler.authentication;
 
+import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -25,9 +27,12 @@ public class AuthenticationRequestHandlerFactory {
     private WxAuthenticationRequestHandler wxAuthenticationRequestHandler;
 
     public AuthenticationRequestHandler findRequestHandler(String authType) {
+        if (StringUtils.isEmpty(authType)) {
+            return defaultAuthenticationRequestHandler;
+        }
         return CACHE.computeIfAbsent(authType, type -> {
             switch (authType) {
-                case "wxapp":
+                case Constants.AUTH_TYPE_WX_APP:
                     return wxAuthenticationRequestHandler;
                 case "password":
                 default:

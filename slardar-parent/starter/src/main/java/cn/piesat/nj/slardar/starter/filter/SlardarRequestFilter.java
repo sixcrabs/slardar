@@ -106,7 +106,7 @@ public class SlardarRequestFilter extends OncePerRequestFilter {
                     SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                     // 判断当前登陆人的账户是否可用
                     if (userDetails.isEnabled()) {
-                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, userDetails);
+                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, "",  userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;

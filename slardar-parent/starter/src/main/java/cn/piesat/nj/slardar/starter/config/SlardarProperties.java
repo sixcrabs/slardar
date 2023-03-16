@@ -38,9 +38,10 @@ public class SlardarProperties implements Serializable {
     private CaptchaSettings captcha = new CaptchaSettings();
 
     /**
+     * TBD:
      * urls to be ignored
      */
-    private String[] ignores = new String[]{"/login"};
+    private String[] ignores = new String[]{"/login", "/captcha"};
 
 
     @Data

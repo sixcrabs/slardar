@@ -30,6 +30,16 @@ public class AuditLog extends BaseRealmEntity<String> {
     private String userProfileId;
 
     /**
+     * 账户名
+     */
+    private String accountName;
+
+    /**
+     * 冗余用户名
+     */
+    private String userProfileName;
+
+    /**
      * 客户端类型 pc app
      */
     private String clientType;
@@ -38,7 +48,6 @@ public class AuditLog extends BaseRealmEntity<String> {
      * 客户端ip
      */
     private String clientIp;
-
 
     /**
      * 操作类型
@@ -49,10 +58,95 @@ public class AuditLog extends BaseRealmEntity<String> {
      */
     private String logType;
 
-
     /**
      * 记录时间
      */
     private LocalDateTime logTime;
 
+
+    @Override
+    public String toString() {
+        return "AuditLog{" +
+                "accountId='" + accountId + '\'' +
+                ", userProfileId='" + userProfileId + '\'' +
+                ", accountName='" + accountName + '\'' +
+                ", userProfileName='" + userProfileName + '\'' +
+                ", clientType='" + clientType + '\'' +
+                ", clientIp='" + clientIp + '\'' +
+                ", logType='" + logType + '\'' +
+                ", logTime=" + logTime +
+                '}';
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public AuditLog setAccountId(String accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    public String getUserProfileId() {
+        return userProfileId;
+    }
+
+    public AuditLog setUserProfileId(String userProfileId) {
+        this.userProfileId = userProfileId;
+        return this;
+    }
+
+    public String getClientType() {
+        return clientType;
+    }
+
+    public AuditLog setClientType(String clientType) {
+        this.clientType = clientType;
+        return this;
+    }
+
+    public String getClientIp() {
+        return clientIp;
+    }
+
+    public AuditLog setClientIp(String clientIp) {
+        this.clientIp = clientIp;
+        return this;
+    }
+
+    public String getLogType() {
+        return logType;
+    }
+
+    public AuditLog setLogType(String logType) {
+        this.logType = logType;
+        return this;
+    }
+
+    public LocalDateTime getLogTime() {
+        return logTime;
+    }
+
+    public AuditLog setLogTime(LocalDateTime logTime) {
+        this.logTime = logTime;
+        return this;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public AuditLog setAccountName(String accountName) {
+        this.accountName = accountName;
+        return this;
+    }
+
+    public String getUserProfileName() {
+        return userProfileName;
+    }
+
+    public AuditLog setUserProfileName(String userProfileName) {
+        this.userProfileName = userProfileName;
+        return this;
+    }
 }

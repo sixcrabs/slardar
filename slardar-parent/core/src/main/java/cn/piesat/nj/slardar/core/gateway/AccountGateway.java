@@ -15,12 +15,12 @@ public interface AccountGateway extends CurdGateway<String, Account> {
 
     /**
      * find by openid
+     * 此时不需要租户 因为 openid 唯一
      *
      * @param openId
-     * @param realm
      * @return
      */
-    Account findByOpenId(String openId, String realm);
+    Account findByOpenId(String openId);
 
     /**
      * find by name

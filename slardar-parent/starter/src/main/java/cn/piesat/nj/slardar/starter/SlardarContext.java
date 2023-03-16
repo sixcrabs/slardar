@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
+import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
 import cn.piesat.nj.slardar.core.gateway.UserProfileGateway;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +21,7 @@ public class SlardarContext implements ApplicationContextAware {
 
     /**
      * 用户信息 gateway
+     *
      * @return
      */
     public UserProfileGateway getUserGateway() {
@@ -27,8 +29,22 @@ public class SlardarContext implements ApplicationContextAware {
     }
 
 
+    /**
+     * get account gateway
+     *
+     * @return
+     */
     public AccountGateway getAccountGateway() {
         return getBean(AccountGateway.class);
+    }
+
+    /**
+     * get audit log gateway
+     *
+     * @return
+     */
+    public AuditLogGateway getAuditLogGateway() {
+        return getBean(AuditLogGateway.class);
     }
 
 

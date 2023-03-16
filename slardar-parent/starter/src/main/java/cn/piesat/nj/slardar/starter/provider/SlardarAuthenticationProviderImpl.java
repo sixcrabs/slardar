@@ -45,7 +45,7 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
         UserDetails userDetails;
         if (AUTH_TYPE_WX_APP.equals(authenticationToken.getAuthType())) {
             // openid 认证
-            userDetails = userDetailsService.loadUserByOpenId(authenticationToken.getOpenId(), authenticationToken.getRealm());
+            userDetails = userDetailsService.loadUserByOpenId(authenticationToken.getOpenId());
         } else {
             // 用户密码方式认证
             String accountName = authenticationToken.getAccountName();
@@ -61,11 +61,10 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
                     throw new AuthenticationServiceException(e.getLocalizedMessage());
                 }
             } else {
-                throw new AuthenticationServiceException("password is invalid");
+                throw new AuthenticationServiceException(String.format("账户 [%s] 密码不匹配", userDetails.getUsername()));
             }
-
         } else {
-            throw new UsernameNotFoundException("user not found");
+            throw new UsernameNotFoundException("account not found");
         }
     }
 }

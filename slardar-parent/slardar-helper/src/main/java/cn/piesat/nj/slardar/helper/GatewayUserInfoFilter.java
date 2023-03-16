@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 
 /**
  * <p>
+ *     TODO:
  * 识别从网关（或其他）来的请求中的token
  * userId isAdmin 信息
  * 并save 到 对应holder 中

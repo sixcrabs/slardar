@@ -2,9 +2,9 @@ package cn.piesat.nj.slardar.starter.support.captcha.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.v.authx.security.infrastructure.spring.captcha.AbstractCaptcha;
-import cn.piesat.v.authx.security.infrastructure.spring.captcha.GraphicsUtil;
-import cn.piesat.v.authx.security.infrastructure.spring.captcha.ImgUtil;
+import cn.piesat.nj.slardar.starter.support.captcha.AbstractCaptcha;
+import cn.piesat.nj.slardar.starter.support.captcha.GraphicsUtil;
+import cn.piesat.nj.slardar.starter.support.captcha.ImgUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
