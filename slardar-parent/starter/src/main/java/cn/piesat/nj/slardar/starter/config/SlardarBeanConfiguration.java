@@ -7,8 +7,8 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarRequestFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarUserDetailsProcessingFilter;
+import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
+import cn.piesat.nj.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
@@ -75,6 +75,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 认证失败 handler
+     *
      * @return
      */
     @Bean
@@ -84,6 +85,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 认证成功 handler
+     *
      * @param properties
      * @return
      */
@@ -95,6 +97,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入拒绝访问 handler
+     *
      * @return
      */
     @Bean
@@ -104,6 +107,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 认证请求handler factory
+     *
      * @return
      */
     @Bean
@@ -113,6 +117,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 认证的默认实现类
+     *
      * @param passwordEncoder
      * @return
      */
@@ -123,6 +128,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入上下文 context
+     *
      * @return
      */
     @Bean
@@ -132,6 +138,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入用户详情获取 service
+     *
      * @param context
      * @return
      */
@@ -142,6 +149,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 token 处理 service
+     *
      * @param context
      * @param properties
      * @param kvStore
@@ -155,36 +163,41 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 请求过滤器 用于过滤所有请求进行token验证
+     *
      * @param properties
      * @return
      */
     @Bean
-    public SlardarRequestFilter requestFilter(SlardarProperties properties) {
+    public SlardarTokenRequiredFilter requestFilter(SlardarProperties properties) {
         // 忽略的url 包含配置的参数以及静态资源、swagger context
         String[] ignoresFromConfig = properties.getIgnores();
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
         ignores = ArrayUtil.append(ignores, "/oauth2/**", properties.getLogin().getUrl());
-        return new SlardarRequestFilter(ignores);
+        return new SlardarTokenRequiredFilter(ignores);
     }
 
     /**
      * 通过 token 获取用户详情
+     *
      * @param properties
      * @param context
      * @return
      */
     @Bean
-    public SlardarUserDetailsProcessingFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
-        return new SlardarUserDetailsProcessingFilter(properties, context);
+    public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
+        return new SlardarAuthenticatedRequestFilter(properties, context);
     }
 
+    /**
+     * 验证码过滤器
+     *
+     * @return
+     */
     @Bean
     public SlardarCaptchaFilter slardarCaptchaFilter() {
         return new SlardarCaptchaFilter();
     }
-
-
 
     /**
      * 配置地址栏不能识别 // 的情况

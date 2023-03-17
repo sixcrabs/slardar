@@ -39,7 +39,7 @@ import static cn.piesat.nj.slardar.core.Constants.BEARER;
  * @description token过滤器
  */
 @Slf4j
-public class SlardarRequestFilter extends OncePerRequestFilter {
+public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -61,7 +61,7 @@ public class SlardarRequestFilter extends OncePerRequestFilter {
         return ignoredUrls;
     }
 
-    public SlardarRequestFilter(String[] ignoredUrls) {
+    public SlardarTokenRequiredFilter(String[] ignoredUrls) {
         this.ignoredUrls = ignoredUrls;
     }
 
@@ -106,7 +106,7 @@ public class SlardarRequestFilter extends OncePerRequestFilter {
                     SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                     // 判断当前登陆人的账户是否可用
                     if (userDetails.isEnabled()) {
-                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, "",  userDetails);
+                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, "", userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;

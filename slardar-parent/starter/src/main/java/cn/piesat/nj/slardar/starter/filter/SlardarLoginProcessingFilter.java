@@ -51,7 +51,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                                         AuthenticationFailureHandler authenticationFailureHandler,
                                         AuthenticationSuccessHandler authenticationSuccessHandler,
                                         AuthenticationRequestHandlerFactory requestHandlerFactory) {
-        super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl(), "POST"));
+        super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl(), HttpMethod.POST.name()));
         this.requestHandlerFactory = requestHandlerFactory;
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);

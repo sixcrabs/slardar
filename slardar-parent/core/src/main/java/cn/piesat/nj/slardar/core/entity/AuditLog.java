@@ -63,6 +63,20 @@ public class AuditLog extends BaseRealmEntity<String> {
      */
     private LocalDateTime logTime;
 
+    /**
+     * 详细操作内容 可为空
+     */
+    private String detail;
+
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public AuditLog setDetail(String detail) {
+        this.detail = detail;
+        return this;
+    }
 
     @Override
     public String toString() {

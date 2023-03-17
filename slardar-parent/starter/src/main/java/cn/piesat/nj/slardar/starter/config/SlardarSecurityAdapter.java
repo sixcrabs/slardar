@@ -1,10 +1,7 @@
 package cn.piesat.nj.slardar.starter.config;
 
 import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
-import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarRequestFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarUserDetailsProcessingFilter;
+import cn.piesat.nj.slardar.starter.filter.*;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
@@ -60,23 +57,23 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     @Autowired
     private HttpFirewall httpFirewall;
 
-    private final SlardarRequestFilter requestFilter;
+    private final SlardarTokenRequiredFilter tokenRequiredFilter;
 
     private final SlardarCaptchaFilter captchaFilter;
 
-    private final SlardarUserDetailsProcessingFilter userDetailsProcessingFilter;
+    private final SlardarAuthenticatedRequestFilter authenticatedRequestFilter;
 
     private final SlardarProperties properties;
 
     private final SlardarAuthenticationProvider authenticationProvider;
 
-
-    public SlardarSecurityAdapter(SlardarRequestFilter requestFilter,
-                                  SlardarCaptchaFilter captchaFilter, SlardarUserDetailsProcessingFilter userDetailsProcessingFilter,
+    public SlardarSecurityAdapter(SlardarTokenRequiredFilter tokenRequiredFilter,
+                                  SlardarCaptchaFilter captchaFilter,
+                                  SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
                                   SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider) {
-        this.requestFilter = requestFilter;
+        this.tokenRequiredFilter = tokenRequiredFilter;
         this.captchaFilter = captchaFilter;
-        this.userDetailsProcessingFilter = userDetailsProcessingFilter;
+        this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.properties = properties;
         this.authenticationProvider = slardarAuthenticationProvider;
     }
@@ -113,7 +110,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests();
 
-        registry.antMatchers(requestFilter.getIgnoredUrls()).permitAll();
+        registry.antMatchers(tokenRequiredFilter.getIgnoredUrls()).permitAll();
 
         registry.antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
@@ -124,11 +121,13 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
         // 禁用 iframe 策略
         httpSecurity.headers().frameOptions().disable();
+        // 自定义 logout 处理
+        httpSecurity.logout(logoutConfigurer -> logoutConfigurer.logoutUrl("/logout_spring"));
         // 设置filter
-        httpSecurity.addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.addFilterBefore(userDetailsProcessingFilter, SlardarRequestFilter.class);
+        httpSecurity.addFilterBefore(authenticatedRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(tokenRequiredFilter, SlardarAuthenticatedRequestFilter.class);
         httpSecurity.addFilterBefore(loginProcessingFilter(properties, getManagerBean(), authenticateFailedHandler, authenticateSucceedHandler, authenticationRequestHandlerFactory),
-                SlardarUserDetailsProcessingFilter.class);
+                SlardarTokenRequiredFilter.class);
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
 
 

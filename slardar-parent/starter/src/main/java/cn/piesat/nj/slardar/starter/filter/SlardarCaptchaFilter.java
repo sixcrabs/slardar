@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.filter;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -33,7 +34,7 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     private CaptchaComponent captchaComponent;
 
     public SlardarCaptchaFilter() {
-        this.requestMatcher = new AntPathRequestMatcher("/captcha", "GET");
+        this.requestMatcher = new AntPathRequestMatcher("/captcha", HttpMethod.GET.name());
     }
 
 
