@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.example.impl;
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.slardar.core.AccountStatus;
 import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.core.entity.Authority;
 import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import cn.piesat.nj.slardar.core.entity.core.BaseEntity;
@@ -45,6 +46,7 @@ public class AccountGatewayImpl implements AccountGateway {
         profile.setDeleted(0);
         profile.setId(RandomUtil.randomString(8));
         profile.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER")));
+        profile.setAuthorities(Lists.newArrayList(new Authority().setContent("READ_URL")));
 
         UserProfile profile2 = new UserProfile()
                 .setAddress(RandomUtil.randomString(5))
@@ -97,6 +99,7 @@ public class AccountGatewayImpl implements AccountGateway {
      */
     @Override
     public Account findByName(String name, String realm) {
+        // 数据库查询
         return accounts.stream().filter(account ->
                 account.getName().equals(name) && account.getRealm().equals(realm)
         ).findFirst().orElse(null);

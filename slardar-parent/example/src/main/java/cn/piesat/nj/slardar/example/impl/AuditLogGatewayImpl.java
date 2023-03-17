@@ -23,6 +23,7 @@ public class AuditLogGatewayImpl implements AuditLogGateway {
      */
     @Override
     public String create(AuditLog entity) {
+        // TODO： 写入业务数据库或其他操作
         System.out.println(entity.toString());
         return null;
     }

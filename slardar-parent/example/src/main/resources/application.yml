@@ -9,6 +9,9 @@ skv:
 slardar:
   token:
     type: jwt
+  login:
+    captcha-enabled: false
+
 
 spring:
   application:
