@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 /**
  * <p>
  * .演示如何在 应用里 自定义 token 实现类
+ * 启用需要在 配置文件里指定 `slardar.token.type: my`
  * </p>
  *
  * @author Alex
