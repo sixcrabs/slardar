@@ -6,6 +6,7 @@ import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
+import cn.piesat.nj.slardar.starter.support.SlardarIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,14 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import java.util.Map;
+import java.util.Set;
 
 import static cn.piesat.nj.slardar.starter.config.SlardarBeanConfiguration.STATIC_RES_MATCHERS;
 
@@ -57,6 +66,9 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     @Autowired
     private HttpFirewall httpFirewall;
 
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
     private final SlardarTokenRequiredFilter tokenRequiredFilter;
 
     private final SlardarCaptchaFilter captchaFilter;
@@ -81,10 +93,9 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     /**
      * 配置校验的方法类
      *
-     * @see cn.piesat.nj.slardar.starter.provider.SlardarAuthenticationProviderImpl
-     *
      * @param auth
      * @throws Exception
+     * @see cn.piesat.nj.slardar.starter.provider.SlardarAuthenticationProviderImpl
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -131,7 +142,6 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
 
 
-
     }
 
     @Override
@@ -157,8 +167,34 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                 "/swagger-ui.html",
                 "/doc.html"
         );
+        /**
+         * 使用 {@link cn.piesat.nj.slardar.starter.support.SlardarIgnore} 注解的忽略
+         */
+        ignoreByAnnotation(web.ignoring());
         //url中允许使用双斜杠
         web.httpFirewall(httpFirewall);
+    }
+
+    private void ignoreByAnnotation(WebSecurity.IgnoredRequestConfigurer ignoredRequestConfigurer) {
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
+            HandlerMethod handlerMethod = methodEntry.getValue();
+            if (handlerMethod.hasMethodAnnotation(SlardarIgnore.class)) {
+                Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
+                Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
+                if (CollectionUtils.isEmpty(methods)) {
+                    // 没有指定method
+                    ignoredRequestConfigurer.antMatchers(patternValues.toArray(new String[0]));
+                } else {
+                    for (RequestMethod method : methods) {
+                        ignoredRequestConfigurer.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0]));
+                    }
+                }
+            }
+
+        }
+
+
     }
 
 
@@ -169,6 +205,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     /**
      * 登录请求
+     *
      * @param properties
      * @param authenticationManager
      * @param failureHandler
