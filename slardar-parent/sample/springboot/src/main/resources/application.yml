@@ -10,6 +10,7 @@ slardar:
   token:
     type: jwt
   login:
+    concurrent-policy: mutex
     captcha-enabled: false
 
 
