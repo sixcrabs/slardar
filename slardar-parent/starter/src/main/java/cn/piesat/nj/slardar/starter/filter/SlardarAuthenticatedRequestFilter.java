@@ -92,7 +92,13 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     response.setStatus(HttpStatus.OK.value());
                     response.getWriter().write(GSON.toJson(MapUtil.of("msg", "ok")));
                     // TESTME: 写入 auditlog
-                    ThreadUtil.newThread(() -> context.getAuditLogGateway().create(new AuditLog().setAccountName(currentUsername).setLogType("logout").setLogTime(LocalDateTime.now())), "logout-audit-thread");
+                    ThreadUtil.newThread(() -> {
+                        try {
+                            context.getAuditLogGateway().create(new AuditLog().setAccountName(currentUsername).setLogType("logout").setLogTime(LocalDateTime.now()));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, "logout-audit-thread");
                 } else {
                     response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
                     response.getWriter().write(GSON.toJson(MapUtil.of("msg", "server error...")));

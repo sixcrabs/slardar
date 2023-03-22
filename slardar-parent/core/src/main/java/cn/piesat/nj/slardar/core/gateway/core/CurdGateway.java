@@ -22,7 +22,7 @@ public interface CurdGateway<ID extends Serializable, E extends BaseEntity<ID>> 
      * @param entity
      * @return
      */
-    ID create(E entity);
+    ID create(E entity) throws Exception;
 
     /**
      * 更新实体
@@ -30,7 +30,7 @@ public interface CurdGateway<ID extends Serializable, E extends BaseEntity<ID>> 
      * @param entity
      * @return
      */
-    boolean update(E entity);
+    boolean update(E entity) throws Exception;
 
     /**
      * delete by ID
@@ -38,7 +38,7 @@ public interface CurdGateway<ID extends Serializable, E extends BaseEntity<ID>> 
      * @param id
      * @return
      */
-    boolean deleteById(ID id);
+    boolean deleteById(ID id) throws Exception;
 
     /**
      * get by id
@@ -46,6 +46,6 @@ public interface CurdGateway<ID extends Serializable, E extends BaseEntity<ID>> 
      * @param id
      * @return
      */
-    E getById(ID id);
+    E getById(ID id) throws Exception;
 
 }

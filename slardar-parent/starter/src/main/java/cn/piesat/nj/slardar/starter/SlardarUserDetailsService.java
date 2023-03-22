@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.slardar.core.Constants;
+import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import org.springframework.security.core.AuthenticationException;
@@ -39,7 +40,12 @@ public class SlardarUserDetailsService implements UserDetailsService {
      * @throws AuthenticationException
      */
     public UserDetails loadUserByOpenId(String openId) throws AuthenticationException {
-        Account account = accountGateway.findByOpenId(openId);
+        Account account = null;
+        try {
+            account = accountGateway.findByOpenId(openId);
+        } catch (Exception e) {
+            throw new UsernameNotFoundException(e.getLocalizedMessage());
+        }
         if (Objects.isNull(account)) {
             throw new UsernameNotFoundException("[" + openId + "] 对应的账户不存在");
         }
@@ -60,13 +66,19 @@ public class SlardarUserDetailsService implements UserDetailsService {
 
     /**
      * load user by account and realm
+     *
      * @param accountName
      * @param realm
      * @return
      * @throws UsernameNotFoundException
      */
     public UserDetails loadUserByAccount(String accountName, String realm) throws UsernameNotFoundException {
-        Account account = accountGateway.findByName(accountName, realm);
+        Account account = null;
+        try {
+            account = accountGateway.findByName(accountName, realm);
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("[" + accountName + "] 异常：" + e.getLocalizedMessage());
+        }
         if (Objects.isNull(account)) {
             throw new UsernameNotFoundException("[" + accountName + "] 对应的账户不存在");
         }

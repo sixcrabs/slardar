@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.provider;
 
 import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
+import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
@@ -33,10 +34,13 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
     @Autowired
     private SlardarUserDetailsService userDetailsService;
 
+    private final SlardarContext context;
+
     private final PasswordEncoder passwordEncoder;
 
-    public SlardarAuthenticationProviderImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public SlardarAuthenticationProviderImpl(SlardarContext context) {
+        this.context = context;
+        this.passwordEncoder = context.getPwdEncoder();
     }
 
     @Override

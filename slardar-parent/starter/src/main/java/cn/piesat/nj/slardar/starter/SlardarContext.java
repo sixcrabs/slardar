@@ -6,6 +6,8 @@ import cn.piesat.nj.slardar.core.gateway.UserProfileGateway;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * <p>
@@ -18,6 +20,14 @@ import org.springframework.context.ApplicationContextAware;
 public class SlardarContext implements ApplicationContextAware {
 
     private ApplicationContext context;
+
+    /**
+     * 密码 encoder
+     * @return
+     */
+    public PasswordEncoder getPwdEncoder() {
+        return getBeanOrDefault(PasswordEncoder.class, new BCryptPasswordEncoder());
+    }
 
     /**
      * 用户信息 gateway
@@ -50,6 +60,16 @@ public class SlardarContext implements ApplicationContextAware {
 
     public <T> T getBean(Class<T> clazz) {
         return context.getBean(clazz);
+    }
+
+    public <T> T getBeanOrDefault(Class<T> clazz, T defaultValue) {
+        T bean = null;
+        try {
+            bean = context.getBean(clazz);
+        } catch (BeansException e) {
+            return defaultValue;
+        }
+        return bean;
     }
 
 

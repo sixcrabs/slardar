@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
@@ -31,8 +32,8 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
  * 处理身份认证的 filter
  * TODO:
  * - logout
- *
- *  /login
+ * <p>
+ * /login
  * </p>
  *
  * @author alex
@@ -71,6 +72,9 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 if (requestParam.isEmpty()) {
                     requestParam = GSON.fromJson(SecUtil.getRequestPostStr(request), Map.class);
                 }
+                if (Objects.isNull(requestParam)) {
+                    throw new AuthenticationServiceException("Login params cannot be null");
+                }
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 找出匹配的认证处理器
                 AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
@@ -95,7 +99,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
 
         private String sessionId;
 
-        private Map<String,String> requestHeaders;
+        private Map<String, String> requestHeaders;
 
         public Map<String, String> getRequestParams() {
             return requestParams;

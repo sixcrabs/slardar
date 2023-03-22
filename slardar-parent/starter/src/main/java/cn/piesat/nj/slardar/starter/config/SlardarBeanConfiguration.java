@@ -68,11 +68,6 @@ public class SlardarBeanConfiguration {
             "/v2/api-docs"};
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     /**
      * 注入 认证失败 handler
      *
@@ -118,12 +113,12 @@ public class SlardarBeanConfiguration {
     /**
      * 认证的默认实现类
      *
-     * @param passwordEncoder
+     * @param context
      * @return
      */
     @Bean
-    public SlardarAuthenticationProviderImpl authenticationProvider(PasswordEncoder passwordEncoder) {
-        return new SlardarAuthenticationProviderImpl(passwordEncoder);
+    public SlardarAuthenticationProviderImpl authenticationProvider(SlardarContext context) {
+        return new SlardarAuthenticationProviderImpl(context);
     }
 
     /**

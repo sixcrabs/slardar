@@ -113,9 +113,13 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         clearAuthenticationAttributes(request);
         ThreadUtil.newThread(() -> {
             // 记录用户的登录日志
-            auditLogGateway.create(new AuditLog()
-                    .setAccountId(userDetails.getAccount().getId())
-                    .setAccountName(userDetails.getAccount().getName()));
+            try {
+                auditLogGateway.create(new AuditLog()
+                        .setAccountId(userDetails.getAccount().getId())
+                        .setAccountName(userDetails.getAccount().getName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
         }, "login-success-thread");
     }
