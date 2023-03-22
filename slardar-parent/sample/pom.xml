@@ -12,6 +12,7 @@
 
     <modules>
         <module>springboot</module>
+        <module>sso-client-springboot</module>
     </modules>
 
 

@@ -20,6 +20,11 @@ public final class SsoConstants {
      */
     public static final String SSO_CTX_PATH = "/sso";
 
+    /**
+     * 请求中传递 token 的key
+     */
+    public static final String SSO_TOKEN_KEY = "Authorization";
+
     /** redirect参数名称 */
     public static final String SSO_PARAM_REDIRECT = "redirect";
 

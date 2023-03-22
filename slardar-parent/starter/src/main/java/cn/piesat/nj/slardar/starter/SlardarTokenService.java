@@ -78,6 +78,10 @@ public class SlardarTokenService implements InitializingBean {
         return !hasFromRedis(key(username, deviceType));
     }
 
+    public boolean isExpired(String tokenValue) {
+        return isExpired(tokenValue, LoginDeviceType.PC);
+    }
+
     /**
      * get username from token
      *

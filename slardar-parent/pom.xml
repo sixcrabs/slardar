@@ -13,6 +13,7 @@
         <module>slardar-helper</module>
         <module>sso-server</module>
         <module>sample</module>
+        <module>sso-client</module>
     </modules>
     <packaging>pom</packaging>
 

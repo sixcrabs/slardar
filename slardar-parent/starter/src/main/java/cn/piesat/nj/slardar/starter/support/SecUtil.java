@@ -35,6 +35,7 @@ public final class SecUtil {
 
     /**
      * request is from mobile
+     *
      * @param request
      * @return
      */
@@ -57,6 +58,7 @@ public final class SecUtil {
 
     /**
      * 获取用户登录名
+     *
      * @return
      */
     public static String getCurrentUsername() {
@@ -70,15 +72,17 @@ public final class SecUtil {
 
     /**
      * get device type of request
+     *
      * @param request
      * @return
      */
     public static LoginDeviceType getDeviceType(HttpServletRequest request) {
-        return isFromMobile(request)?LoginDeviceType.APP:LoginDeviceType.PC;
+        return isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC;
     }
 
     /**
      * get session id from request
+     *
      * @param request
      * @return
      */
@@ -105,11 +109,11 @@ public final class SecUtil {
 
     private static byte[] getRequestPostBytes(HttpServletRequest request) throws IOException {
         int contentLength = request.getContentLength();
-        if(contentLength<0){
+        if (contentLength < 0) {
             return null;
         }
         byte[] buffer = new byte[contentLength];
-        for (int i = 0; i < contentLength;) {
+        for (int i = 0; i < contentLength; ) {
             int readlen = request.getInputStream().read(buffer, i,
                     contentLength - i);
             if (readlen == -1) {

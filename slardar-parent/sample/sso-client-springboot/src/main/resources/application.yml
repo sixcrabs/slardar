@@ -1,0 +1,6 @@
+server:
+  port: 9700
+
+slardar:
+  sso-client:
+    server-url: http://localhost:9600/sso/auth

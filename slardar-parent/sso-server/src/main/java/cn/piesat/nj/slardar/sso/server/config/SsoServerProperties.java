@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.sso.server.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_CTX_PATH;
+import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_TOKEN_KEY;
 
 /**
  * <p>
@@ -21,6 +22,23 @@ public class SsoServerProperties {
      */
     private String ctxPath = SSO_CTX_PATH;
 
+    /**
+     * sso 登录页面url
+     */
+    private String loginUrl = "/sso-login";
+
+    /**
+     * token key
+     */
+    private String tokenKey = SSO_TOKEN_KEY;
+
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
 
     public String getSsoAntUrlPattern() {
         return this.ctxPath.endsWith("/") ? this.ctxPath.concat("**") : this.ctxPath.concat("/**");
@@ -33,5 +51,13 @@ public class SsoServerProperties {
 
     public void setCtxPath(String ctxPath) {
         this.ctxPath = ctxPath;
+    }
+
+    public String getTokenKey() {
+        return tokenKey;
+    }
+
+    public void setTokenKey(String tokenKey) {
+        this.tokenKey = tokenKey;
     }
 }

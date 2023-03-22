@@ -1,10 +1,14 @@
 package cn.piesat.nj.slardar.sso.server;
 
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.sso.server.config.SsoServerProperties;
-import cn.piesat.nj.slardar.sso.server.support.HttpServletUtil;
+import cn.piesat.nj.slardar.sso.server.support.SsoException;
 import cn.piesat.nj.slardar.sso.server.support.SsoHandlerMapping;
+import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
+import cn.piesat.nj.slardar.starter.support.SecUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -15,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
+import static cn.piesat.nj.slardar.sso.server.support.HttpServletUtil.*;
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.GSON;
 
 /**
@@ -30,8 +35,14 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SsoServerProperties serverProperties;
 
-    public SsoServerRequestHandler(SsoServerProperties serverProperties) {
+    private final SlardarTokenService tokenService;
+
+    private final SlardarContext context;
+
+    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarContext context) {
         this.serverProperties = serverProperties;
+        this.tokenService = context.getBean(SlardarTokenService.class);
+        this.context = context;
     }
 
 
@@ -50,14 +61,14 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
             case logout:
                 break;
             case checkTicket:
-                handleSsoTicketCheck(request,response);
+                handleSsoTicketCheck(request, response);
                 break;
             default:
                 //
                 break;
         }
 
-        HttpServletUtil.getParam(request, "redirect");
+        getParam(request, "redirect");
 
         try {
             sendJson(response, HttpStatus.OK, MapUtil.of("code", "1"));
@@ -70,6 +81,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     /**
      * TODO
+     *
      * @param request
      * @param response
      */
@@ -79,6 +91,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     /**
      * TODO
+     *
      * @param request
      * @param response
      */
@@ -86,24 +99,43 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
         //
         // ---------- 此处有两种情况分开处理：
         // ---- 情况1：在SSO认证中心尚未登录，需要先去登录
-//        if(stpLogic.isLogin() == false) {
-//            return cfg.getNotLoginView().get();
-//        }
-//        // ---- 情况2：在SSO认证中心已经登录，需要重定向回 Client 端，而这又分为两种方式：
-//        String mode = req.getParam(paramName.mode, "");
-//        // 方式2：带着ticket参数重定向回Client端 (mode=ticket)
-//        String redirectUrl = ssoTemplate.buildRedirectUrl(stpLogic.getLoginId(), request.getParam(paramName.client), req.getParam(paramName.redirect));
-//        try {
-//            response.sendRedirect(redirectUrl);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+
+        // 尝试从请求体里面读取 token
+        String tokenValue = getParam(request, serverProperties.getTokenKey());
+        // 尝试从header里读取
+        if (tokenValue == null) {
+            tokenValue = request.getHeader(serverProperties.getTokenKey());
+        }
+        // 尝试从cookie里读取
+        if (tokenValue == null) {
+            tokenValue = getCookieValue(request, serverProperties.getTokenKey());
+        }
+        if (StrUtil.isEmpty(tokenValue)) {
+            // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
+            try {
+                forward(request, response, serverProperties.getLoginUrl());
+            } catch (SsoException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // 验证 token 是否有效
+        tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
+        // ---- 情况2：在SSO认证中心已经登录，需要重定向回 Client 端
+        // 生成 ticket, 带着ticket参数重定向回Client端
+        String redirectUrl = ""; //ssoTemplate.buildRedirectUrl(stpLogic.getLoginId(), request.getParam(paramName.client), req.getParam(paramName.redirect));
+        try {
+            response.sendRedirect(redirectUrl);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
 
+
     /**
      * send json to response
+     *
      * @param response
      * @param httpStatus
      * @param result
