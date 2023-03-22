@@ -6,7 +6,10 @@ skv:
   type: redis
   uri: redis://localhost/0
 
+
 slardar:
+  sso-server:
+    ctx-path: /sso
   token:
     type: jwt
   login:

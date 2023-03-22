@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.sso.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static cn.piesat.nj.slardar.sso.server.SsoConstants.SSO_CTX_PATH;
+import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_CTX_PATH;
 
 /**
  * <p>
@@ -20,6 +20,11 @@ public class SsoServerProperties {
      * context path
      */
     private String ctxPath = SSO_CTX_PATH;
+
+
+    public String getSsoAntUrlPattern() {
+        return this.ctxPath.endsWith("/") ? this.ctxPath.concat("**") : this.ctxPath.concat("/**");
+    }
 
 
     public String getCtxPath() {
