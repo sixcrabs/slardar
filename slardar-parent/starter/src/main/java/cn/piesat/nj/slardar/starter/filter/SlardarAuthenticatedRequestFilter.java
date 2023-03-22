@@ -38,9 +38,11 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
  * <p>
- * 处理 前提是必须登录
- * /userdetails 请求
- * ...
+ * 处理登录后的请求
+ *    前提是必须登录
+ * - /userdetails 用户详细信息
+ * - /logout   登出
+ * - ...
  * </p>
  *
  * @author alex

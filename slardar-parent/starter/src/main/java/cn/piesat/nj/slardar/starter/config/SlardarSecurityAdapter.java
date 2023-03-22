@@ -7,6 +7,7 @@ import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
 import cn.piesat.nj.slardar.starter.support.SlardarIgnore;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,15 +81,19 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final SlardarAuthenticationProvider authenticationProvider;
 
+    private final List<SlardarIgnoringCustomizer> ignoringCustomizerList;
+
     public SlardarSecurityAdapter(SlardarTokenRequiredFilter tokenRequiredFilter,
                                   SlardarCaptchaFilter captchaFilter,
                                   SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
-                                  SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider) {
+                                  SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider,
+                                  ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList) {
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.captchaFilter = captchaFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.properties = properties;
         this.authenticationProvider = slardarAuthenticationProvider;
+        this.ignoringCustomizerList = ignoringCustomizerList.getIfAvailable();
     }
 
     /**
@@ -111,15 +117,17 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        //添加自定义为授权、未登录的结果返回
+
+        // 默认跨域: cors()
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = httpSecurity.exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(authenticateFailedHandler)
+                .accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticateFailedHandler)
                 .and()
-                .csrf()
-                .disable()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests();
+                .and()
+                .cors()
+                .and()
+                .authorizeRequests();
 
         registry.antMatchers(tokenRequiredFilter.getIgnoredUrls()).permitAll();
 
@@ -144,6 +152,12 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     }
 
+    /**
+     * 集成方 可以实现 {@link SlardarIgnoringCustomizer} 定制需要忽略的 url pattern
+     *
+     * @param web
+     * @throws Exception
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
@@ -171,6 +185,12 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
          * 使用 {@link cn.piesat.nj.slardar.starter.support.SlardarIgnore} 注解的忽略
          */
         ignoreByAnnotation(web.ignoring());
+        // 应用定制扩展
+        if (this.ignoringCustomizerList != null) {
+            for (SlardarIgnoringCustomizer ignoringCustomizer : ignoringCustomizerList) {
+                ignoringCustomizer.customize(web.ignoring());
+            }
+        }
         //url中允许使用双斜杠
         web.httpFirewall(httpFirewall);
     }
