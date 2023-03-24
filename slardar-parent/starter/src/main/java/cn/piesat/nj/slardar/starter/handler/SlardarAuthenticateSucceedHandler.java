@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -111,18 +110,20 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
                         .setOpenId(userDetails.getAccount().getOpenId()));
 //        response.getWriter().flush();
         clearAuthenticationAttributes(request);
-        ThreadUtil.newThread(() -> {
+
+        ThreadUtil.execute(() -> {
             // 记录用户的登录日志
             try {
                 auditLogGateway.create(new AuditLog()
-                        .setAccountId(userDetails.getAccount().getId())
+                        .setAccountId(userDetails.getAccount().getId()).setClientIp(request.getRemoteAddr())
                         .setAccountName(userDetails.getAccount().getName()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-        }, "login-success-thread");
+        });
     }
+
+
 
     private static void clearAuthenticationAttributes(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
