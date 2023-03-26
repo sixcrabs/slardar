@@ -56,7 +56,7 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
             userDetails = userDetailsService.loadUserByAccount(accountName, authenticationToken.getRealm());
         }
         // 验证密码是否正确
-        if (!Objects.isNull(userDetails)) {
+         if (!Objects.isNull(userDetails)) {
             if (passwordEncoder.matches(authenticationToken.getPassword(), userDetails.getPassword())) {
                 try {
                     return new SlardarAuthenticationToken(String.valueOf(authenticationToken.getPrincipal()), authenticationToken.getAuthType(),

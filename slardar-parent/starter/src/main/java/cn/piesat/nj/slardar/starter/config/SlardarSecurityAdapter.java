@@ -1,12 +1,20 @@
 package cn.piesat.nj.slardar.starter.config;
 
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
 import cn.piesat.nj.slardar.starter.filter.*;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
+import cn.piesat.nj.slardar.starter.support.SecUtil;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthority;
 import cn.piesat.nj.slardar.starter.support.SlardarIgnore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -52,6 +60,8 @@ import static cn.piesat.nj.slardar.starter.config.SlardarBeanConfiguration.STATI
 @AutoConfigureAfter({SlardarBeanConfiguration.class})
 public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(SlardarSecurityAdapter.class);
+
 
     @Autowired
     private SlardarAccessDeniedHandler accessDeniedHandler;
@@ -83,17 +93,21 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final List<SlardarIgnoringCustomizer> ignoringCustomizerList;
 
+    private final List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList;
+
     public SlardarSecurityAdapter(SlardarTokenRequiredFilter tokenRequiredFilter,
                                   SlardarCaptchaFilter captchaFilter,
                                   SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
                                   SlardarProperties properties, SlardarAuthenticationProvider slardarAuthenticationProvider,
-                                  ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList) {
+                                  ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList,
+                                  ObjectProvider<List<SlardarUrlRegistryCustomizer>> urlRegistryCustomizerProvider) {
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.captchaFilter = captchaFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.properties = properties;
         this.authenticationProvider = slardarAuthenticationProvider;
         this.ignoringCustomizerList = ignoringCustomizerList.getIfAvailable();
+        this.urlRegistryCustomizerList = urlRegistryCustomizerProvider.getIfAvailable();
     }
 
     /**
@@ -130,6 +144,12 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                 .authorizeRequests();
 
         registry.antMatchers(tokenRequiredFilter.getIgnoredUrls()).permitAll();
+        // 应用扩展
+        if (urlRegistryCustomizerList != null) {
+            urlRegistryCustomizerList.forEach(registryCustomizer -> registryCustomizer.customize(registry));
+        }
+        // 注解扩展
+        urlRegistryByAnnotation(registry);
 
         registry.antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
@@ -150,6 +170,56 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
 
 
+    }
+
+    /**
+     * 使用注解 定义接口方法权限
+     * @param registry
+     */
+    private void urlRegistryByAnnotation(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+        Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
+            HandlerMethod handlerMethod = methodEntry.getValue();
+            if (handlerMethod.hasMethodAnnotation(SlardarAuthority.class)) {
+                SlardarAuthority annotation = handlerMethod.getMethodAnnotation(SlardarAuthority.class);
+                Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
+                Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
+                try {
+                    if (CollectionUtils.isEmpty(methods)) {
+                        // 没有指定method
+                        setAuthorizedUrl(registry.antMatchers(patternValues.toArray(new String[0])), annotation.value());
+                    } else {
+                        for (RequestMethod method : methods) {
+                            setAuthorizedUrl(registry.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0])),
+                                    annotation.value());
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getLocalizedMessage());
+                }
+            }
+        }
+    }
+
+    private void setAuthorizedUrl(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.AuthorizedUrl authorizedUrl,
+                                  String expression) throws Exception {
+        String method = ReUtil.getGroup1(SecUtil.AUTH_ANNOTATION_PATTERN, expression);
+        if (StrUtil.isBlank(method)) {
+            throw new SlardarException("expression [%] is invalid", expression);
+        }
+        String content = ReUtil.get(SecUtil.AUTH_ANNOTATION_PATTERN, expression, 2);
+        if (content != null) {
+            content = content.replaceAll("'", "");
+        }
+        if (StrUtil.isBlank(content)) {
+            content = null;
+        }
+        // invoke
+        if (StrUtil.isBlank(content)) {
+            ReflectUtil.invoke(authorizedUrl, method);
+        } else {
+            ReflectUtil.invoke(authorizedUrl, method, content.contains(",") ? content.split(",") : content);
+        }
     }
 
     /**
@@ -211,10 +281,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                     }
                 }
             }
-
         }
-
-
     }
 
 

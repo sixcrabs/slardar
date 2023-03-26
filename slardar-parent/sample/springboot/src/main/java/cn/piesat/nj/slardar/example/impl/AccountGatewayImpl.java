@@ -55,7 +55,8 @@ public class AccountGatewayImpl implements AccountGateway {
         profile2.setRealm("master");
         profile2.setDeleted(0);
         profile2.setId(RandomUtil.randomString(8));
-        profile2.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER"), new Role().setName("ADMIN")));
+        profile2.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER"),
+                new Role().setName("ADMIN")));
 
         userProfiles.add(profile);
         userProfiles.add(profile2);

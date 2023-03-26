@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import static cn.piesat.nj.slardar.core.Constants.ANONYMOUS;
 import static cn.piesat.nj.slardar.core.Constants.MOBILE_AGENTS;
@@ -30,7 +31,14 @@ public final class SecUtil {
     private SecUtil() {
     }
 
+    /**
+     * hasRole('') hasAnyRole('','')
+     */
+    public static final Pattern AUTH_ANNOTATION_PATTERN = Pattern.compile("(\\w+)\\((\\S*)\\)");
+
     public static final Gson GSON = new GsonBuilder().create();
+
+    public static final String ROLE_NAME_PREFIX = "ROLE_";
 
 
     /**
