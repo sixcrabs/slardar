@@ -25,12 +25,9 @@ public class SsoServerProperties {
     /**
      * sso 登录页面url
      */
+    @Deprecated
     private String loginUrl = "/sso-login";
 
-    /**
-     * token key
-     */
-    private String tokenKey = SSO_TOKEN_KEY;
 
     public String getLoginUrl() {
         return loginUrl;
@@ -53,11 +50,4 @@ public class SsoServerProperties {
         this.ctxPath = ctxPath;
     }
 
-    public String getTokenKey() {
-        return tokenKey;
-    }
-
-    public void setTokenKey(String tokenKey) {
-        this.tokenKey = tokenKey;
-    }
 }

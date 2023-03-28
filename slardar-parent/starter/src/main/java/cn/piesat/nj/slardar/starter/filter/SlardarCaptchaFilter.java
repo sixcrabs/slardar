@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getSessionId;
+
 /**
  * <p>
  * 返回验证码
@@ -46,7 +48,7 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
             chain.doFilter(request, response);
         } else {
             // 生成验证码
-            CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(SecUtil.getSessionId(request));
+            CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(getSessionId(request));
             try (OutputStream os = response.getOutputStream()) {
                 response.setHeader("Pragma", "no-cache");
                 response.setHeader("Cache-Control", "no-cache");

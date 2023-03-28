@@ -15,6 +15,7 @@ slardar:
   login:
     concurrent-policy: mutex
     captcha-enabled: false
+  ignores: /login,/sso-login
 
 
 spring:

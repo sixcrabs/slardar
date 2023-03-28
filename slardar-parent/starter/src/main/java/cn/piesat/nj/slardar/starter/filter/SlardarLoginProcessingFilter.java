@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
 
 /**
@@ -70,7 +71,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
             try {
                 Map<String, String> requestParam = getRequestParam(request);
                 if (requestParam.isEmpty()) {
-                    requestParam = GSON.fromJson(SecUtil.getRequestPostStr(request), Map.class);
+                    requestParam = GSON.fromJson(getRequestPostStr(request), Map.class);
                 }
                 if (Objects.isNull(requestParam)) {
                     throw new AuthenticationServiceException("Login params cannot be null");

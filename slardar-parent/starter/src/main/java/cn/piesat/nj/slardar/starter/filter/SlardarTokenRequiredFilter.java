@@ -27,9 +27,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static cn.piesat.nj.slardar.core.Constants.AUTHORIZATION_HEAD;
-import static cn.piesat.nj.slardar.core.Constants.BEARER;
-
 /**
  * 处理 token 验证
  * 拦截所有请求
@@ -92,13 +89,10 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = request.getHeader(AUTHORIZATION_HEAD);
+        String authToken = tokenService.getTokenValue(request);
         SlardarException loginException = null;
         if (StringUtils.hasText(authToken)) {
             LoginDeviceType deviceType = SecUtil.getDeviceType(request);
-            if (authToken.startsWith(BEARER)) {
-                authToken = authToken.replace(BEARER, "");
-            }
             String username = tokenService.getUsername(authToken);
             if (!tokenService.isExpired(authToken, deviceType)) {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

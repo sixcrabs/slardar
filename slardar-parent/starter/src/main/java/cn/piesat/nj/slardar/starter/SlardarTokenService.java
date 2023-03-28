@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter;
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.token.SlardarToken;
@@ -16,12 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
+
+import static cn.piesat.nj.slardar.core.Constants.BEARER;
+import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 
 
 /**
@@ -31,6 +35,7 @@ import java.util.Set;
  * - 此模块内实现 token 生成 注销 刷新等
  * - 同端互斥 多段并存 实现
  * - ....
+ * TODO:
  * </p>
  *
  * @author alex
@@ -64,6 +69,62 @@ public class SlardarTokenService implements InitializingBean {
         this.redisClient = redisClient;
         this.stringCommands = redisClient.connect().sync();
         this.setCommands = redisClient.connect().sync();
+    }
+
+
+    /**
+     * TESTME:
+     * <p>
+     * get token value from request
+     *
+     * @param request
+     * @return 不含前缀
+     */
+    public String getTokenValue(HttpServletRequest request) {
+        String tokenValue = null;
+        String tokenKey = slardarProperties.getToken().getKey();
+        // 1. 尝试从request attributes里读取
+        Object attribute = request.getAttribute(tokenKey);
+        if (attribute != null) {
+            tokenValue = String.valueOf(attribute);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 2. 尝试从请求体里面读取
+            tokenValue = request.getParameter(tokenKey);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 3. 尝试从header里读取
+            tokenValue = request.getHeader(tokenKey);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 4. 尝试从cookie里读取
+            tokenValue = HttpServletUtil.getCookieValue(request, tokenKey);
+        }
+        if (tokenValue != null && tokenValue.startsWith(BEARER)) {
+            tokenValue = tokenValue.replace(BEARER, "");
+        }
+        return tokenValue;
+    }
+
+    /**
+     * TESTME:
+     * 注入 token value 到 request/response header/cookie/ ...
+     *
+     * @param tokenValue
+     */
+    public void setTokenValue(String tokenValue, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response) {
+
+        if (StringUtils.isEmpty(tokenValue)) {
+            return;
+        }
+        String tokenKey = slardarProperties.getToken().getKey();
+        // 1. 将 Token 保存到 [存储器] 里
+        request.setAttribute(tokenKey, tokenValue);
+        // 2. 将 Token 保存到 [Cookie] 里
+        HttpServletUtil.setCookie(response, tokenKey, tokenValue, 3600 * 24, "", "");
+        // 3. 将 Token 写入到响应头里
+        response.setHeader(tokenKey, tokenValue);
+        response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, tokenKey);
     }
 
     /**
@@ -182,7 +243,7 @@ public class SlardarTokenService implements InitializingBean {
         }
         // TODO: 需要转移到具体实现类里
 
-        stringCommands.setex(key,  getTokenImpl().getExpiration(), existedToken);
+        stringCommands.setex(key, getTokenImpl().getExpiration(), existedToken);
         return true;
     }
 

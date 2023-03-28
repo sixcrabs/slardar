@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.handler;
 
 import cn.hutool.core.thread.ThreadUtil;
+import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
@@ -23,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
@@ -102,13 +106,16 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        globalObjectMapper.writeValue(response.getWriter(),
-                new AccountInfoDTO().setAccountName(userDetails.getAccount().getName())
-                        .setAccountNonExpired(false).setAccountNonLocked(false)
-                        .setToken(token)
-                        .setUserProfile(userDetails.getAccount().getUserProfile())
-                        .setOpenId(userDetails.getAccount().getOpenId()));
-//        response.getWriter().flush();
+        // store token
+        tokenService.setTokenValue(token, request, response);
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO().setAccountName(userDetails.getAccount().getName())
+                .setAccountNonExpired(false).setAccountNonLocked(false)
+                .setToken(token)
+                .setUserProfile(userDetails.getAccount().getUserProfile())
+                .setOpenId(userDetails.getAccount().getOpenId());
+        Map<String, Object> res = MapUtil.of("data", accountInfoDTO);
+        res.put("code", securityProperties.getLogin().getLoginSuccessCode());
+        globalObjectMapper.writeValue(response.getWriter(), res);
         clearAuthenticationAttributes(request);
 
         ThreadUtil.execute(() -> {
@@ -122,7 +129,6 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
             }
         });
     }
-
 
 
     private static void clearAuthenticationAttributes(HttpServletRequest request) {

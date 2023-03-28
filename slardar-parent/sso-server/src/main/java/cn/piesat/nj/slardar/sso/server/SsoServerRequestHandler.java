@@ -2,6 +2,7 @@ package cn.piesat.nj.slardar.sso.server;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.nj.slardar.sso.server.support.SsoException;
 import cn.piesat.nj.slardar.sso.server.support.SsoHandlerMapping;
@@ -19,8 +20,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-import static cn.piesat.nj.slardar.sso.server.support.HttpServletUtil.*;
+import static cn.piesat.nj.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
+import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.CODE_20001;
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.GSON;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.forward;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getParam;
 
 /**
  * <p>
@@ -54,9 +58,11 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
         SsoHandlerMapping handlerMapping = SsoHandlerMapping.valueOf(mapping);
         switch (handlerMapping) {
             case auth:
-                handleSsoAuth(request, response);
-                break;
-            case login:
+                try {
+                    handleSsoAuth(request, response);
+                } catch (SsoException e) {
+                    e.printStackTrace();
+                }
                 break;
             case logout:
                 break;
@@ -95,32 +101,23 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
      * @param request
      * @param response
      */
-    private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) {
+    private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         //
         // ---------- 此处有两种情况分开处理：
         // ---- 情况1：在SSO认证中心尚未登录，需要先去登录
-
-        // 尝试从请求体里面读取 token
-        String tokenValue = getParam(request, serverProperties.getTokenKey());
-        // 尝试从header里读取
-        if (tokenValue == null) {
-            tokenValue = request.getHeader(serverProperties.getTokenKey());
-        }
-        // 尝试从cookie里读取
-        if (tokenValue == null) {
-            tokenValue = getCookieValue(request, serverProperties.getTokenKey());
-        }
+        // TODO: 尝试从请求体里面读取 token
+        String tokenValue = tokenService.getTokenValue(request);
         if (StrUtil.isEmpty(tokenValue)) {
             // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
             try {
-                forward(request, response, serverProperties.getLoginUrl());
-            } catch (SsoException e) {
-                throw new RuntimeException(e);
+                forward(request, response, SSO_LOGIN_VIEW_URL);
+            } catch (SlardarException e) {
+                throw new SsoException(e).setCode(CODE_20001);
             }
         }
-        // 验证 token 是否有效
+        // FIXME: 验证 token 是否有效
         tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
-        // ---- 情况2：在SSO认证中心已经登录，需要重定向回 Client 端
+        // TODO: 情况2：在SSO认证中心已经登录，需要重定向回 Client 端
         // 生成 ticket, 带着ticket参数重定向回Client端
         String redirectUrl = ""; //ssoTemplate.buildRedirectUrl(stpLogic.getLoginId(), request.getParam(paramName.client), req.getParam(paramName.redirect));
         try {
@@ -153,5 +150,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
     public void customize(WebSecurity.IgnoredRequestConfigurer configure) {
         // 忽略 `/sso` 相关的 url pattern
         configure.antMatchers(serverProperties.getSsoAntUrlPattern());
+        // 忽略 /sso-login
+        configure.antMatchers(SSO_LOGIN_VIEW_URL);
     }
 }

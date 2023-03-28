@@ -12,14 +12,17 @@ public final class Constants {
 
     public static final String REALM_MASTER = "master";
 
-    public static final String AUTHORIZATION_HEAD = "Authorization";
-
     public static final String BEARER = "Bearer ";
 
     /**
      * 默认登录地址
      */
     public static final String AUTH_LOGIN_URL = "/login";
+
+    /**
+     * 默认 token key
+     */
+    public static final String AUTH_TOKEN_KEY = "Authorization";
 
     /**
      * 请求头 的 租户key

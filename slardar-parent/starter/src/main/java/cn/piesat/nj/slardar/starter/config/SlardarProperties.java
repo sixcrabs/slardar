@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.io.Serializable;
 
 import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGIN_URL;
+import static cn.piesat.nj.slardar.core.Constants.AUTH_TOKEN_KEY;
 
 
 /**
@@ -87,6 +88,11 @@ public class SlardarProperties implements Serializable {
         private String url = AUTH_LOGIN_URL;
 
         /**
+         * 登录成功返回 code 值
+         */
+        private int loginSuccessCode = 0;
+
+        /**
          * 是否必须验证码 默认需要
          */
         private Boolean captchaEnabled = true;
@@ -118,6 +124,11 @@ public class SlardarProperties implements Serializable {
     public static class TokenSettings {
 
         private String type = SlardarTokenJwtImpl.NAME;
+
+        /**
+         * 设置 token name，默认 Authorization
+         */
+        private String key = AUTH_TOKEN_KEY;
 
         /**
          * jwt 参数

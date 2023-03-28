@@ -1,0 +1,239 @@
+package cn.piesat.nj.slardar.starter.support;
+
+import cn.piesat.nj.slardar.core.SlardarException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * <p>
+ * .
+ * </p>
+ *
+ * @author Alex
+ * @version v1.0 2023/3/22
+ */
+@Slf4j
+public final class HttpServletUtil {
+
+    /**
+     * 转发请求
+     */
+    public static Object forward(final HttpServletRequest request, final HttpServletResponse response, String path) throws SlardarException {
+        try {
+            request.getRequestDispatcher(path).forward(request, response);
+            return null;
+        } catch (ServletException | IOException e) {
+            throw new SlardarException(e); //.setCode(CODE_20001);
+        }
+    }
+
+    /**
+     * 返回当前请求path (不包括上下文名称)
+     */
+    public static String getRequestPath(final HttpServletRequest request) {
+        return request.getServletPath();
+    }
+
+    /**
+     * 返回当前请求的url，例：`http://xxx.com/test`
+     */
+    public static String getUrl(final HttpServletRequest request) {
+        return request.getRequestURL().toString();
+    }
+
+    /**
+     * 返回当前请求的类型
+     */
+    public static String getMethod(final HttpServletRequest request) {
+        return request.getMethod();
+    }
+
+    /**
+     * get param value
+     *
+     * @param request
+     * @param name
+     * @return
+     */
+    public static String getParam(final HttpServletRequest request, String name) {
+        return request.getParameter(name);
+    }
+
+    /**
+     * get value from `Cookie`
+     */
+    public static String getCookieValue(final HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie != null && name.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Set-Cookie: name=value; Max-Age=100000; Expires=Tue, 05-Oct-2021 20:28:17 GMT; Domain=localhost; Path=/; Secure; HttpOnly; SameSite=Lax
+     *
+     * @param response
+     * @param cookieName
+     * @param cookieValue
+     * @param maxAge
+     * @param domain
+     * @param path
+     */
+    public static void setCookie(final HttpServletResponse response, String cookieName, String cookieValue,
+                                 Integer maxAge, String domain, String path) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(cookieName).append("=").append(cookieValue);
+        if (maxAge >= 0) {
+            sb.append("; Max-Age=").append(maxAge);
+            String expires;
+            if (maxAge == 0) {
+                expires = Instant.EPOCH.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            } else {
+                expires = OffsetDateTime.now().plusSeconds(maxAge).format(DateTimeFormatter.RFC_1123_DATE_TIME);
+            }
+            sb.append("; Expires=").append(expires);
+        }
+        if (StringUtils.hasText(domain)) {
+            sb.append("; Domain=").append(domain);
+        }
+        if (StringUtils.hasText(path)) {
+            sb.append("; Path=").append(path);
+        }
+//        if(secure) {
+//            sb.append("; Secure");
+//        }
+//        if(httpOnly) {
+//            sb.append("; HttpOnly");
+//        }
+//        if(StringUtils.hasText(sameSite)) {
+//            sb.append("; SameSite=").append(sameSite);
+//        }
+        response.addHeader("Set-Cookie", sb.toString());
+    }
+
+    /**
+     * get all param as map
+     *
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> getParamsAsMap(final HttpServletRequest request) {
+        Map<String, String> res = new HashMap(1);
+        Enumeration<String> names = request.getParameterNames();
+        if (null != names) {
+            while (names.hasMoreElements()) {
+                String name = names.nextElement();
+                String value = request.getParameter(name);
+                res.put(name, value);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * get all headers as map
+     *
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> getHeadersAsMap(final HttpServletRequest request) {
+        Map<String, String> res = new HashMap(1);
+        Enumeration<String> names = request.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            res.put(name, request.getHeader(name));
+        }
+        return res;
+    }
+
+    /**
+     * get session id from request
+     *
+     * @param request
+     * @return
+     */
+    public static String getSessionId(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        log.debug("session:{}", session == null ? "null" : session.toString());
+        if (session != null) {
+            String sessionId = session.getId();
+            log.debug("sessionId:{}", sessionId);
+            return sessionId;
+        }
+        return "";
+    }
+
+    public static String getRequestPostStr(HttpServletRequest request) throws IOException {
+        byte[] buffer = getRequestPostBytes(request);
+        String charEncoding = request.getCharacterEncoding();
+        if (charEncoding == null) {
+            charEncoding = "UTF-8";
+        }
+        assert buffer != null;
+        return new String(buffer, charEncoding);
+    }
+
+    private static byte[] getRequestPostBytes(HttpServletRequest request) throws IOException {
+        int contentLength = request.getContentLength();
+        if (contentLength < 0) {
+            return null;
+        }
+        byte[] buffer = new byte[contentLength];
+        for (int i = 0; i < contentLength; ) {
+            int readlen = request.getInputStream().read(buffer, i,
+                    contentLength - i);
+            if (readlen == -1) {
+                break;
+            }
+            i += readlen;
+        }
+        return buffer;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> getRequestParam(final HttpServletRequest request) {
+        Map<String, String> res = new HashMap(1);
+        Enumeration<String> names = request.getParameterNames();
+        if (null != names) {
+            while (names.hasMoreElements()) {
+                String name = names.nextElement();
+                String value = request.getParameter(name);
+                res.put(name, value);
+            }
+        }
+        return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> getHeaders(final HttpServletRequest request) {
+        Map<String, String> res = new HashMap(1);
+        Enumeration<String> names = request.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = names.nextElement();
+            res.put(name, request.getHeader(name));
+        }
+        return res;
+    }
+}

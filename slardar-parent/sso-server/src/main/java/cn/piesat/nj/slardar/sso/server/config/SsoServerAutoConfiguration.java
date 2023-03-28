@@ -3,9 +3,11 @@ package cn.piesat.nj.slardar.sso.server.config;
 import cn.piesat.nj.slardar.sso.server.SsoServerRequestFilter;
 import cn.piesat.nj.slardar.sso.server.SsoServerRequestHandler;
 import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 
 /**
  * <p>
@@ -31,4 +33,5 @@ public class SsoServerAutoConfiguration {
                                                       SsoServerRequestHandler requestHandler) {
         return new SsoServerRequestFilter(properties, requestHandler);
     }
+
 }
