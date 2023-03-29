@@ -81,6 +81,7 @@ public final class SecUtil {
 
     /**
      * get account
+     *
      * @return
      */
     public static Account getAccount() {
@@ -94,6 +95,7 @@ public final class SecUtil {
 
     /**
      * get user details
+     *
      * @return
      */
     public static UserDetails getUserDetails() {
@@ -108,15 +110,21 @@ public final class SecUtil {
 
     /**
      * 角色是否匹配
-     * @param roleName
+     *
+     * @param roleNames
      * @return
      */
-    public static boolean isRoleMatches(String roleName) {
-        List<Role> roles =
-                SecUtil.getAccount().getUserProfile().getRoles();
-        return roles.stream().anyMatch(role ->
-                role.getName().equalsIgnoreCase(roleName)
-        );
+    public static boolean isRoleMatches(String... roleNames) {
+        try {
+            List<Role> roles =
+                    SecUtil.getAccount().getUserProfile().getRoles();
+            return roles.stream().anyMatch(role ->
+                    Arrays.asList(roleNames).contains(role.getName())
+            );
+        } catch (Exception e) {
+            log.error(e.getLocalizedMessage());
+            return false;
+        }
     }
 
     /**
