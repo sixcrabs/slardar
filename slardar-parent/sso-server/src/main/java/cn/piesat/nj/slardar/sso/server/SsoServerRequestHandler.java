@@ -10,6 +10,8 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
+import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.XSlf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -35,6 +37,7 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getParam;
  * @author Alex
  * @version v1.0 2023/3/22
  */
+@Slf4j
 public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SsoServerProperties serverProperties;
@@ -96,27 +99,32 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
     }
 
     /**
-     * TODO
+     * 处理 /sso/auth 请求
+     * - 验证当前身份
+     * - 做出跳转
      *
      * @param request
      * @param response
      */
     private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         //
-        // ---------- 此处有两种情况分开处理：
         // ---- 情况1：在SSO认证中心尚未登录，需要先去登录
-        // TODO: 尝试从请求体里面读取 token
+        // 尝试从请求里面读取 token
         String tokenValue = tokenService.getTokenValue(request);
         if (StrUtil.isEmpty(tokenValue)) {
-            // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
             try {
+                // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
                 forward(request, response, SSO_LOGIN_VIEW_URL);
             } catch (SlardarException e) {
                 throw new SsoException(e).setCode(CODE_20001);
             }
         }
-        // FIXME: 验证 token 是否有效
-        tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
+        // 验证 token 是否过期
+        boolean expired = tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
+        if (expired) {
+//            sendForward();
+        }
+
         // TODO: 情况2：在SSO认证中心已经登录，需要重定向回 Client 端
         // 生成 ticket, 带着ticket参数重定向回Client端
         String redirectUrl = ""; //ssoTemplate.buildRedirectUrl(stpLogic.getLoginId(), request.getParam(paramName.client), req.getParam(paramName.redirect));
@@ -124,6 +132,16 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
             response.sendRedirect(redirectUrl);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+    }
+
+    private void sendForward(HttpServletRequest request, HttpServletResponse response, String path) {
+        try {
+            // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
+            forward(request, response, SSO_LOGIN_VIEW_URL);
+        } catch (SlardarException e) {
+
         }
 
     }
