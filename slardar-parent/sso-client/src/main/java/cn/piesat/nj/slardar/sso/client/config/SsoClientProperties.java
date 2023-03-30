@@ -14,10 +14,25 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SsoClientProperties {
 
     /**
+     * context path
+     */
+    private String ctxPath = "/sso";
+
+    /**
      * sso-server url
+     * egL http://xxx/sso
      */
     private String serverUrl;
 
+
+    public String getCtxPath() {
+        return ctxPath;
+    }
+
+    public SsoClientProperties setCtxPath(String ctxPath) {
+        this.ctxPath = ctxPath;
+        return this;
+    }
 
     public String getServerUrl() {
         return serverUrl;

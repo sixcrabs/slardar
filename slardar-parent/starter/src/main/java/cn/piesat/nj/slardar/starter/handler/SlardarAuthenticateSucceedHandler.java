@@ -95,8 +95,6 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         SlardarAuthenticationToken authenticationToken = (SlardarAuthenticationToken) authentication;
         SlardarUserDetails userDetails = authenticationToken.getUserDetails();
-        // 这里 userDetails 必须有值
-
         //获取token,将token存储到redis中
         String token = tokenService.createToken(String.valueOf(authenticationToken.getPrincipal()),
                 isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());

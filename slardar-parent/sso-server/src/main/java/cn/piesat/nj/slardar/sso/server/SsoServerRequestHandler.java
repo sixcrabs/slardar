@@ -11,26 +11,26 @@ import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static cn.piesat.nj.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
-import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.CODE_20001;
-import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.GSON;
-import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.forward;
-import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getParam;
+import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.*;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 
 /**
  * <p>
- *     TODO:
+ * TODO:
  * .处理sso server 端各类请求
  * </p>
  *
@@ -46,56 +46,64 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SlardarContext context;
 
-    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarContext context) {
+    private final SsoTicketService ticketService;
+
+    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarContext context, SsoTicketService ticketService) {
         this.serverProperties = serverProperties;
         this.tokenService = context.getBean(SlardarTokenService.class);
         this.context = context;
+        this.ticketService = ticketService;
     }
 
-
-    public void handle(HttpServletRequest request, HttpServletResponse response) {
-        // TODO:
-        String uri = request.getRequestURI();
-        // 根据不同 path 分发处理
-        String mapping = uri.replace(serverProperties.getCtxPath(), "").replaceFirst("/", "");
-        SsoHandlerMapping handlerMapping = SsoHandlerMapping.valueOf(mapping);
-        switch (handlerMapping) {
-            case auth:
-                try {
-                    handleSsoAuth(request, response);
-                } catch (SsoException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case logout:
-                break;
-            case checkTicket:
-                handleSsoTicketCheck(request, response);
-                break;
-            default:
-                //
-                break;
-        }
-
-        getParam(request, "redirect");
-
-        try {
-            sendJson(response, HttpStatus.OK, MapUtil.of("code", "1"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
 
     /**
-     * TODO
+     * handle sso server method
      *
      * @param request
      * @param response
      */
-    private void handleSsoTicketCheck(HttpServletRequest request, HttpServletResponse response) {
+    public void handle(HttpServletRequest request, HttpServletResponse response) {
+        String uri = request.getRequestURI();
+        // 根据不同 path 分发处理
+        String mapping = uri.replace(serverProperties.getCtxPath(), "").replaceFirst("/", "");
+        SsoHandlerMapping handlerMapping = SsoHandlerMapping.valueOf(mapping);
+        try {
+            switch (handlerMapping) {
+                case auth:
+                    handleSsoAuth(request, response);
+                    break;
+                case logout:
+                    // TODO
+                    break;
+                case checkTicket:
+                    handleSsoTicketCheck(request, response);
+                    break;
+                default:
+                    //
+                    break;
+            }
+        } catch (SsoException e) {
+            sendJson(response, e.toString(), HttpStatus.OK);
+        }
+    }
 
+    /**
+     * 校验 ticket 并返回 token信息
+     *
+     * @param request
+     * @param response
+     */
+    private void handleSsoTicketCheck(HttpServletRequest request, HttpServletResponse response) throws SsoException {
+        String ticketValue = getParam(request, SSO_PARAM_TICKET);
+        try {
+            String token = ticketService.checkTicket(ticketValue);
+            if (StringUtils.isEmpty(token)) {
+                throw new SsoException("Ticket 验证失败: 已过期").setCode(CODE_TICKET_ERROR);
+            }
+            sendJson(response, makeResult(token, 0), HttpStatus.OK);
+        } catch (Exception e) {
+            throw new SsoException("Ticket 验证失败: " + e.getLocalizedMessage()).setCode(CODE_TICKET_ERROR);
+        }
     }
 
     /**
@@ -107,61 +115,94 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
      * @param response
      */
     private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) throws SsoException {
-        //
-        // ---- 情况1：在SSO认证中心尚未登录，需要先去登录
-        // 尝试从请求里面读取 token
+        // 尝试从请求里面读取 token 并验证是否有效
         String tokenValue = tokenService.getTokenValue(request);
         if (StrUtil.isEmpty(tokenValue)) {
-            try {
-                // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
-                forward(request, response, SSO_LOGIN_VIEW_URL);
-            } catch (SlardarException e) {
-                throw new SsoException(e).setCode(CODE_20001);
-            }
+            // 跳转到SSO登录页
+            sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
-        // 验证 token 是否过期
         boolean expired = tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
         if (expired) {
-//            sendForward();
+            sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
-
-        // TODO: 情况2：在SSO认证中心已经登录，需要重定向回 Client 端
+        // 在SSO认证中心已经登录，需要重定向回 Client 端 /ss/auth?url=http://client.com/xxxx
+        String redirectUrl = getParam(request, SSO_PARAM_REDIRECT);
+        validateRedirectUrl(redirectUrl);
         // 生成 ticket, 带着ticket参数重定向回Client端
-        String redirectUrl = ""; //ssoTemplate.buildRedirectUrl(stpLogic.getLoginId(), request.getParam(paramName.client), req.getParam(paramName.redirect));
+        String ticket = ticketService.createTicket(getSessionId(request));
         try {
-            response.sendRedirect(redirectUrl);
+            response.sendRedirect(redirectUrl.concat("?ticket=").concat(ticket));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new SsoException(e.getLocalizedMessage()).setCode(CODE_20002);
         }
-
     }
 
+    /**
+     * send forward
+     *
+     * @param request
+     * @param response
+     * @param path
+     */
     private void sendForward(HttpServletRequest request, HttpServletResponse response, String path) {
         try {
             // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
-            forward(request, response, SSO_LOGIN_VIEW_URL);
+            forward(request, response, path);
         } catch (SlardarException e) {
-
+            log.error(e.getLocalizedMessage());
         }
-
     }
-
 
 
     /**
      * send json to response
      *
      * @param response
-     * @param httpStatus
      * @param result
      * @throws IOException
      */
-    private void sendJson(HttpServletResponse response, HttpStatus httpStatus, Serializable result) throws IOException {
+    private void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
         response.setStatus(httpStatus.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(GSON.toJson(result));
-        response.getWriter().flush();
+        try {
+            response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
+    }
+
+    private HashMap<String, Object> makeResult(Object result, int code) {
+        HashMap<String, Object> ret = MapUtil.of("code", code);
+        ret.put("data", result);
+        return ret;
+    }
+
+    /**
+     * 验证URL的正则表达式
+     */
+    private static final String URL_REGEX = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+
+    /**
+     * 校验重定向url合法性
+     *
+     * @param url redirect to
+     */
+    public void validateRedirectUrl(String url) throws SsoException {
+        if (StringUtils.isEmpty(url)) {
+            throw new SsoException("重定向地址为空").setCode(CODE_20002);
+        }
+        if (!url.toLowerCase().matches(URL_REGEX)) {
+            throw new SsoException("无效redirect：" + url).setCode(CODE_20002);
+        }
+        // 截取掉?后面的部分
+        int idx = url.indexOf("?");
+        if (idx != -1) {
+            url = url.substring(0, idx);
+        }
+        // TODO: 地址限制等
+        return;
     }
 
     @Override

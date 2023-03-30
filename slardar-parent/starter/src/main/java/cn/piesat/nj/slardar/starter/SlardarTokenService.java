@@ -107,13 +107,11 @@ public class SlardarTokenService implements InitializingBean {
     }
 
     /**
-     * TESTME:
      * 注入 token value 到 request/response header/cookie/ ...
      *
      * @param tokenValue
      */
     public void setTokenValue(String tokenValue, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response) {
-
         if (StringUtils.isEmpty(tokenValue)) {
             return;
         }
@@ -121,7 +119,7 @@ public class SlardarTokenService implements InitializingBean {
         // 1. 将 Token 保存到 [存储器] 里
         request.setAttribute(tokenKey, tokenValue);
         // 2. 将 Token 保存到 [Cookie] 里
-        HttpServletUtil.setCookie(response, tokenKey, tokenValue, 3600 * 24, "", "");
+        HttpServletUtil.setCookie(response, tokenKey, tokenValue, 3600 * 24, "", "", "Strict");
         // 3. 将 Token 写入到响应头里
         response.setHeader(tokenKey, tokenValue);
         response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, tokenKey);

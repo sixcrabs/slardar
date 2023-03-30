@@ -26,7 +26,7 @@ public final class SsoConstants {
     public static final String SSO_TOKEN_KEY = "Authorization";
 
     /** redirect参数名称 */
-    public static final String SSO_PARAM_REDIRECT = "redirect";
+    public static final String SSO_PARAM_REDIRECT = "url";
 
     /** ticket参数名称 */
     public static final String SSO_PARAM_TICKET = "ticket";
@@ -37,4 +37,9 @@ public final class SsoConstants {
 
     /** 重定向失败 */
     public static final int CODE_20002 = 20002;
+
+    /**
+     * ticket 验证失败
+     */
+    public static final int CODE_TICKET_ERROR = 20003;
 }

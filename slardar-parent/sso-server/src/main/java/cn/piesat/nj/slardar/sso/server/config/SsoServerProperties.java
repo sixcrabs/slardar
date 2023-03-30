@@ -2,12 +2,14 @@ package cn.piesat.nj.slardar.sso.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.time.Duration;
+
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_CTX_PATH;
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_TOKEN_KEY;
 
 /**
  * <p>
- *     TODO:
+ * TODO:
  * sso server 配置属性
  * </p>
  *
@@ -22,19 +24,51 @@ public class SsoServerProperties {
      */
     private String ctxPath = SSO_CTX_PATH;
 
+
     /**
-     * sso 登录页面url
+     * ticket setting
      */
-    @Deprecated
-    private String loginUrl = "/sso-login";
+    private TicketSetting ticket = new TicketSetting();
 
 
-    public String getLoginUrl() {
-        return loginUrl;
+    public static class TicketSetting {
+
+        /**
+         * 默认长度 12
+         */
+        private int length = 12;
+
+        /**
+         * 默认有效期 60s
+         */
+        private Duration ttl = Duration.ofSeconds(30);
+
+        public int getLength() {
+            return length;
+        }
+
+        public TicketSetting setLength(int length) {
+            this.length = length;
+            return this;
+        }
+
+        public Duration getTtl() {
+            return ttl;
+        }
+
+        public TicketSetting setTtl(Duration ttl) {
+            this.ttl = ttl;
+            return this;
+        }
     }
 
-    public void setLoginUrl(String loginUrl) {
-        this.loginUrl = loginUrl;
+    public TicketSetting getTicket() {
+        return ticket;
+    }
+
+    public SsoServerProperties setTicket(TicketSetting ticket) {
+        this.ticket = ticket;
+        return this;
     }
 
     public String getSsoAntUrlPattern() {
