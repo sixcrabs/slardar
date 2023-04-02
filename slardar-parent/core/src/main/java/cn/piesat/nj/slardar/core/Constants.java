@@ -20,6 +20,16 @@ public final class Constants {
     public static final String AUTH_LOGIN_URL = "/login";
 
     /**
+     * 默认登出地址
+     */
+    public static final String AUTH_LOGOUT_URL = "/logout";
+
+    /**
+     * 提供rest 方式获取用户详情的url
+     */
+    public static final String AUTH_USER_DETAILS_URL = "/userdetails";
+
+    /**
      * 默认 token key
      */
     public static final String AUTH_TOKEN_KEY = "Authorization";

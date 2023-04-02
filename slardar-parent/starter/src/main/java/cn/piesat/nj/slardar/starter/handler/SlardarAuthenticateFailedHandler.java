@@ -1,5 +1,8 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +28,9 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 */
 @Slf4j
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
+
+    @Resource
+    private SlardarContext context;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
@@ -51,6 +58,12 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().println(GSON.toJson(ImmutableMap.of("code", 401, "message", e.getLocalizedMessage())));
+        try {
+            context.getEventManager().dispatch(new LoginEvent(request, e));
+        } catch (SlardarException ex) {
+            ex.printStackTrace();
+        }
+
         response.getWriter().flush();
     }
 }

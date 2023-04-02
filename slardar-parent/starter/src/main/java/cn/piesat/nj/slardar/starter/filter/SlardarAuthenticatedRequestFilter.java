@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGOUT_URL;
+import static cn.piesat.nj.slardar.core.Constants.AUTH_USER_DETAILS_URL;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
@@ -61,7 +63,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarContext context) {
         this.context = context;
-        this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher("/userdetail", HttpMethod.POST.name()),
+        this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher("/userdetails", HttpMethod.POST.name()),
                 new AntPathRequestMatcher("/logout", HttpMethod.POST.name()));
     }
 
@@ -73,10 +75,9 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
             chain.doFilter(request, response);
         } else {
             String uri = request.getRequestURI();
-            if (uri.equalsIgnoreCase("/userdetail")) {
+            if (uri.equalsIgnoreCase(AUTH_USER_DETAILS_URL)) {
                 // 详细用户对象
                 Map<String, Object> details = new HashMap<>(1);
-
                 // TODO 获取 token 验证、拿到 userdetails
                 response.setStatus(HttpStatus.OK.value());
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -84,7 +85,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                 globalObjectMapper.writeValue(response.getWriter(), details);
                 response.getWriter().flush();
 
-            } else if (uri.equals("/logout")) {
+            } else if (uri.equals(AUTH_LOGOUT_URL)) {
                 String currentUsername = SecUtil.getCurrentUsername();
                 boolean b = tokenService.removeTokens(currentUsername, isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC);
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());

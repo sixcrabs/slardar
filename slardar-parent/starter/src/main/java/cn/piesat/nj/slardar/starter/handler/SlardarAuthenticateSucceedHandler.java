@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.handler;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
+import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
 import cn.piesat.nj.slardar.starter.SlardarContext;
@@ -11,6 +12,7 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.getAccount;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
@@ -61,9 +64,6 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 
     private final SlardarContext context;
 
-    // 写入审计日志
-    private final AuditLogGateway auditLogGateway;
-
     static {
         globalObjectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -78,7 +78,6 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         this.securityProperties = securityProperties;
         this.tokenService = tokenService;
         this.context = context;
-        this.auditLogGateway = context.getAuditLogGateway();
     }
 
     /**
@@ -115,17 +114,11 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         res.put("code", securityProperties.getLogin().getLoginSuccessCode());
         globalObjectMapper.writeValue(response.getWriter(), res);
         clearAuthenticationAttributes(request);
-
-        ThreadUtil.execute(() -> {
-            // 记录用户的登录日志
-            try {
-                auditLogGateway.create(new AuditLog()
-                        .setAccountId(userDetails.getAccount().getId()).setClientIp(request.getRemoteAddr())
-                        .setAccountName(userDetails.getAccount().getName()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+        try {
+            context.getEventManager().dispatch(new LoginEvent(getAccount(), true));
+        } catch (SlardarException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -4,6 +4,7 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.skv.starter.config.KvAutoConfiguration;
 import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
@@ -67,6 +68,14 @@ public class SlardarBeanConfiguration {
             "/swagger-resources/**",
             "/v2/api-docs"};
 
+    /**
+     * 注入时间管理
+     * @return
+     */
+    @Bean
+    public SlardarEventManager eventManager() {
+        return new SlardarEventManager();
+    }
 
     /**
      * 注入 认证失败 handler

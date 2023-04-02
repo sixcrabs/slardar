@@ -49,6 +49,14 @@ public class SlardarContext implements ApplicationContextAware {
     }
 
     /**
+     * get event manager
+     * @return
+     */
+    public SlardarEventManager getEventManager() {
+        return getBean(SlardarEventManager.class);
+    }
+
+    /**
      * get audit log gateway
      *
      * @return
