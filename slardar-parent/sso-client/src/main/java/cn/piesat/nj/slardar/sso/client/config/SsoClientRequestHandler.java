@@ -27,9 +27,9 @@ import java.util.HashMap;
  */
 public class SsoClientRequestHandler {
 
-    public static final Logger log = LoggerFactory.getLogger(SsoClientRequestHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(SsoClientRequestHandler.class);
 
-    public static final Gson GSON = new GsonBuilder().create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     private final SsoClientProperties clientProperties;
 
@@ -73,6 +73,13 @@ public class SsoClientRequestHandler {
         } catch (SsoException e) {
             sendJson(response, e.toString(), HttpStatus.OK);
         }
+    }
+
+    private void doLogin(HttpServletRequest request, HttpServletResponse response) {
+        // 通过 rest api向 sso server 验证 ticket
+//        getParam()
+
+
     }
 
 
