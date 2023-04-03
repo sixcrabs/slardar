@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.starter.support;
+package cn.piesat.nj.slardar.core;
 
 import java.lang.annotation.*;
 

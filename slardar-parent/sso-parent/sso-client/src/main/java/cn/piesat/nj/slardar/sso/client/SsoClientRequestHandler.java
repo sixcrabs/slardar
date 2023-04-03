@@ -1,31 +1,24 @@
 package cn.piesat.nj.slardar.sso.client;
 
-import cn.hutool.core.map.MapUtil;
+import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
+import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
 import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
 import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
 import cn.piesat.nj.slardar.sso.client.support.SsoException;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-
-import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.getCookieValue;
-import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.getParam;
+import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.*;
 
 /**
  * <p>
- * .
+ * sso-client request handler
  * </p>
  *
  * @author alex
@@ -35,7 +28,6 @@ public class SsoClientRequestHandler {
 
     private static final Logger log = LoggerFactory.getLogger(SsoClientRequestHandler.class);
 
-    private static final Gson GSON = new GsonBuilder().create();
 
     private final SsoClientProperties clientProperties;
 
@@ -47,8 +39,8 @@ public class SsoClientRequestHandler {
     }
 
     /**
-     * TODO
      * 处理 sso-client 请求
+     *
      * @param request
      * @param response
      */
@@ -59,23 +51,19 @@ public class SsoClientRequestHandler {
         try {
             switch (SsoClientHandlerMapping.valueOf(mapping)) {
                 case isLogin:
-                    // TODO /sso/userdetail
+                    isLogin(request, response);
                     break;
                 case doLogout:
-                    // TODO /sso/logout
+                    // TODO: /sso/logout
                     break;
                 case getSsoAuthUrl:
-                    // TODO
-                    // 返回 /sso/auth
-
+                    getSsoAuthUrl(request, response);
                     break;
                 case doLogin:
-                    // 使用ticket 登录
-                    // 登录成功后 进行跳转
+                    // 使用ticket 登录 登录成功后 进行跳转
                     doLoginByTicket(request, response);
                     break;
                 default:
-                    //
                     throw new SsoException("error");
             }
         } catch (SsoException e) {
@@ -83,40 +71,46 @@ public class SsoClientRequestHandler {
         }
     }
 
-    private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) {
-        // 通过 rest api向 sso server 验证 ticket
-        String ticket = getParam(request, "ticket");
-        serverClient.checkTicket(ticket);
-
-
-
-
+    /**
+     * 解析传参 `url`
+     *
+     * @param request
+     * @param response
+     */
+    private void getSsoAuthUrl(HttpServletRequest request, HttpServletResponse response) {
+        String ssoServer = clientProperties.getServerUrl();
+        String redirectUrl = getParam(request, "url");
+        sendJsonOK(response, makeSuccessResult(ssoServer.concat("/auth?url=" + redirectUrl)));
     }
 
-
-
     /**
-     * send json to response
+     * genju token 验证是否已登录
      *
+     * @param request
      * @param response
-     * @param result
-     * @throws IOException
      */
-    private void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
-        response.setStatus(httpStatus.value());
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        try {
-            response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
-            response.getWriter().flush();
-        } catch (IOException e) {
-            log.error(e.getLocalizedMessage());
+    private void isLogin(HttpServletRequest request, HttpServletResponse response) {
+        String tokenValue = getTokenValue(request);
+        if (StringUtils.isEmpty(tokenValue)) {
+            sendJson(response, makeErrorResult("Token is empty", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+        } else {
+            sendJsonOK(response, SlardarSecurityHelper.getContext().isAuthenticated());
         }
     }
 
-    private HashMap<String, Object> makeResult(Object result, int code) {
-        HashMap<String, Object> ret = MapUtil.of("code", code);
-        ret.put("data", result);
-        return ret;
+    /**
+     * TODO:
+     *
+     * @param request
+     * @param response
+     */
+    private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) {
+        // 通过 rest api向 sso server 验证 ticket
+        String ticket = getParam(request, "ticket");
+        RestApiResult<String> result = serverClient.checkTicket(ticket);
+
+
     }
+
+
 }

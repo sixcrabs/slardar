@@ -105,11 +105,11 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
     private void handleUserdetails(HttpServletRequest request, HttpServletResponse response) {
         String tokenValue = tokenService.getTokenValue(request);
         if (StrUtil.isEmpty(tokenValue)) {
-            sendJson(response, makeResult("Token is required", 401), HttpStatus.UNAUTHORIZED);
+            sendJson(response, makeErrorResult("Token is required", 401), HttpStatus.UNAUTHORIZED);
         }
-        boolean expired = tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
+        boolean expired = tokenService.isExpired(tokenValue, getDeviceType(request));
         if (expired) {
-            sendJson(response, makeResult("Token is expired", 401), HttpStatus.UNAUTHORIZED);
+            sendJson(response, makeErrorResult("Token is expired", 401), HttpStatus.UNAUTHORIZED);
         } else {
             try {
                 // get user details
@@ -120,7 +120,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                 }
                 sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
             } catch (UsernameNotFoundException e) {
-                sendJson(response, makeResult(e.getLocalizedMessage(), HttpStatus.SERVICE_UNAVAILABLE.value()), HttpStatus.SERVICE_UNAVAILABLE);
+                sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.SERVICE_UNAVAILABLE.value()), HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     }
@@ -159,7 +159,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
             // 跳转到SSO登录页
             sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
-        boolean expired = tokenService.isExpired(tokenValue, SecUtil.getDeviceType(request));
+        boolean expired = tokenService.isExpired(tokenValue, getDeviceType(request));
         if (expired) {
             sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
@@ -214,6 +214,13 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
     private HashMap<String, Object> makeResult(Object result, int code) {
         HashMap<String, Object> ret = MapUtil.of("code", code);
         ret.put("data", result);
+        return ret;
+    }
+
+    private HashMap<String, Object> makeErrorResult(String msg, int code) {
+        HashMap<String, Object> ret = MapUtil.of("code", code);
+        ret.put("data", new Object());
+        ret.put("message", msg);
         return ret;
     }
 

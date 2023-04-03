@@ -1,17 +1,27 @@
 package cn.piesat.nj.slardar.sso.client;
 
+import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
+import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
+import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
+import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.*;
+
 /**
  * <p>
- * .
+ * .TODO
  * </p>
  *
  * @author alex
@@ -20,16 +30,27 @@ import java.io.IOException;
 @Component
 public class SsoClientTokenFilter extends OncePerRequestFilter {
 
+    private final SsoClientProperties clientProperties;
+
+    @Resource
+    private SsoServerClient serverClient;
+
+    public SsoClientTokenFilter(SsoClientProperties clientProperties) {
+        this.clientProperties = clientProperties;
+    }
+
 
     /**
      * 排除 {@link SsoClientRequestFilter} 处理的请求
+     *
      * @param request
      * @return
      * @throws ServletException
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return super.shouldNotFilter(request);
+        String uri = request.getRequestURI();
+        return uri.startsWith(clientProperties.getCtxPath());
     }
 
     /**
@@ -41,13 +62,25 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
      *
      * @param request
      * @param response
-     * @param filterChain
+     * @param chain
      */
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // TODO: 访问 /sso/userdetail 拿到用户信息 进行填充
-
-
-
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+        String tokenValue = getTokenValue(request);
+        if (StringUtils.isEmpty(tokenValue)) {
+            sendJson(response, makeErrorResult("token is required", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+        } else {
+            // /sso/userdetails 拿到用户信息 进行填充
+            RestApiResult<Account> apiResult = serverClient.getUserDetails(tokenValue);
+            if (apiResult.isSuccessful()) {
+                SlardarSecurityHelper.SecurityContext context = SlardarSecurityHelper.getContext();
+                context.setAccount(apiResult.getData());
+                context.setAuthenticated(true);
+                context.setUserProfile(apiResult.getData().getUserProfile());
+            } else {
+                sendJson(response, makeErrorResult(apiResult.getMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+            }
+        }
+        chain.doFilter(request, response);
     }
 }

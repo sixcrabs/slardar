@@ -9,14 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
 import static cn.piesat.nj.slardar.core.Constants.ANONYMOUS;
-import static cn.piesat.nj.slardar.core.Constants.MOBILE_AGENTS;
 
 /**
  * <p>

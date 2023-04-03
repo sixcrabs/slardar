@@ -3,7 +3,6 @@ package cn.piesat.nj.slardar.core;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
-import com.sun.istack.internal.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +110,7 @@ public final class SlardarSecurityHelper {
         }
     }
 
-    public static void notNull(@Nullable Object object, String message) {
+    public static void notNull(Object object, String message) {
         if (object == null) {
             throw new IllegalArgumentException(message);
         }
@@ -126,6 +125,16 @@ public final class SlardarSecurityHelper {
 
         private UserProfile userProfile;
 
+        private boolean authenticated = false;
+
+        public boolean isAuthenticated() {
+            return authenticated;
+        }
+
+        public SecurityContext setAuthenticated(boolean authenticated) {
+            this.authenticated = authenticated;
+            return this;
+        }
 
         public Account getAccount() {
             return account;

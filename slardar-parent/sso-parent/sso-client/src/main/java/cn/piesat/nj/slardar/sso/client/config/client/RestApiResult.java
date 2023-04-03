@@ -18,6 +18,11 @@ public class RestApiResult<T> implements Serializable {
 
     private T data;
 
+    public boolean isSuccessful() {
+        return this.code <= 200;
+    }
+
+
     public int getCode() {
         return code;
     }

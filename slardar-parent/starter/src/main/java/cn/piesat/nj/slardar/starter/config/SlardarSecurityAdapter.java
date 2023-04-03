@@ -11,8 +11,8 @@ import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
-import cn.piesat.nj.slardar.starter.support.SlardarAuthority;
-import cn.piesat.nj.slardar.starter.support.SlardarIgnore;
+import cn.piesat.nj.slardar.core.SlardarAuthority;
+import cn.piesat.nj.slardar.core.SlardarIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -252,7 +252,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                 "/doc.html"
         );
         /**
-         * 使用 {@link cn.piesat.nj.slardar.starter.support.SlardarIgnore} 注解的忽略
+         * 使用 {@link SlardarIgnore} 注解的忽略
          */
         ignoreByAnnotation(web.ignoring());
         // 应用定制扩展

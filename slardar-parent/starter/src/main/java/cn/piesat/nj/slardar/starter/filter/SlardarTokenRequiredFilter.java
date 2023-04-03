@@ -105,6 +105,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
+                        // TODO: 修改为事件
                         POOL.submit(() -> {
                             // token 续期
                             tokenService.renewToken(finalAuthToken, deviceType);
@@ -118,7 +119,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
             }
         }
         if (loginException != null) {
-            //将异常分发到/remoteLoginException
+            // TODO: 将异常分发到/remoteLoginException
             forwardRequest(request, response, loginException, "remoteLoginException", "/remoteLoginException");
         }
         filterChain.doFilter(request, response);

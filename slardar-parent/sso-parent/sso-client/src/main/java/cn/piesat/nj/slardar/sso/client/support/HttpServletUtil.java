@@ -1,7 +1,13 @@
 package cn.piesat.nj.slardar.sso.client.support;
 
+import cn.hutool.core.map.MapUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
-import lombok.extern.slf4j.Slf4j;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
@@ -10,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -17,6 +25,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import static cn.piesat.nj.slardar.core.Constants.BEARER;
 
 
 /**
@@ -27,8 +38,11 @@ import java.util.Map;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@Slf4j
 public final class HttpServletUtil {
+
+    public static final Logger log = LoggerFactory.getLogger(HttpServletUtil.class);
+
+    private static final Gson GSON = new GsonBuilder().create();
 
     /**
      * 转发请求
@@ -74,6 +88,33 @@ public final class HttpServletUtil {
         return request.getParameter(name);
     }
 
+
+    public static String getTokenValue(HttpServletRequest request) {
+        String tokenValue = null;
+        // TBD:
+        String tokenKey = "Authorization";
+        // 1. 尝试从request attributes里读取
+        Object attribute = request.getAttribute(tokenKey);
+        if (attribute != null) {
+            tokenValue = String.valueOf(attribute);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 2. 尝试从请求体里面读取
+            tokenValue = request.getParameter(tokenKey);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 3. 尝试从header里读取
+            tokenValue = request.getHeader(tokenKey);
+        }
+        if (Objects.isNull(tokenValue)) {
+            // 4. 尝试从cookie里读取
+            tokenValue = getCookieValue(request, tokenKey);
+        }
+        if (tokenValue != null && tokenValue.startsWith(BEARER)) {
+            tokenValue = tokenValue.replace(BEARER, "");
+        }
+        return tokenValue;
+    }
     /**
      * get value from `Cookie`
      */
@@ -237,5 +278,48 @@ public final class HttpServletUtil {
             res.put(name, request.getHeader(name));
         }
         return res;
+    }
+
+    /**
+     * send json to response
+     *
+     * @param response
+     * @param result
+     * @throws IOException
+     */
+    public static void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
+        response.setStatus(httpStatus.value());
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        try {
+            response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
+            response.getWriter().flush();
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
+    }
+
+    public static void sendJsonOK(HttpServletResponse response, Serializable result) {
+        sendJson(response, result, HttpStatus.OK);
+    }
+
+    public static HashMap<String, Object> makeResult(Object result, int code) {
+        HashMap<String, Object> ret = MapUtil.of("code", code);
+        ret.put("data", result);
+        return ret;
+    }
+
+    public static HashMap<String, Object> makeErrorResult(String msg, int code) {
+        HashMap<String, Object> ret = MapUtil.of("code", code);
+        ret.put("data", new Object());
+        ret.put("message", msg);
+        return ret;
+    }
+
+    public static HashMap<String, Object> makeSuccessResult(Object result) {
+        HashMap<String, Object> ret = MapUtil.of("code", HttpStatus.OK.value());
+        ret.put("data", result);
+        ret.put("message", "ok");
+        return ret;
     }
 }

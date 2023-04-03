@@ -20,7 +20,7 @@ public class SsoClientProperties {
 
     /**
      * sso-server url
-     * egL http://xxx/sso
+     * eg: `http://127.0.0.1:8000/sso`
      */
     private String serverUrl;
 
