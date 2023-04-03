@@ -36,6 +36,7 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
  * - 同端互斥 多段并存 实现
  * - ....
  * TODO:
+ * - 完善 token 的存储以及用户信息的保存
  * </p>
  *
  * @author alex
@@ -73,8 +74,6 @@ public class SlardarTokenService implements InitializingBean {
 
 
     /**
-     * TESTME:
-     * <p>
      * get token value from request
      *
      * @param request
@@ -142,6 +141,7 @@ public class SlardarTokenService implements InitializingBean {
     }
 
     /**
+     * TODO:
      * get username from token
      *
      * @param tokenValue

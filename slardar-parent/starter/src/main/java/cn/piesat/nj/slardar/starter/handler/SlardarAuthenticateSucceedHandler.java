@@ -1,11 +1,9 @@
 package cn.piesat.nj.slardar.starter.handler;
 
-import cn.hutool.core.thread.ThreadUtil;
 import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.core.entity.AuditLog;
-import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
+import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
@@ -35,12 +33,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.isFromMobile;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.getAccount;
-import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
  * <p>
@@ -99,7 +96,11 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
                 isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());
         // 设置登录状态
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        // set context holder
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        SlardarSecurityHelper.getContext()
+                .setAccount(userDetails.getAccount())
+                .setUserProfile(userDetails.getAccount().getUserProfile());
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

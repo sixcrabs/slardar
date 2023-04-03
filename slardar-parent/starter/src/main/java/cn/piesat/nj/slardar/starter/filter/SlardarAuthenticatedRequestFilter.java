@@ -1,20 +1,21 @@
 package cn.piesat.nj.slardar.starter.filter;
 
 import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.thread.ThreadUtil;
-import cn.piesat.nj.slardar.core.entity.AuditLog;
+import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
+import cn.piesat.nj.slardar.starter.support.event.LogoutEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -28,20 +29,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.nj.slardar.core.Constants.AUTH_USER_DETAILS_URL;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.isFromMobile;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
-import static cn.piesat.nj.slardar.starter.support.SecUtil.isFromMobile;
 
 /**
  * <p>
  * 处理登录后的请求
- *    前提是必须登录
+ * 前提是必须登录
  * - /userdetails 用户详细信息
  * - /logout   登出
  * - ...
@@ -63,8 +61,8 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarContext context) {
         this.context = context;
-        this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher("/userdetails", HttpMethod.POST.name()),
-                new AntPathRequestMatcher("/logout", HttpMethod.POST.name()));
+        this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher(AUTH_USER_DETAILS_URL, HttpMethod.POST.name()),
+                new AntPathRequestMatcher(AUTH_LOGOUT_URL, HttpMethod.POST.name()));
     }
 
     @Override
@@ -77,12 +75,15 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
             String uri = request.getRequestURI();
             if (uri.equalsIgnoreCase(AUTH_USER_DETAILS_URL)) {
                 // 详细用户对象
-                Map<String, Object> details = new HashMap<>(1);
-                // TODO 获取 token 验证、拿到 userdetails
+                SlardarUserDetails userDetails = (SlardarUserDetails) SecUtil.getUserDetails();
+                Account account = userDetails.getAccount();
+                if (account != null) {
+                    account.setPassword("");
+                }
                 response.setStatus(HttpStatus.OK.value());
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                globalObjectMapper.writeValue(response.getWriter(), details);
+                globalObjectMapper.writeValue(response.getWriter(), userDetails);
                 response.getWriter().flush();
 
             } else if (uri.equals(AUTH_LOGOUT_URL)) {
@@ -94,14 +95,12 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
                     response.setStatus(HttpStatus.OK.value());
                     response.getWriter().write(GSON.toJson(MapUtil.of("msg", "ok")));
-                    // TESTME: 写入 auditlog
-                    ThreadUtil.newThread(() -> {
-                        try {
-                            context.getAuditLogGateway().create(new AuditLog().setAccountName(currentUsername).setLogType("logout").setLogTime(LocalDateTime.now()));
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }, "logout-audit-thread");
+                    try {
+                        context.getEventManager().dispatch(new LogoutEvent(currentUsername));
+                    } catch (SlardarException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 } else {
                     response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
                     response.getWriter().write(GSON.toJson(MapUtil.of("msg", "server error...")));

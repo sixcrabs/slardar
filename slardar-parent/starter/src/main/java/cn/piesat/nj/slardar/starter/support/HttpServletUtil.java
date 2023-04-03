@@ -18,6 +18,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static cn.piesat.nj.slardar.core.Constants.MOBILE_AGENTS;
+
 
 /**
  * <p>
@@ -132,6 +134,40 @@ public final class HttpServletUtil {
         }
         response.addHeader("Set-Cookie", sb.toString());
     }
+
+    /**
+     * get device type of request
+     *
+     * @param request
+     * @return
+     */
+    public static LoginDeviceType getDeviceType(HttpServletRequest request) {
+        return isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC;
+    }
+
+    /**
+     * request is from mobile
+     *
+     * @param request
+     * @return
+     */
+    public static boolean isFromMobile(HttpServletRequest request) {
+        String ua = request.getHeader("User-Agent");
+        boolean flag = false;
+        if (!ua.contains("Windows NT") || (ua.contains("Windows NT")
+                && ua.contains("compatible; MSIE 9.0;"))) {
+            if (!ua.contains("Windows NT") && !ua.contains("Macintosh")) {
+                for (String item : MOBILE_AGENTS) {
+                    if (ua.contains(item)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return flag;
+    }
+
 
     /**
      * get all param as map

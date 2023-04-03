@@ -27,6 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType;
+
 /**
  * 处理 token 验证
  * 拦截所有请求
@@ -79,7 +81,6 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     /**
      * 验证 token 代表的用户状态和信息
-     * // TODO 调用 token service 去做验证
      *
      * @param request
      * @param response
@@ -92,7 +93,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
         String authToken = tokenService.getTokenValue(request);
         SlardarException loginException = null;
         if (StringUtils.hasText(authToken)) {
-            LoginDeviceType deviceType = SecUtil.getDeviceType(request);
+            LoginDeviceType deviceType = getDeviceType(request);
             String username = tokenService.getUsername(authToken);
             if (!tokenService.isExpired(authToken, deviceType)) {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

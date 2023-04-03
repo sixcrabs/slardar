@@ -42,28 +42,6 @@ public final class SecUtil {
     public static final String ROLE_NAME_PREFIX = "ROLE_";
 
 
-    /**
-     * request is from mobile
-     *
-     * @param request
-     * @return
-     */
-    public static boolean isFromMobile(HttpServletRequest request) {
-        String ua = request.getHeader("User-Agent");
-        boolean flag = false;
-        if (!ua.contains("Windows NT") || (ua.contains("Windows NT")
-                && ua.contains("compatible; MSIE 9.0;"))) {
-            if (!ua.contains("Windows NT") && !ua.contains("Macintosh")) {
-                for (String item : MOBILE_AGENTS) {
-                    if (ua.contains(item)) {
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-        }
-        return flag;
-    }
 
     /**
      * 获取用户登录名
@@ -108,34 +86,9 @@ public final class SecUtil {
     }
 
 
-    /**
-     * 角色是否匹配
-     *
-     * @param roleNames
-     * @return
-     */
-    public static boolean isRoleMatches(String... roleNames) {
-        try {
-            List<Role> roles =
-                    SecUtil.getAccount().getUserProfile().getRoles();
-            return roles.stream().anyMatch(role ->
-                    Arrays.asList(roleNames).contains(role.getName())
-            );
-        } catch (Exception e) {
-            log.error(e.getLocalizedMessage());
-            return false;
-        }
-    }
 
-    /**
-     * get device type of request
-     *
-     * @param request
-     * @return
-     */
-    public static LoginDeviceType getDeviceType(HttpServletRequest request) {
-        return isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC;
-    }
+
+
 
 
 }
