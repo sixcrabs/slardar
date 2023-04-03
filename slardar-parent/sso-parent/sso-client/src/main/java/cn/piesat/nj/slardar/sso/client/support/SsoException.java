@@ -1,10 +1,10 @@
-package cn.piesat.nj.slardar.sso.client.config.support;
+package cn.piesat.nj.slardar.sso.client.support;
 
 import cn.hutool.core.map.MapUtil;
 
 import java.util.HashMap;
 
-import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.GSON;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 
 /**

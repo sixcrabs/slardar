@@ -32,7 +32,7 @@ public interface SsoServerClient {
      * @return
      */
     @POST("userdetails")
-    RestApiResult getUserdetails(@Header("") String token);
+    RestApiResult getUserDetails(@Header("") String token);
 
 
 

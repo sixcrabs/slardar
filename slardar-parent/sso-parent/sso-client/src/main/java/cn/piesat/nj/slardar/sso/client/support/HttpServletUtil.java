@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.sso.client.config.support;
+package cn.piesat.nj.slardar.sso.client.support;
 
 import cn.piesat.nj.slardar.core.SlardarException;
 import lombok.extern.slf4j.Slf4j;

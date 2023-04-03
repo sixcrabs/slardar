@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.sso.client.config;
+package cn.piesat.nj.slardar.sso.client;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

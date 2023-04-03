@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.sso.client.config.support;
+package cn.piesat.nj.slardar.sso.client.support;
 
 /**
  * <p>
@@ -19,6 +19,7 @@ public enum SsoClientHandlerMapping {
     // 使用 ticket 登录
     doLogin,
 
+    // 退出
     doLogout;
 
 

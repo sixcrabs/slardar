@@ -1,5 +1,6 @@
-package cn.piesat.nj.slardar.sso.client.config;
+package cn.piesat.nj.slardar.sso.client;
 
+import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;

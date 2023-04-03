@@ -10,9 +10,9 @@
     <modules>
         <module>core</module>
         <module>starter</module>
-        <module>slardar-helper</module>
         <module>sample</module>
         <module>sso-parent</module>
+        <module>gateway-helper</module>
     </modules>
     <packaging>pom</packaging>
 

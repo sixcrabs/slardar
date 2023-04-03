@@ -1,8 +1,11 @@
 package cn.piesat.nj.slardar.sso.client.config;
 
 import cn.piesat.nj.cloud.mrc.EnableMrClients;
+import cn.piesat.nj.slardar.sso.client.SsoClientRequestFilter;
+import cn.piesat.nj.slardar.sso.client.SsoClientRequestHandler;
 import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -17,4 +20,15 @@ import org.springframework.context.annotation.Configuration;
 @EnableMrClients(clients = SsoServerClient.class)
 @EnableConfigurationProperties(SsoClientProperties.class)
 public class SsoClientAutoConfiguration {
+
+
+    @Bean
+    public SsoClientRequestHandler requestHandler(SsoClientProperties clientProperties) {
+        return new SsoClientRequestHandler(clientProperties);
+    }
+    @Bean
+    public SsoClientRequestFilter requestFilter(SsoClientRequestHandler requestHandler, SsoClientProperties clientProperties) {
+        return new SsoClientRequestFilter(requestHandler, clientProperties);
+    }
+
 }

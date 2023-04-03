@@ -2,22 +2,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>slardar-parent</artifactId>
-        <groupId>cn.piesat.nj</groupId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.piesat.nj</groupId>
+        <artifactId>slardar-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
 
-    <artifactId>slardar-helper</artifactId>
+    <artifactId>slardar-gateway-helper</artifactId>
+
+    <properties>
+        <slardar.version>1.3.0-SNAPSHOT</slardar.version>
+    </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>cn.piesat.nj</groupId>
             <artifactId>slardar-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${slardar.version}</version>
         </dependency>
 
         <dependency>
@@ -31,12 +33,14 @@
             <artifactId>spring-context</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.hynnet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
 </project>

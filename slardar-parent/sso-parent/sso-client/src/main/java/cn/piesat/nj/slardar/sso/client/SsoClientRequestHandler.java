@@ -1,8 +1,10 @@
-package cn.piesat.nj.slardar.sso.client.config;
+package cn.piesat.nj.slardar.sso.client;
 
 import cn.hutool.core.map.MapUtil;
-import cn.piesat.nj.slardar.sso.client.config.support.SsoClientHandlerMapping;
-import cn.piesat.nj.slardar.sso.client.config.support.SsoException;
+import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
+import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
+import cn.piesat.nj.slardar.sso.client.support.SsoException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -10,12 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+
+import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.getCookieValue;
+import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.getParam;
 
 /**
  * <p>
@@ -32,6 +38,9 @@ public class SsoClientRequestHandler {
     private static final Gson GSON = new GsonBuilder().create();
 
     private final SsoClientProperties clientProperties;
+
+    @Resource
+    private SsoServerClient serverClient;
 
     public SsoClientRequestHandler(SsoClientProperties clientProperties) {
         this.clientProperties = clientProperties;
@@ -61,10 +70,9 @@ public class SsoClientRequestHandler {
 
                     break;
                 case doLogin:
-                    // TODO
                     // 使用ticket 登录
-                    // /sso/checkTicket
-                    // 登录成功后 写入 contextHolder
+                    // 登录成功后 进行跳转
+                    doLoginByTicket(request, response);
                     break;
                 default:
                     //
@@ -75,9 +83,12 @@ public class SsoClientRequestHandler {
         }
     }
 
-    private void doLogin(HttpServletRequest request, HttpServletResponse response) {
+    private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) {
         // 通过 rest api向 sso server 验证 ticket
-//        getParam()
+        String ticket = getParam(request, "ticket");
+        serverClient.checkTicket(ticket);
+
+
 
 
     }
