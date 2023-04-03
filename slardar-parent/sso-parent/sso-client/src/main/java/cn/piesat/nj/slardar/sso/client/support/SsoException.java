@@ -4,8 +4,7 @@ import cn.hutool.core.map.MapUtil;
 
 import java.util.HashMap;
 
-import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
-
+import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.GSON;
 
 /**
  * <p>

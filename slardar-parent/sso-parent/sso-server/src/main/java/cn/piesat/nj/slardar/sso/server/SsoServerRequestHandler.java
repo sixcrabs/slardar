@@ -86,13 +86,13 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                     handleSsoTicketCheck(request, response);
                     break;
                 case userdetails:
-                    handleUserdetails(request, response);
+                    handleUserDetails(request, response);
                     break;
                 default:
                     break;
             }
         } catch (SsoException e) {
-            sendJson(response, e.toString(), HttpStatus.OK);
+            sendJson(response, makeErrorResult(e.getLocalizedMessage(), e.getCode() > 0 ? e.getCode() : 4001), HttpStatus.OK);
         }
     }
 
@@ -102,14 +102,14 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
      * @param request
      * @param response
      */
-    private void handleUserdetails(HttpServletRequest request, HttpServletResponse response) {
+    private void handleUserDetails(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         String tokenValue = tokenService.getTokenValue(request);
         if (StrUtil.isEmpty(tokenValue)) {
-            sendJson(response, makeErrorResult("Token is required", 401), HttpStatus.UNAUTHORIZED);
+            throw new SsoException("Token is required").setCode(401);
         }
         boolean expired = tokenService.isExpired(tokenValue, getDeviceType(request));
         if (expired) {
-            sendJson(response, makeErrorResult("Token is expired", 401), HttpStatus.UNAUTHORIZED);
+            throw new SsoException("Token is expired").setCode(401);
         } else {
             try {
                 // get user details
@@ -120,7 +120,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                 }
                 sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
             } catch (UsernameNotFoundException e) {
-                sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.SERVICE_UNAVAILABLE.value()), HttpStatus.SERVICE_UNAVAILABLE);
+                throw new SsoException(e.getLocalizedMessage()).setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
             }
         }
     }

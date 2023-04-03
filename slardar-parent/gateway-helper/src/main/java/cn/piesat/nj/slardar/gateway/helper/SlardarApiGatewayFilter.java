@@ -40,6 +40,11 @@ public class SlardarApiGatewayFilter extends OncePerRequestFilter implements Ord
         chain.doFilter(request, response);
     }
 
+    /**
+     * TODO
+     * @param request
+     * @return
+     */
     private UserProfile resolveProfile(HttpServletRequest request) {
         // request.getHeader(SLARDAR_HEADER_ATTR_PREFIX.concat())
 
@@ -47,6 +52,11 @@ public class SlardarApiGatewayFilter extends OncePerRequestFilter implements Ord
 
     }
 
+    /**
+     * TODO
+     * @param request
+     * @return
+     */
     private Account resolveAccount(HttpServletRequest request) {
 
         return null;

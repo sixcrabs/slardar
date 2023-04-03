@@ -42,7 +42,7 @@ public final class HttpServletUtil {
 
     public static final Logger log = LoggerFactory.getLogger(HttpServletUtil.class);
 
-    private static final Gson GSON = new GsonBuilder().create();
+    public static final Gson GSON = new GsonBuilder().create();
 
     /**
      * 转发请求

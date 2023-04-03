@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.*;
 
 /**
@@ -67,7 +68,7 @@ public class SsoClientRequestHandler {
                     throw new SsoException("error");
             }
         } catch (SsoException e) {
-            sendJson(response, e.toString(), HttpStatus.OK);
+            sendJson(response, makeErrorResult(e.toString(), e.getCode() > 0 ? e.getCode() : 4001), HttpStatus.OK);
         }
     }
 
@@ -89,27 +90,31 @@ public class SsoClientRequestHandler {
      * @param request
      * @param response
      */
-    private void isLogin(HttpServletRequest request, HttpServletResponse response) {
+    private void isLogin(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         String tokenValue = getTokenValue(request);
         if (StringUtils.isEmpty(tokenValue)) {
-            sendJson(response, makeErrorResult("Token is empty", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+            throw new SsoException("Token is empty").setCode(HttpStatus.UNAUTHORIZED.value());
         } else {
             sendJsonOK(response, SlardarSecurityHelper.getContext().isAuthenticated());
         }
     }
 
     /**
-     * TODO:
+     * login by ticket
      *
      * @param request
      * @param response
      */
-    private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) {
+    private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         // 通过 rest api向 sso server 验证 ticket
         String ticket = getParam(request, "ticket");
-        RestApiResult<String> result = serverClient.checkTicket(ticket);
-
-
+        RestApiResult<String> apiResult = serverClient.checkTicket(ticket);
+        if (apiResult.isSuccessful()) {
+            // 返回 token
+            sendJsonOK(response, apiResult.getData());
+        } else {
+            throw new SsoException(apiResult.getMessage());
+        }
     }
 
 

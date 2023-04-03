@@ -3,4 +3,4 @@ server:
 
 slardar:
   sso-client:
-    server-url: http://localhost:9600/sso/auth
+    server-url: http://localhost:9600/sso
