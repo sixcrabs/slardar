@@ -11,7 +11,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,8 +28,12 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 @Slf4j
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 
-    @Resource
-    private SlardarContext context;
+    private final SlardarContext slardarContext;
+
+    public SlardarAuthenticateFailedHandler(SlardarContext slardarContext) {
+        this.slardarContext = slardarContext;
+    }
+
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
@@ -59,7 +62,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().println(GSON.toJson(ImmutableMap.of("code", 401, "message", e.getLocalizedMessage())));
         try {
-            context.getEventManager().dispatch(new LoginEvent(request, e));
+            slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
         } catch (SlardarException ex) {
             ex.printStackTrace();
         }

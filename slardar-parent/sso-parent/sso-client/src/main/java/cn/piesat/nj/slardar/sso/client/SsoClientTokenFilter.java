@@ -86,14 +86,19 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
             sendJson(response, makeErrorResult("token is required", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
         } else {
             // /sso/userdetails 拿到用户信息 进行填充
-            RestApiResult<Account> apiResult = serverClient.getUserDetails(tokenValue);
-            if (apiResult.isSuccessful()) {
-                SlardarSecurityHelper.SecurityContext context = SlardarSecurityHelper.getContext();
-                context.setAccount(apiResult.getData());
-                context.setAuthenticated(true);
-                context.setUserProfile(apiResult.getData().getUserProfile());
-            } else {
-                sendJson(response, makeErrorResult(apiResult.getMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+            try {
+                RestApiResult<Account> apiResult = serverClient.getUserDetails(tokenValue);
+                if (apiResult.isSuccessful()) {
+                    SlardarSecurityHelper.SecurityContext context = SlardarSecurityHelper.getContext();
+                    context.setAccount(apiResult.getData());
+                    context.setAuthenticated(true);
+                    context.setUserProfile(apiResult.getData().getUserProfile());
+                } else {
+                    sendJson(response, makeErrorResult(apiResult.getMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+                }
+            } catch (Exception e) {
+                log.error(e.getLocalizedMessage());
+                sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
             }
         }
         chain.doFilter(request, response);

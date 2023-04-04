@@ -108,12 +108,16 @@ public class SsoClientRequestHandler {
     private void doLoginByTicket(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         // 通过 rest api向 sso server 验证 ticket
         String ticket = getParam(request, "ticket");
-        RestApiResult<String> apiResult = serverClient.checkTicket(ticket);
-        if (apiResult.isSuccessful()) {
-            // 返回 token
-            sendJsonOK(response, apiResult.getData());
-        } else {
-            throw new SsoException(apiResult.getMessage());
+        try {
+            RestApiResult<String> apiResult = serverClient.checkTicket(ticket);
+            if (apiResult.isSuccessful()) {
+                // 返回 token
+                sendJsonOK(response, apiResult.getData());
+            } else {
+                throw new SsoException(apiResult.getMessage());
+            }
+        } catch (Exception e) {
+            throw new SsoException(e.getLocalizedMessage());
         }
     }
 

@@ -21,8 +21,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
@@ -83,8 +81,8 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateFailedHandler authenticationFailureHandler() {
-        return new SlardarAuthenticateFailedHandler();
+    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarContext context) {
+        return new SlardarAuthenticateFailedHandler(context);
     }
 
     /**
