@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.*;
 
@@ -56,7 +57,15 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
                 || uri.startsWith("/v2/api-docs")
                 || uri.startsWith("/swagger-resources")
                 || uri.startsWith("/webjars")
-                || uri.startsWith("/favicon.ico");
+                || uri.startsWith("/favicon.ico")
+                || isIgnored(uri);
+    }
+
+
+    private boolean isIgnored(String uri) {
+        String[] ignores = clientProperties.getIgnores();
+        // TBD: 验证方法有待完善
+        return Arrays.stream(ignores).anyMatch(uri::startsWith);
     }
 
     /**

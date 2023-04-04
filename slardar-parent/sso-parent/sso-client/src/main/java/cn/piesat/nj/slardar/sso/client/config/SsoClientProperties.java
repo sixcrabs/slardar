@@ -24,6 +24,19 @@ public class SsoClientProperties {
      */
     private String serverUrl;
 
+    /**
+     * 忽略的url
+     */
+    private String[] ignores = new String[]{};
+
+    public String[] getIgnores() {
+        return ignores;
+    }
+
+    public SsoClientProperties setIgnores(String[] ignores) {
+        this.ignores = ignores;
+        return this;
+    }
 
     public String getCtxPath() {
         return ctxPath;
