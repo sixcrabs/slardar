@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.sso.client.support;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 
 import java.util.HashMap;
@@ -44,7 +45,8 @@ public class SsoException extends Exception {
     }
 
     private String buildMessage() {
-        HashMap<String, Object> map = MapUtil.of("code", code);
+        HashMap<String, Object> map = new HashMap<>(2);
+        map.put("code", code);
         map.put("message", this.getCause() != null ? this.getCause().getLocalizedMessage() : super.getMessage());
         return GSON.toJson(map);
     }
@@ -57,7 +59,6 @@ public class SsoException extends Exception {
         this.code = code;
         return this;
     }
-
 
 
 }

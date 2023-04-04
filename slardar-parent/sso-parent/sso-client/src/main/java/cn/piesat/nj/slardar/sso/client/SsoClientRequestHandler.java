@@ -95,7 +95,7 @@ public class SsoClientRequestHandler {
         if (StringUtils.isEmpty(tokenValue)) {
             throw new SsoException("Token is empty").setCode(HttpStatus.UNAUTHORIZED.value());
         } else {
-            sendJsonOK(response, SlardarSecurityHelper.getContext().isAuthenticated());
+            sendJsonOK(response, makeSuccessResult(SlardarSecurityHelper.getContext().isAuthenticated()));
         }
     }
 

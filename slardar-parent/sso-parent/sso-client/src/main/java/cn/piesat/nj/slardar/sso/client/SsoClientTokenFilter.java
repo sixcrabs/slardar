@@ -5,6 +5,7 @@ import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
 import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
 import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -50,7 +51,12 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String uri = request.getRequestURI();
-        return uri.startsWith(clientProperties.getCtxPath());
+        return (uri.startsWith(clientProperties.getCtxPath()) && !uri.startsWith(clientProperties.getCtxPath().concat("/" + SsoClientHandlerMapping.isLogin.name())))
+                || uri.startsWith("/doc.html")
+                || uri.startsWith("/v2/api-docs")
+                || uri.startsWith("/swagger-resources")
+                || uri.startsWith("/webjars")
+                || uri.startsWith("/favicon.ico");
     }
 
     /**

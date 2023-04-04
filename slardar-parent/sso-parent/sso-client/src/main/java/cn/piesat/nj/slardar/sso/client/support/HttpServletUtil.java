@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.sso.client.support;
 
-import cn.hutool.core.map.MapUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -115,6 +114,7 @@ public final class HttpServletUtil {
         }
         return tokenValue;
     }
+
     /**
      * get value from `Cookie`
      */
@@ -139,7 +139,7 @@ public final class HttpServletUtil {
      * @param maxAge
      * @param domain
      * @param path
-     * @param sameSite  第三方限制级别（Strict=完全禁止，Lax=部分允许，None=不限制）
+     * @param sameSite    第三方限制级别（Strict=完全禁止，Lax=部分允许，None=不限制）
      */
     public static void setCookie(final HttpServletResponse response, String cookieName, String cookieValue,
                                  Integer maxAge, String domain, String path, String sameSite) {
@@ -162,13 +162,13 @@ public final class HttpServletUtil {
             sb.append("; Path=").append(path);
         }
         boolean secure = true;
-        if(secure) {
+        if (secure) {
             sb.append("; Secure");
         }
 //        if(httpOnly) {
 //            sb.append("; HttpOnly");
 //        }
-        if(StringUtils.hasText(sameSite)) {
+        if (StringUtils.hasText(sameSite)) {
             sb.append("; SameSite=").append(sameSite);
         }
         response.addHeader("Set-Cookie", sb.toString());
@@ -304,20 +304,23 @@ public final class HttpServletUtil {
     }
 
     public static HashMap<String, Object> makeResult(Object result, int code) {
-        HashMap<String, Object> ret = MapUtil.of("code", code);
+        HashMap<String, Object> ret = new HashMap<>(2);
+        ret.put("code", code);
         ret.put("data", result);
         return ret;
     }
 
     public static HashMap<String, Object> makeErrorResult(String msg, int code) {
-        HashMap<String, Object> ret = MapUtil.of("code", code);
-        ret.put("data", new Object());
+        HashMap<String, Object> ret = new HashMap<>(3);
+        ret.put("code", code);
+        ret.put("data", null);
         ret.put("message", msg);
         return ret;
     }
 
     public static HashMap<String, Object> makeSuccessResult(Object result) {
-        HashMap<String, Object> ret = MapUtil.of("code", HttpStatus.OK.value());
+        HashMap<String, Object> ret = new HashMap<>(3);
+        ret.put("code", HttpStatus.OK.value());
         ret.put("data", result);
         ret.put("message", "ok");
         return ret;
