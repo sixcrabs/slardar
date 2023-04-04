@@ -23,7 +23,6 @@ import static cn.piesat.nj.slardar.sso.client.support.HttpServletUtil.*;
 
 /**
  * <p>
- * .TODO
  * </p>
  *
  * @author alex
