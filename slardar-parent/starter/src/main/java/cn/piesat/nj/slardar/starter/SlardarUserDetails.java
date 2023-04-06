@@ -63,12 +63,12 @@ public class SlardarUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return AccountStatus.expired.equals(this.account.getStatus());
+        return !AccountStatus.expired.equals(this.account.getStatus());
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return AccountStatus.locked.equals(this.account.getStatus());
+        return !AccountStatus.locked.equals(this.account.getStatus());
     }
 
     @Override
