@@ -35,6 +35,7 @@ import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.nj.slardar.core.Constants.AUTH_USER_DETAILS_URL;
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.isFromMobile;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.objectMapper;
 
 /**
  * <p>
@@ -51,8 +52,6 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     private final List<RequestMatcher> requestMatchers;
-
-    private static ObjectMapper globalObjectMapper = new ObjectMapper();
 
     private final SlardarContext context;
 
@@ -83,7 +82,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                 response.setStatus(HttpStatus.OK.value());
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                globalObjectMapper.writeValue(response.getWriter(), userDetails);
+                objectMapper.writeValue(response.getWriter(), userDetails);
                 response.getWriter().flush();
 
             } else if (uri.equals(AUTH_LOGOUT_URL)) {

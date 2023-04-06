@@ -3,12 +3,18 @@ package cn.piesat.nj.slardar.starter.support;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -26,6 +32,18 @@ import static cn.piesat.nj.slardar.core.Constants.ANONYMOUS;
 public final class SecUtil {
 
     private SecUtil() {
+    }
+
+    public static ObjectMapper objectMapper;
+
+    static  {
+        objectMapper = new ObjectMapper();
+        // 默认 LocalDateTime 格式,主要是要注入这个JavaTimeModule
+        JavaTimeModule timeModule = new JavaTimeModule();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        timeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
+        timeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(dateTimeFormatter));
+        objectMapper.registerModule(timeModule);
     }
 
     /**
