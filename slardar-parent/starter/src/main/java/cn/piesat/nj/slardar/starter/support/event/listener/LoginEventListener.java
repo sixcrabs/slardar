@@ -36,9 +36,11 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
         // 记录用户的登录日志
         try {
             LoginEvent.LoginEventPayload payload = event.payload();
+            String id = payload.getAccount().getId();
+            String remoteAddr = payload.getRequest().getRemoteAddr();
             auditLogGateway.create(new AuditLog()
-                    .setAccountId(payload.getAccount().getId())
-                    .setClientIp(payload.getRequest().getRemoteAddr())
+                    .setAccountId(id)
+                    .setClientIp(remoteAddr)
                     .setAccountName(payload.getAccount().getName()));
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -71,6 +71,15 @@ public final class SecUtil {
         }
     }
 
+    public static boolean isAuthenticated() {
+        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        if (Objects.isNull(authentication)) {
+            return false;
+        } else {
+            return authentication.isAuthenticated();
+        }
+    }
+
     /**
      * get account
      *

@@ -33,7 +33,7 @@ import java.util.List;
 
 import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.nj.slardar.core.Constants.AUTH_USER_DETAILS_URL;
-import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.isFromMobile;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.objectMapper;
 
@@ -86,14 +86,17 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                 response.getWriter().flush();
 
             } else if (uri.equals(AUTH_LOGOUT_URL)) {
+                boolean authenticated = SecUtil.isAuthenticated();
+                if (!authenticated) {
+                    sendJson(response, makeErrorResult("当前未登录", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+                }
                 String currentUsername = SecUtil.getCurrentUsername();
                 boolean b = tokenService.removeTokens(currentUsername, isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC);
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 if (b) {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-                    response.setStatus(HttpStatus.OK.value());
-                    response.getWriter().write(GSON.toJson(MapUtil.of("msg", "ok")));
+                    sendJsonOK(response, makeSuccessResult(""));
                     try {
                         context.getEventManager().dispatch(new LogoutEvent(currentUsername));
                     } catch (SlardarException e) {
@@ -101,8 +104,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     }
 
                 } else {
-                    response.setStatus(HttpStatus.EXPECTATION_FAILED.value());
-                    response.getWriter().write(GSON.toJson(MapUtil.of("msg", "server error...")));
+                    sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED);
                 }
             }
         }

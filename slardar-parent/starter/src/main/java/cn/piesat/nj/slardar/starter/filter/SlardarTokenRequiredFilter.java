@@ -116,6 +116,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                         loginException = new SlardarException("account has expired");
                     }
                 }
+            } else {
+                loginException = new SlardarException("token has expired");
             }
         }
         if (loginException != null) {
