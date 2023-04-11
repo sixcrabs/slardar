@@ -2,7 +2,6 @@ package cn.piesat.nj.slardar.starter.config;
 
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.token.SlardarTokenJwtImpl;
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import static cn.piesat.nj.slardar.core.Constants.AUTH_TOKEN_KEY;
  * @author alex
  * @version v1.0 2022/9/26
  */
-@Data
 @ConfigurationProperties(prefix = "slardar")
 public class SlardarProperties implements Serializable {
 
@@ -39,13 +37,47 @@ public class SlardarProperties implements Serializable {
     private CaptchaSettings captcha = new CaptchaSettings();
 
     /**
-     * TBD:
      * urls to be ignored
      */
     private String[] ignores = new String[]{"/login", "/captcha"};
 
 
-    @Data
+    public TokenSettings getToken() {
+        return token;
+    }
+
+    public SlardarProperties setToken(TokenSettings token) {
+        this.token = token;
+        return this;
+    }
+
+    public LoginSettings getLogin() {
+        return login;
+    }
+
+    public SlardarProperties setLogin(LoginSettings login) {
+        this.login = login;
+        return this;
+    }
+
+    public CaptchaSettings getCaptcha() {
+        return captcha;
+    }
+
+    public SlardarProperties setCaptcha(CaptchaSettings captcha) {
+        this.captcha = captcha;
+        return this;
+    }
+
+    public String[] getIgnores() {
+        return ignores;
+    }
+
+    public SlardarProperties setIgnores(String[] ignores) {
+        this.ignores = ignores;
+        return this;
+    }
+
     public static class CaptchaSettings {
 
         /**
@@ -73,13 +105,56 @@ public class SlardarProperties implements Serializable {
          */
         private int height = 64;
 
+        public long getExpiration() {
+            return expiration;
+        }
+
+        public CaptchaSettings setExpiration(long expiration) {
+            this.expiration = expiration;
+            return this;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public CaptchaSettings setLength(int length) {
+            this.length = length;
+            return this;
+        }
+
+        public String getRandomBase() {
+            return randomBase;
+        }
+
+        public CaptchaSettings setRandomBase(String randomBase) {
+            this.randomBase = randomBase;
+            return this;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public CaptchaSettings setWidth(int width) {
+            this.width = width;
+            return this;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public CaptchaSettings setHeight(int height) {
+            this.height = height;
+            return this;
+        }
     }
 
 
     /**
      * 登录参数设置
      */
-    @Data
     public static class LoginSettings {
 
         /**
@@ -113,14 +188,65 @@ public class SlardarProperties implements Serializable {
          */
         private LoginConcurrentPolicy concurrentPolicy = LoginConcurrentPolicy.separate;
 
+        public String getUrl() {
+            return url;
+        }
 
+        public LoginSettings setUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public int getLoginSuccessCode() {
+            return loginSuccessCode;
+        }
+
+        public LoginSettings setLoginSuccessCode(int loginSuccessCode) {
+            this.loginSuccessCode = loginSuccessCode;
+            return this;
+        }
+
+        public Boolean getCaptchaEnabled() {
+            return captchaEnabled;
+        }
+
+        public LoginSettings setCaptchaEnabled(Boolean captchaEnabled) {
+            this.captchaEnabled = captchaEnabled;
+            return this;
+        }
+
+        public boolean isCryptoEnabled() {
+            return cryptoEnabled;
+        }
+
+        public LoginSettings setCryptoEnabled(boolean cryptoEnabled) {
+            this.cryptoEnabled = cryptoEnabled;
+            return this;
+        }
+
+        public String getCryptoSecretKey() {
+            return cryptoSecretKey;
+        }
+
+        public LoginSettings setCryptoSecretKey(String cryptoSecretKey) {
+            this.cryptoSecretKey = cryptoSecretKey;
+            return this;
+        }
+
+        public LoginConcurrentPolicy getConcurrentPolicy() {
+            return concurrentPolicy;
+        }
+
+        public LoginSettings setConcurrentPolicy(LoginConcurrentPolicy concurrentPolicy) {
+            this.concurrentPolicy = concurrentPolicy;
+            return this;
+        }
     }
 
 
     /**
      * token 参数设置
      */
-    @Data
     public static class TokenSettings {
 
         private String type = SlardarTokenJwtImpl.NAME;
@@ -135,9 +261,34 @@ public class SlardarProperties implements Serializable {
          */
         private JwtSettings jwt = new JwtSettings();
 
+        public String getType() {
+            return type;
+        }
+
+        public TokenSettings setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public TokenSettings setKey(String key) {
+            this.key = key;
+            return this;
+        }
+
+        public JwtSettings getJwt() {
+            return jwt;
+        }
+
+        public TokenSettings setJwt(JwtSettings jwt) {
+            this.jwt = jwt;
+            return this;
+        }
     }
 
-    @Data
     public static class JwtSettings {
 
         /**
@@ -151,6 +302,23 @@ public class SlardarProperties implements Serializable {
          */
         private Long expiration = 24 * 60 * 60L;
 
+        public String getSignKey() {
+            return signKey;
+        }
+
+        public JwtSettings setSignKey(String signKey) {
+            this.signKey = signKey;
+            return this;
+        }
+
+        public Long getExpiration() {
+            return expiration;
+        }
+
+        public JwtSettings setExpiration(Long expiration) {
+            this.expiration = expiration;
+            return this;
+        }
     }
 
 

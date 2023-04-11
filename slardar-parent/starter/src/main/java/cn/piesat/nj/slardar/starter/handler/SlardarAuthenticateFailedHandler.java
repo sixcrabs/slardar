@@ -4,7 +4,8 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import com.google.common.collect.ImmutableMap;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -25,10 +26,11 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
  * @date 2022/9/23
  * @description token失效时，自定义返回结果
 */
-@Slf4j
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 
     private final SlardarContext slardarContext;
+
+    private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateFailedHandler.class);
 
     public SlardarAuthenticateFailedHandler(SlardarContext slardarContext) {
         this.slardarContext = slardarContext;

@@ -1,7 +1,8 @@
 package cn.piesat.nj.slardar.starter.support;
 
 import cn.piesat.nj.slardar.core.SlardarException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -34,8 +35,9 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@Slf4j
 public final class HttpServletUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(HttpServletUtil.class);
 
     /**
      * 转发请求

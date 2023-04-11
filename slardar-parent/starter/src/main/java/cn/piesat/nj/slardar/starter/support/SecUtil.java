@@ -1,7 +1,6 @@
 package cn.piesat.nj.slardar.starter.support;
 
 import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,7 +8,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,7 +26,6 @@ import static cn.piesat.nj.slardar.core.Constants.ANONYMOUS;
  * @author alex
  * @version v1.0 2022/9/27
  */
-@Slf4j
 public final class SecUtil {
 
     private SecUtil() {

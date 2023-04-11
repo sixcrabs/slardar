@@ -8,7 +8,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
@@ -23,7 +24,6 @@ import java.util.Map;
  * @author alex
  * @version v1.0 2022/9/27
  */
-@Slf4j
 @AutoService(SlardarToken.class)
 public class SlardarTokenJwtImpl implements SlardarToken {
 
@@ -36,6 +36,8 @@ public class SlardarTokenJwtImpl implements SlardarToken {
     private String secret;
 
     private Long expiration;
+
+    private static final Logger log = LoggerFactory.getLogger(SlardarTokenJwtImpl.class);
 
 
     /**

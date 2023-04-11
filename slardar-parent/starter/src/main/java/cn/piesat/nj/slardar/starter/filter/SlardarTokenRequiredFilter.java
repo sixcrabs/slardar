@@ -5,9 +5,9 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.support.SecUtil;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,8 +37,9 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType
  * @date 2022/9/23
  * @description token过滤器
  */
-@Slf4j
 public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
+
+    public static final Logger log = LoggerFactory.getLogger(SlardarTokenRequiredFilter.class);
 
     @Autowired
     private UserDetailsService userDetailsService;

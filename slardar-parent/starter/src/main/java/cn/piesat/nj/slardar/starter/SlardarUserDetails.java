@@ -6,11 +6,8 @@ import cn.piesat.nj.slardar.core.entity.Authority;
 import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import com.google.common.collect.Lists;
-import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,13 +22,20 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.ROLE_NAME_PREFIX;
  * @author Alex
  * @version v1.0 2022/12/14
  */
-@Data
 public class SlardarUserDetails implements UserDetails {
 
     /**
      * 账号实体
      */
     private final Account account;
+
+    public SlardarUserDetails(Account account) {
+        this.account = account;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

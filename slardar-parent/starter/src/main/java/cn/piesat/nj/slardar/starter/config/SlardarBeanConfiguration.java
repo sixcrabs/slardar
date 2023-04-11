@@ -175,7 +175,8 @@ public class SlardarBeanConfiguration {
         String[] ignoresFromConfig = properties.getIgnores();
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
-        ignores = ArrayUtil.append(ignores, "/oauth2/**", properties.getLogin().getUrl());
+        ignores = ArrayUtil.append(ignores, "/oauth2/**",
+                properties.getLogin().getUrl(), "/error");
         return new SlardarTokenRequiredFilter(ignores);
     }
 

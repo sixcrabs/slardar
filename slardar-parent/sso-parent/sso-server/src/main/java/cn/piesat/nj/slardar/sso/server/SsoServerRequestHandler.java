@@ -10,12 +10,11 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
-import cn.piesat.nj.slardar.starter.support.SecUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
@@ -41,8 +40,9 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@Slf4j
 public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
+
+    private static final Logger log = LoggerFactory.getLogger(SsoServerRequestHandler.class);
 
     private final SsoServerProperties serverProperties;
 

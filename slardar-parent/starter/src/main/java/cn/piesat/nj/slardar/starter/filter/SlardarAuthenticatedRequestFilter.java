@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter.filter;
 
-import cn.hutool.core.map.MapUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.starter.SlardarContext;
@@ -10,7 +9,6 @@ import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
 import cn.piesat.nj.slardar.starter.support.event.LogoutEvent;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;

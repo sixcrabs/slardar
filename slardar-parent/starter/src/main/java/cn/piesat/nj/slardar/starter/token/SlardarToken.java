@@ -1,9 +1,6 @@
 package cn.piesat.nj.slardar.starter.token;
 
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -68,8 +65,6 @@ public interface SlardarToken {
     long getExpiration();
 
 
-    @Data
-    @Accessors(chain = true)
     class Payload {
 
         /**
@@ -82,5 +77,22 @@ public interface SlardarToken {
          */
        private LocalDateTime expiresAt;
 
+        public String getTokenValue() {
+            return tokenValue;
+        }
+
+        public Payload setTokenValue(String tokenValue) {
+            this.tokenValue = tokenValue;
+            return this;
+        }
+
+        public LocalDateTime getExpiresAt() {
+            return expiresAt;
+        }
+
+        public Payload setExpiresAt(LocalDateTime expiresAt) {
+            this.expiresAt = expiresAt;
+            return this;
+        }
     }
 }

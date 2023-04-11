@@ -12,9 +12,10 @@ import com.google.common.base.Joiner;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.api.sync.RedisSetCommands;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,14 +43,13 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
  * @author alex
  * @version v1.0 2022/9/26
  */
-@Slf4j
 public class SlardarTokenService implements InitializingBean {
 
     private final SlardarProperties slardarProperties;
 
-    public static final String token_key_prefix = "account_token";
+    private static final String token_key_prefix = "account_token";
 
-    public static final Joiner UNDERLINE_JOINER = Joiner.on("_");
+    private static final Joiner UNDERLINE_JOINER = Joiner.on("_");
 
     private final KvStore kvStore;
 
@@ -60,6 +60,8 @@ public class SlardarTokenService implements InitializingBean {
     private final RedisSetCommands<String, String> setCommands;
 
     private final SlardarContext slardarContext;
+
+    public static final Logger log = LoggerFactory.getLogger(SlardarTokenService.class);
 
 
     public SlardarTokenService(SlardarProperties slardarProperties, SlardarContext context,
