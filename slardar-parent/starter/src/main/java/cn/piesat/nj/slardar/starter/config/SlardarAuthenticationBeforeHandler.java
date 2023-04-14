@@ -19,7 +19,7 @@ public interface SlardarAuthenticationBeforeHandler {
      * 如
      * - 判断登录端类型
      * - 判断客户端ip等
-     *
+     * @param authenticationToken token
      * @throws SlardarException 抛出异常 则终止认证
      */
     void before(SlardarAuthenticationToken authenticationToken) throws SlardarException;

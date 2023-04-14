@@ -34,10 +34,8 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
  * 登录后认证 token 处理
  * - jwt token 是token 实现之一
  * - 此模块内实现 token 生成 注销 刷新等
- * - 同端互斥 多段并存 实现
+ * - 同端互斥 多端并存 实现
  * - ....
- * TODO:
- * - 完善 token 的存储以及用户信息的保存
  * </p>
  *
  * @author alex
@@ -47,7 +45,7 @@ public class SlardarTokenService implements InitializingBean {
 
     private final SlardarProperties slardarProperties;
 
-    private static final String token_key_prefix = "account_token";
+    private static final String TOKEN_KEY_PREFIX = "account_token";
 
     private static final Joiner UNDERLINE_JOINER = Joiner.on("_");
 
@@ -272,7 +270,7 @@ public class SlardarTokenService implements InitializingBean {
      * @return
      */
     private String key(String username, LoginDeviceType deviceType) {
-        return UNDERLINE_JOINER.join(token_key_prefix, deviceType.name(), username);
+        return UNDERLINE_JOINER.join(TOKEN_KEY_PREFIX, deviceType.name(), username);
     }
 
 

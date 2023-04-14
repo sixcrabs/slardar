@@ -30,7 +30,7 @@ public class SlardarEventManager implements ApplicationContextAware {
 
     private ApplicationContext context;
 
-    private static final Map<Class<? extends SlardarEvent>, List<SlardarEventListener>> cache =
+    private static final Map<Class<? extends SlardarEvent>, List<SlardarEventListener>> CACHE =
             new ConcurrentHashMap<>(1);
 
     private static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
@@ -53,7 +53,7 @@ public class SlardarEventManager implements ApplicationContextAware {
     }
 
     private List<SlardarEventListener> findCandidates(Class<? extends SlardarEvent> eventClass) {
-        return cache.computeIfAbsent(eventClass, clazz -> {
+        return CACHE.computeIfAbsent(eventClass, clazz -> {
             Map<String, SlardarEventListener> listenerBeans = context.getBeansOfType(SlardarEventListener.class, true, true);
             return listenerBeans.values().stream()
                     .filter(slardarEventListener -> slardarEventListener.support(eventClass))

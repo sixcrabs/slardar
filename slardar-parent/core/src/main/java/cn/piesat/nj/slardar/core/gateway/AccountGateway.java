@@ -19,6 +19,7 @@ public interface AccountGateway extends CurdGateway<String, Account> {
      *
      * @param openId
      * @return
+     * @throws Exception
      */
     Account findByOpenId(String openId) throws Exception;
 
@@ -26,6 +27,7 @@ public interface AccountGateway extends CurdGateway<String, Account> {
      * find by name
      * @param name
      * @param realm
+     * @throws Exception
      * @return
      */
     Account findByName(String name, String realm) throws Exception;

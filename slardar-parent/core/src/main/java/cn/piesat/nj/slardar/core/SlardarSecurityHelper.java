@@ -24,7 +24,7 @@ public final class SlardarSecurityHelper {
 
     public static final Logger log = LoggerFactory.getLogger(SlardarSecurityHelper.class);
 
-    private static final ThreadLocal<SecurityContext> contextHolder = new InheritableThreadLocal<>();
+    private static final ThreadLocal<SecurityContext> CONTEXT_HOLDER = new InheritableThreadLocal<>();
 
     private SlardarSecurityHelper() {
     }
@@ -74,17 +74,17 @@ public final class SlardarSecurityHelper {
      * @return
      */
     public static SecurityContext getContext() {
-        SecurityContext ctx = contextHolder.get();
+        SecurityContext ctx = CONTEXT_HOLDER.get();
         if (ctx == null) {
             ctx = createEmptyContext();
-            contextHolder.set(ctx);
+            CONTEXT_HOLDER.set(ctx);
         }
         return ctx;
     }
 
     static void setContext(SecurityContext context) {
         notNull(context, "Only non-null SecurityContext instances are permitted");
-        contextHolder.set(context);
+        CONTEXT_HOLDER.set(context);
     }
 
     static SecurityContext createEmptyContext() {
@@ -114,6 +114,10 @@ public final class SlardarSecurityHelper {
         if (object == null) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    public static void clear() {
+        CONTEXT_HOLDER.remove();
     }
 
     /**

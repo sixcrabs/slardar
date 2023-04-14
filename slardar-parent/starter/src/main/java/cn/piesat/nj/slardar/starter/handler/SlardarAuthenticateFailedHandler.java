@@ -39,15 +39,6 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-//        response.setContentType("application/json");
-//        response.setHeader("Access-Control-Allow-Credentials","true");
-//        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-//        response.setHeader("Access-Control-Allow-Headers", "*");
-//        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-//
-//        response.setCharacterEncoding("UTF-8");
-//        response.getWriter().println(JSONObject.toJSONString(CommonResult.unauthorized(e.getMessage())));
-//        response.getWriter().flush();
         onAuthenticationFailure(request, response, e);
     }
 

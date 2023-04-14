@@ -6,7 +6,7 @@ import cn.piesat.nj.skv.starter.config.KvAutoConfiguration;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
-import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
+import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
@@ -145,8 +145,8 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarUserDetailsService userDetailsService(SlardarContext context) {
-        return new SlardarUserDetailsService(context);
+    public SlardarUserDetailsServiceImpl userDetailsService(SlardarContext context) {
+        return new SlardarUserDetailsServiceImpl(context);
     }
 
     /**

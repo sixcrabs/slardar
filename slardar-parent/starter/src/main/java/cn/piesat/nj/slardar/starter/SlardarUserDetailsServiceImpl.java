@@ -1,7 +1,6 @@
 package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.slardar.core.Constants;
-import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import org.springframework.security.core.AuthenticationException;
@@ -20,13 +19,13 @@ import java.util.Objects;
  * @author Alex
  * @version v1.0 2022/12/14
  */
-public class SlardarUserDetailsService implements UserDetailsService {
+public class SlardarUserDetailsServiceImpl implements UserDetailsService {
 
     private final SlardarContext slardarContext;
 
     private final AccountGateway accountGateway;
 
-    public SlardarUserDetailsService(SlardarContext slardarContext) {
+    public SlardarUserDetailsServiceImpl(SlardarContext slardarContext) {
         this.slardarContext = slardarContext;
         this.accountGateway = slardarContext.getAccountGateway();
     }

@@ -4,10 +4,9 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticationProvider;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
-import cn.piesat.nj.slardar.starter.SlardarUserDetailsService;
+import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.config.SlardarAuthenticationBeforeHandler;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
 import java.util.Objects;
 
 import static cn.piesat.nj.slardar.core.Constants.AUTH_TYPE_WX_APP;
@@ -36,7 +34,7 @@ import static cn.piesat.nj.slardar.core.Constants.AUTH_TYPE_WX_APP;
 public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationProvider {
 
     @Autowired
-    private SlardarUserDetailsService userDetailsService;
+    private SlardarUserDetailsServiceImpl userDetailsService;
 
     private final SlardarContext context;
 
