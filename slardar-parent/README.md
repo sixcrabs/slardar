@@ -2,7 +2,7 @@
 
 ### 接入
 
-1. 引入 `slardar-starter`
+#### 引入 `slardar-starter`
 
 ```xml
  <dependency>
@@ -11,9 +11,10 @@
      <version>1.3.0-SNAPSHOT</version>
 </dependency>
 ```
-2. 实现相关接口
 
-实现 `AccountGateway` (必须)
+#### 实现相关接口
+
+- 实现 `AccountGateway` (必须)
 
 ```java
 @Component
@@ -71,10 +72,9 @@ public class AccountGatewayImpl implements AccountGateway {
 }
 ```
 
-实现 `AuditLogGateway`
+- 实现 `AuditLogGateway`
 
-
-3. 修改配置文件
+#### 增加配置信息
 
 必须配置：
 ```yaml
@@ -83,7 +83,7 @@ skv:
   uri: redis://localhost/0
 ```
 
-4. 实现接口权限控制
+#### 实现接口权限控制
 
 - 使用注解方式
 
@@ -111,6 +111,7 @@ or
 - spring boot bean方式
 
 实现 `SlardarUrlRegistryCustomizer` 接口对接口进行特定权限控制
+
 ```java
 @Component
 public class MyRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer {
@@ -139,13 +140,15 @@ public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
 }
 ```
 
-
-5. 扩展
+#### 扩展
 
 - 自定义 token
 支持自定义 token 的创建、过期判断等逻辑方法
 
 
 - 监听登录/登出事件
+
+- 认证前置方法
+
 
 
