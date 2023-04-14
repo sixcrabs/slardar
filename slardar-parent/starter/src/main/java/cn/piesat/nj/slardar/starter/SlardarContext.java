@@ -4,6 +4,7 @@ import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
 import cn.piesat.nj.slardar.core.gateway.UserProfileGateway;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -68,6 +69,10 @@ public class SlardarContext implements ApplicationContextAware {
 
     public <T> T getBean(Class<T> clazz) {
         return context.getBean(clazz);
+    }
+
+    public <T> ObjectProvider<T> getBeanProvider(Class<T> clazz) {
+        return context.getBeanProvider(clazz);
     }
 
     public <T> T getBeanOrDefault(Class<T> clazz, T defaultValue) {

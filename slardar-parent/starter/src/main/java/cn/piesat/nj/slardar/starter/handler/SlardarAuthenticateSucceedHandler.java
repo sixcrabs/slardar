@@ -118,7 +118,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.writeValue(response.getWriter(), res);
         clearAuthenticationAttributes(request);
         try {
-            context.getEventManager().dispatch(new LoginEvent(getAccount(), true));
+            context.getEventManager().dispatch(new LoginEvent(getAccount(), true, request));
         } catch (SlardarException e) {
             e.printStackTrace();
         }

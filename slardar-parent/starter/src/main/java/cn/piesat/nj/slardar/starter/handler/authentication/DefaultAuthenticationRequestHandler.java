@@ -55,6 +55,7 @@ public class DefaultAuthenticationRequestHandler implements AuthenticationReques
         }
         return new SlardarAuthenticationToken(username, Constants.AUTH_TYPE_NORMAL, null)
                 .setRealm(realm)
+                .setLoginDeviceType(requestWrapper.getLoginDeviceType())
                 .setSessionId(requestWrapper.getSessionId())
                 .setPassword(password);
     }

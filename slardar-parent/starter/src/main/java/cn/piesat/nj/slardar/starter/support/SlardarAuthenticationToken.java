@@ -50,6 +50,11 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
      */
     private String authType;
 
+    /**
+     * 登录设备类型 APP/PC
+     */
+    private LoginDeviceType loginDeviceType;
+
 
     public SlardarAuthenticationToken(String accountNameOrOpenId, String authType, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
@@ -99,6 +104,14 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return this;
     }
 
+    public LoginDeviceType getLoginDeviceType() {
+        return loginDeviceType;
+    }
+
+    public SlardarAuthenticationToken setLoginDeviceType(LoginDeviceType loginDeviceType) {
+        this.loginDeviceType = loginDeviceType;
+        return this;
+    }
 
     public String getSessionId() {
         return sessionId;

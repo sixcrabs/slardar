@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.filter;
 import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
 import com.google.gson.Gson;
@@ -81,6 +82,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
                 SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
                         .setRequestParams(requestParam)
+                        .setLoginDeviceType(getDeviceType(request))
                         .setSessionId(request.getSession() != null ? request.getSession().getId() : "")
                         .setRequestHeaders(requestHeaders));
                 // 调用自定义实现的 provider 去实现特定的认证逻辑
@@ -102,12 +104,23 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
 
         private Map<String, String> requestHeaders;
 
+        private LoginDeviceType loginDeviceType;
+
         public Map<String, String> getRequestParams() {
             return requestParams;
         }
 
         public RequestWrapper setRequestParams(Map<String, String> requestParams) {
             this.requestParams = requestParams;
+            return this;
+        }
+
+        public LoginDeviceType getLoginDeviceType() {
+            return loginDeviceType;
+        }
+
+        public RequestWrapper setLoginDeviceType(LoginDeviceType loginDeviceType) {
+            this.loginDeviceType = loginDeviceType;
             return this;
         }
 
