@@ -7,6 +7,7 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.config.SlardarAuthenticationBeforeHandler;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -45,7 +46,8 @@ public class SlardarAuthenticationProviderImpl implements SlardarAuthenticationP
     public SlardarAuthenticationProviderImpl(SlardarContext context) {
         this.context = context;
         this.passwordEncoder = context.getPwdEncoder();
-        this.authenticationBeforeHandler = context.getBean(SlardarAuthenticationBeforeHandler.class);
+        ObjectProvider<SlardarAuthenticationBeforeHandler> beanProvider = context.getBeanProvider(SlardarAuthenticationBeforeHandler.class);
+        this.authenticationBeforeHandler = beanProvider.getIfAvailable();
     }
 
     @Override
