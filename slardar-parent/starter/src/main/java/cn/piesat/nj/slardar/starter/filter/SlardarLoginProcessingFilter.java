@@ -32,8 +32,6 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
 /**
  * <p>
  * 处理身份认证的 filter
- * TODO:
- * - logout
  * <p>
  * /login
  * </p>

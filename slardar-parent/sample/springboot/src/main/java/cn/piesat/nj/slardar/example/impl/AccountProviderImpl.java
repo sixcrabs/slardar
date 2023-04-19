@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.example.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.AccountStatus;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.Authority;
@@ -25,16 +26,16 @@ import java.util.List;
  * @version v1.0 2023/3/16
  */
 @Component
-public class AccountGatewayImpl implements AccountGateway {
+public class AccountProviderImpl implements AccountProvider {
 
     /**
      * 模拟数据
      */
-    public static final List<UserProfile> userProfiles = Lists.newArrayList();
+    private static final List<UserProfile> userProfiles = Lists.newArrayList();
 
-    public static final List<Account> accounts = Lists.newArrayList();
+    private static final List<Account> accounts = Lists.newArrayList();
 
-    public static final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     static {
 
@@ -104,49 +105,5 @@ public class AccountGatewayImpl implements AccountGateway {
         return accounts.stream().filter(account ->
                 account.getName().equals(name) && account.getRealm().equals(realm)
         ).findFirst().orElse(null);
-    }
-
-    /**
-     * 创建实体
-     *
-     * @param entity
-     * @return
-     */
-    @Override
-    public String create(Account entity) {
-        return null;
-    }
-
-    /**
-     * 更新实体
-     *
-     * @param entity
-     * @return
-     */
-    @Override
-    public boolean update(Account entity) {
-        return false;
-    }
-
-    /**
-     * delete by ID
-     *
-     * @param s
-     * @return
-     */
-    @Override
-    public boolean deleteById(String s) {
-        return false;
-    }
-
-    /**
-     * get by id
-     *
-     * @param s
-     * @return
-     */
-    @Override
-    public Account getById(String id) {
-        return null;
     }
 }

@@ -1,10 +1,13 @@
 package cn.piesat.nj.slardar.starter.support.event.listener;
 
+import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
-import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
+import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,12 +21,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginEventListener implements SlardarEventListener<LoginEvent> {
 
-    // 写入审计日志
-    private final AuditLogGateway auditLogGateway;
+    private static final Logger log = LoggerFactory.getLogger(LoginEventListener.class);
 
-    public LoginEventListener(AuditLogGateway auditLogGateway) {
-        this.auditLogGateway = auditLogGateway;
+    private final AuditLogIngest auditLogIngest;
+
+    public LoginEventListener(SlardarContext slardarContext) {
+        this.auditLogIngest = slardarContext.getAuditLogIngest();
     }
+
 
     /**
      * handle event
@@ -38,12 +43,17 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
             LoginEvent.LoginEventPayload payload = event.payload();
             String id = payload.getAccount().getId();
             String remoteAddr = payload.getRequest().getRemoteAddr();
-            auditLogGateway.create(new AuditLog()
-                    .setAccountId(id)
-                    .setClientIp(remoteAddr)
-                    .setAccountName(payload.getAccount().getName()));
+            if (auditLogIngest!=null) {
+                auditLogIngest.ingest(new AuditLog()
+                        .setAccountId(id)
+                        .setClientIp(remoteAddr)
+                        .setAccountName(payload.getAccount().getName()));
+            } else {
+                log.error("`AuditLogIngest` is null");
+            }
+
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SlardarException(e);
         }
     }
 

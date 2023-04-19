@@ -7,9 +7,11 @@ import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static cn.piesat.nj.slardar.starter.support.SecUtil.ROLE_NAME_PREFIX;
@@ -22,6 +24,7 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.ROLE_NAME_PREFIX;
  * @author Alex
  * @version v1.0 2022/12/14
  */
+@SuppressWarnings("unchecked")
 public class SlardarUserDetails implements UserDetails {
 
     /**
@@ -41,18 +44,16 @@ public class SlardarUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = Lists.newArrayList();
         UserProfile userProfile = account.getUserProfile();
-        // 添加所有的 role (自动添加 'ROLE_')
+        // 添加所有的role(自动添加 'ROLE_') 和 自定义的所有的 authority
         List<Role> roles = userProfile.getRoles();
         if (roles != null && roles.size() > 0) {
             roles.forEach(role -> authorities.add((GrantedAuthority) () -> ROLE_NAME_PREFIX.concat(role.getName())));
         }
-        // 添加所有的 authority
         List<Authority> list = userProfile.getAuthorities();
         if (list != null && list.size() > 0) {
             list.forEach(authority -> authorities.add((GrantedAuthority) authority::getContent));
         }
-///        AuthorityUtils.commaSeparatedStringToAuthorityList();
-        return authorities.size() > 0 ? authorities : null;
+        return authorities.size() > 0 ? authorities : Collections.EMPTY_LIST;
     }
 
     @Override

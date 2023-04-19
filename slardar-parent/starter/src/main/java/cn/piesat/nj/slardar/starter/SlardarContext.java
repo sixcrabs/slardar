@@ -1,5 +1,7 @@
 package cn.piesat.nj.slardar.starter;
 
+import cn.piesat.nj.slardar.core.AccountProvider;
+import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
 import cn.piesat.nj.slardar.core.gateway.UserProfileGateway;
@@ -24,6 +26,7 @@ public class SlardarContext implements ApplicationContextAware {
 
     /**
      * 密码 encoder
+     *
      * @return
      */
     public PasswordEncoder getPwdEncoder() {
@@ -31,39 +34,39 @@ public class SlardarContext implements ApplicationContextAware {
     }
 
     /**
-     * 用户信息 gateway
-     *
-     * @return
-     */
-    public UserProfileGateway getUserGateway() {
-        return getBean(UserProfileGateway.class);
-    }
-
-
-    /**
      * get account gateway
      *
      * @return
      */
+    @Deprecated
     public AccountGateway getAccountGateway() {
         return getBean(AccountGateway.class);
     }
 
     /**
-     * get event manager
-     * @return
-     */
-    public SlardarEventManager getEventManager() {
-        return getBean(SlardarEventManager.class);
-    }
-
-    /**
-     * get audit log gateway
+     * get real implement of {@link AuditLogIngest}
      *
      * @return
      */
-    public AuditLogGateway getAuditLogGateway() {
-        return getBean(AuditLogGateway.class);
+    public AuditLogIngest getAuditLogIngest() {
+        return getBeanIfAvailable(AuditLogIngest.class);
+    }
+
+    /**
+     * get real implement of {@link AccountProvider}
+     * @return
+     */
+    public AccountProvider getAccountProvider() {
+        return getBeanIfAvailable(AccountProvider.class);
+    }
+
+    /**
+     * get event manager
+     *
+     * @return
+     */
+    public SlardarEventManager getEventManager() {
+        return getBeanIfAvailable(SlardarEventManager.class);
     }
 
 
@@ -75,14 +78,18 @@ public class SlardarContext implements ApplicationContextAware {
         return context.getBeanProvider(clazz);
     }
 
-    public <T> T getBeanOrDefault(Class<T> clazz, T defaultValue) {
-        T bean = null;
+    private <T> T getBeanOrDefault(Class<T> clazz, T defaultValue) {
         try {
-            bean = context.getBean(clazz);
+            ObjectProvider<T> provider = getBeanProvider(clazz);
+            return provider.getIfAvailable(() -> defaultValue);
         } catch (BeansException e) {
             return defaultValue;
         }
-        return bean;
+    }
+
+    private <T> T getBeanIfAvailable(Class<T> clazz) {
+        ObjectProvider<T> provider = getBeanProvider(clazz);
+        return provider.getIfAvailable();
     }
 
 

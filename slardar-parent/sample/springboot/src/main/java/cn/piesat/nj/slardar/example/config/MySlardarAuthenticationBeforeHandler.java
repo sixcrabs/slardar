@@ -31,7 +31,7 @@ public class MySlardarAuthenticationBeforeHandler implements SlardarAuthenticati
         // 这里可以访问数据库进行一系列操作
         LoginDeviceType loginDeviceType = authenticationToken.getLoginDeviceType();
         String accountName = authenticationToken.getAccountName();
-        if (accountName.equals("zhangsan")) {
+        if ("zhangsan".equals(accountName)) {
             if (loginDeviceType.equals(LoginDeviceType.APP)) {
                 throw new SlardarException("账号【%s】不允许在 %s 登录", accountName, "APP");
             }

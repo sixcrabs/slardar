@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * <p>
- *     TODO:
+ * TESTME
  * 处理微信 openid 登录过程
  * </p>
  *

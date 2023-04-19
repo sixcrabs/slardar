@@ -22,7 +22,6 @@ import static cn.piesat.nj.slardar.core.Constants.AUTH_TYPE_WX_APP;
 
 /**
  * <p>
- *     TESTME:
  * 实现用户身份
  * - 密码认证
  * - openid 认证

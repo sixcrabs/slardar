@@ -9,7 +9,6 @@ import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_TOKEN_KEY
 
 /**
  * <p>
- * TODO:
  * sso server 配置属性
  * </p>
  *

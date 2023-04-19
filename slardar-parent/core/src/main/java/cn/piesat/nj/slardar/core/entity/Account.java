@@ -50,10 +50,19 @@ public class Account extends BaseRealmEntity<String> {
 
     /**
      * 是否可用
+     *
      * @return
      */
     public boolean isAccessible() {
         return AccountStatus.accessible.equals(this.status);
+    }
+
+    public boolean isExpired() {
+        return AccountStatus.expired.equals(this.status);
+    }
+
+    public boolean isLocked() {
+        return AccountStatus.locked.equals(this.status);
     }
 
 

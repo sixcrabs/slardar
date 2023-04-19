@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.core;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * <p>
@@ -14,9 +15,9 @@ import java.io.Serializable;
  */
 public class AccountInfoDTO implements Serializable {
 
-    private boolean accountNonExpired;
+    private Boolean accountExpired;
 
-    private boolean accountNonLocked;
+    private Boolean accountLocked;
 
     private String accountName;
 
@@ -26,12 +27,26 @@ public class AccountInfoDTO implements Serializable {
 
     private String token;
 
+    /**
+     * authority
+     */
+    private Set<String> authorities;
+
+
+    public Set<String> getAuthorities() {
+        return authorities;
+    }
+
+    public AccountInfoDTO setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
+        return this;
+    }
 
     @Override
     public String toString() {
         return "AccountInfoDTO{" +
-                "accountNonExpired=" + accountNonExpired +
-                ", accountNonLocked=" + accountNonLocked +
+                "accountExpired=" + accountExpired +
+                ", accountLocked=" + accountLocked +
                 ", accountName='" + accountName + '\'' +
                 ", userProfile=" + userProfile +
                 ", openId='" + openId + '\'' +
@@ -75,21 +90,21 @@ public class AccountInfoDTO implements Serializable {
         return this;
     }
 
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
+    public Boolean getAccountExpired() {
+        return accountExpired;
     }
 
-    public AccountInfoDTO setAccountNonExpired(boolean accountNonExpired) {
-        this.accountNonExpired = accountNonExpired;
+    public AccountInfoDTO setAccountExpired(Boolean accountExpired) {
+        this.accountExpired = accountExpired;
         return this;
     }
 
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
+    public Boolean getAccountLocked() {
+        return accountLocked;
     }
 
-    public AccountInfoDTO setAccountNonLocked(boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
+    public AccountInfoDTO setAccountLocked(Boolean accountLocked) {
+        this.accountLocked = accountLocked;
         return this;
     }
 }

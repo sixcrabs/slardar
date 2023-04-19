@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter;
 
+import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
@@ -12,7 +13,6 @@ import java.util.Objects;
 
 /**
  * <p>
- *  TODO:
  * 获取用户详细信息等
  * </p>
  *
@@ -21,13 +21,13 @@ import java.util.Objects;
  */
 public class SlardarUserDetailsServiceImpl implements UserDetailsService {
 
-    private final SlardarContext slardarContext;
+//    private final SlardarContext slardarContext;
 
-    private final AccountGateway accountGateway;
+    private final AccountProvider accountProvider;
 
     public SlardarUserDetailsServiceImpl(SlardarContext slardarContext) {
-        this.slardarContext = slardarContext;
-        this.accountGateway = slardarContext.getAccountGateway();
+//        this.slardarContext = slardarContext;
+        this.accountProvider = slardarContext.getAccountProvider();
     }
 
 
@@ -41,7 +41,7 @@ public class SlardarUserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByOpenId(String openId) throws AuthenticationException {
         Account account = null;
         try {
-            account = accountGateway.findByOpenId(openId);
+            account = accountProvider.findByOpenId(openId);
         } catch (Exception e) {
             throw new UsernameNotFoundException(e.getLocalizedMessage());
         }
@@ -74,7 +74,7 @@ public class SlardarUserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByAccount(String accountName, String realm) throws UsernameNotFoundException {
         Account account = null;
         try {
-            account = accountGateway.findByName(accountName, realm);
+            account = accountProvider.findByName(accountName, realm);
         } catch (Exception e) {
             throw new UsernameNotFoundException("[" + accountName + "] 异常：" + e.getLocalizedMessage());
         }

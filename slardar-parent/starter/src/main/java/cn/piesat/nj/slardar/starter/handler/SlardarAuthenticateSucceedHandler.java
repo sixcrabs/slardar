@@ -2,8 +2,10 @@ package cn.piesat.nj.slardar.starter.handler;
 
 import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
+import cn.piesat.nj.slardar.core.AccountStatus;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
+import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
@@ -21,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -34,6 +38,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
@@ -100,19 +105,24 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // set context holder
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        Account account = userDetails.getAccount();
         SlardarSecurityHelper.getContext()
-                .setAccount(userDetails.getAccount())
-                .setUserProfile(userDetails.getAccount().getUserProfile());
+                .setAccount(account)
+                .setUserProfile(account.getUserProfile());
         response.setStatus(HttpStatus.OK.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         // store token
         tokenService.setTokenValue(token, request, response);
-        AccountInfoDTO accountInfoDTO = new AccountInfoDTO().setAccountName(userDetails.getAccount().getName())
-                .setAccountNonExpired(false).setAccountNonLocked(false)
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO()
+                .setAccountName(account.getName())
+                .setAccountExpired(account.isExpired())
+                .setAccountLocked(account.isLocked())
                 .setToken(token)
-                .setUserProfile(userDetails.getAccount().getUserProfile())
-                .setOpenId(userDetails.getAccount().getOpenId());
+                .setAuthorities(AuthorityUtils.authorityListToSet(authorities))
+                .setUserProfile(account.getUserProfile())
+                .setOpenId(account.getOpenId());
         Map<String, Object> res = MapUtil.of("data", accountInfoDTO);
         res.put("code", securityProperties.getLogin().getLoginSuccessCode());
         globalObjectMapper.writeValue(response.getWriter(), res);

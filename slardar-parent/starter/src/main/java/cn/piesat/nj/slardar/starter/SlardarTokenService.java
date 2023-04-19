@@ -141,7 +141,6 @@ public class SlardarTokenService implements InitializingBean {
     }
 
     /**
-     * TODO:
      * get username from token
      *
      * @param tokenValue
@@ -240,7 +239,6 @@ public class SlardarTokenService implements InitializingBean {
             return false;
         }
         // TODO: 需要转移到具体实现类里
-
         stringCommands.setex(key, getTokenImpl().getExpiration(), existedToken);
         return true;
     }

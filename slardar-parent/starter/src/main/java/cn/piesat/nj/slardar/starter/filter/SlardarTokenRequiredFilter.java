@@ -122,7 +122,6 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
             }
         }
         if (loginException != null) {
-            // TODO: 将异常分发到/remoteLoginException
             forwardRequest(request, response, loginException, "remoteLoginException", "/remoteLoginException");
         }
         filterChain.doFilter(request, response);

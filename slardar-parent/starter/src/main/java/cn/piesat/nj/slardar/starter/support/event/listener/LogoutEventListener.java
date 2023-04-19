@@ -1,9 +1,11 @@
 package cn.piesat.nj.slardar.starter.support.event.listener;
 
+import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
+import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 
@@ -20,18 +22,17 @@ import java.time.LocalDateTime;
 @Component
 public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
 
-    // 写入审计日志
-    private final AuditLogGateway auditLogGateway;
+    private final AuditLogIngest auditLogIngest;
 
-    public LogoutEventListener(AuditLogGateway auditLogGateway) {
-        this.auditLogGateway = auditLogGateway;
+    public LogoutEventListener(SlardarContext slardarContext) {
+        this.auditLogIngest = slardarContext.getAuditLogIngest();
     }
 
     @Override
     public void onEvent(LogoutEvent event) throws SlardarException {
         //
         try {
-            auditLogGateway.create(new AuditLog().setAccountName(event.payload().getAccountName()).setLogType("logout").setLogTime(LocalDateTime.now()));
+            auditLogIngest.ingest(new AuditLog().setAccountName(event.payload().getAccountName()).setLogType("logout").setLogTime(LocalDateTime.now()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
