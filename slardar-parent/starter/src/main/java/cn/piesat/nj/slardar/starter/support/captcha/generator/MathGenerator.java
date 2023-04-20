@@ -15,7 +15,7 @@ import static cn.hutool.core.util.StrUtil.sub;
 public class MathGenerator implements CodeGenerator {
 	private static final long serialVersionUID = -5514819971774091076L;
 
-	private static final String operators = "+-*";
+	private static final String OPERATORS = "+-*";
 
 	/** 参与计算数字最大长度 */
 	private final int numberLength;
@@ -44,10 +44,10 @@ public class MathGenerator implements CodeGenerator {
 		number1 = padAfter(number1, this.numberLength, CharUtil.SPACE);
 		number2 = padAfter(number2, this.numberLength, CharUtil.SPACE);
 
-		return StrUtil.builder()//
-				.append(number1)//
-				.append(RandomUtil.randomChar(operators))//
-				.append(number2)//
+		return StrUtil.builder()
+				.append(number1)
+				.append(RandomUtil.randomChar(OPERATORS))
+				.append(number2)
 				.append('=').toString();
 	}
 

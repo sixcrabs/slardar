@@ -27,6 +27,7 @@ public interface SlardarToken {
 
     /**
      * 初始化
+     * @param context
      */
     void initialize(SlardarContext context);
 

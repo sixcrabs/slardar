@@ -31,11 +31,11 @@ public class AccountProviderImpl implements AccountProvider {
     /**
      * 模拟数据
      */
-    private static final List<UserProfile> userProfiles = Lists.newArrayList();
+    private static final List<UserProfile> USER_PROFILES = Lists.newArrayList();
 
-    private static final List<Account> accounts = Lists.newArrayList();
+    private static final List<Account> ACCOUNTS = Lists.newArrayList();
 
-    private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     static {
 
@@ -59,25 +59,25 @@ public class AccountProviderImpl implements AccountProvider {
         profile2.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER"),
                 new Role().setName("ADMIN")));
 
-        userProfiles.add(profile);
-        userProfiles.add(profile2);
+        USER_PROFILES.add(profile);
+        USER_PROFILES.add(profile2);
 
         Account zhangsan = new Account().setName("zhangsan")
-                .setPassword(encoder.encode("zhangsan123"));
+                .setPassword(ENCODER.encode("zhangsan123"));
         zhangsan.setRealm("master");
         zhangsan.setId(RandomUtil.randomString(8));
         zhangsan.setStatus(AccountStatus.accessible)
                 .setUserProfile(profile);
 
         Account lisi = new Account().setName("lisi")
-                .setPassword(encoder.encode("lisi123"));
+                .setPassword(ENCODER.encode("lisi123"));
         lisi.setRealm("master");
         lisi.setId(RandomUtil.randomString(8));
         lisi.setStatus(AccountStatus.accessible)
                 .setUserProfile(profile2);
 
-        accounts.add(zhangsan);
-        accounts.add(lisi);
+        ACCOUNTS.add(zhangsan);
+        ACCOUNTS.add(lisi);
     }
 
 
@@ -102,7 +102,7 @@ public class AccountProviderImpl implements AccountProvider {
     @Override
     public Account findByName(String name, String realm) {
         // 数据库查询
-        return accounts.stream().filter(account ->
+        return ACCOUNTS.stream().filter(account ->
                 account.getName().equals(name) && account.getRealm().equals(realm)
         ).findFirst().orElse(null);
     }

@@ -81,7 +81,7 @@ public class SsoClientRequestHandler {
     private void getSsoAuthUrl(HttpServletRequest request, HttpServletResponse response) {
         String ssoServer = clientProperties.getServerUrl();
         String redirectUrl = getParam(request, "url");
-        sendJsonOK(response, makeSuccessResult(ssoServer.concat("/auth?url=" + redirectUrl)));
+        sendJsonOk(response, makeSuccessResult(ssoServer.concat("/auth?url=" + redirectUrl)));
     }
 
     /**
@@ -95,7 +95,7 @@ public class SsoClientRequestHandler {
         if (StringUtils.isEmpty(tokenValue)) {
             throw new SsoException("Token is empty").setCode(HttpStatus.UNAUTHORIZED.value());
         } else {
-            sendJsonOK(response, makeSuccessResult(SlardarSecurityHelper.getContext().isAuthenticated()));
+            sendJsonOk(response, makeSuccessResult(SlardarSecurityHelper.getContext().isAuthenticated()));
         }
     }
 
@@ -112,7 +112,7 @@ public class SsoClientRequestHandler {
             RestApiResult<String> apiResult = serverClient.checkTicket(ticket);
             if (apiResult.isSuccessful()) {
                 // 返回 token
-                sendJsonOK(response, apiResult.getData());
+                sendJsonOk(response, apiResult.getData());
             } else {
                 throw new SsoException(apiResult.getMessage());
             }

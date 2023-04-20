@@ -18,33 +18,34 @@ public interface CurdGateway<ID extends Serializable, E extends BaseEntity<ID>> 
 
     /**
      * 创建实体
-     *
      * @param entity
      * @return
+     * @throws Exception
      */
     ID create(E entity) throws Exception;
 
     /**
      * 更新实体
-     *
      * @param entity
      * @return
+     * @throws Exception
      */
     boolean update(E entity) throws Exception;
 
     /**
      * delete by ID
-     *
      * @param id
      * @return
+     * @throws Exception
      */
     boolean deleteById(ID id) throws Exception;
 
+
     /**
      * get by id
-     *
      * @param id
      * @return
+     * @throws Exception
      */
     E getById(ID id) throws Exception;
 

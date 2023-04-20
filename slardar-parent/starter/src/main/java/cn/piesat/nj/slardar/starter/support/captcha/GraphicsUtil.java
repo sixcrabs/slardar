@@ -158,7 +158,8 @@ public class GraphicsUtil {
 	 * @return 画笔对象
 	 */
 	public static Graphics drawImg(Graphics g, Image img, Rectangle rectangle) {
-		g.drawImage(img, rectangle.x, rectangle.y, rectangle.width, rectangle.height, null); // 绘制切割后的图
+		// 绘制切割后的图
+		g.drawImage(img, rectangle.x, rectangle.y, rectangle.width, rectangle.height, null);
 		return g;
 	}
 

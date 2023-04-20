@@ -32,7 +32,6 @@ import java.util.List;
 import static cn.piesat.nj.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.nj.slardar.core.Constants.AUTH_USER_DETAILS_URL;
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
-import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.objectMapper;
 
 /**
@@ -94,7 +93,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 if (b) {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-                    sendJsonOK(response, makeSuccessResult(""));
+                    sendJsonOk(response, makeSuccessResult(""));
                     try {
                         context.getEventManager().dispatch(new LogoutEvent(currentUsername));
                     } catch (SlardarException e) {

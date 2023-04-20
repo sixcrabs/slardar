@@ -13,6 +13,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
  */
 public interface SlardarAuthenticationProvider extends AuthenticationProvider {
 
+    /**
+     * supports or not
+     * @param authentication
+     *
+     * @return
+     */
     @Override
     default boolean supports(Class<?> authentication) {
         return SlardarAuthenticationToken.class.isAssignableFrom(authentication);

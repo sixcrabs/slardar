@@ -1533,7 +1533,7 @@ public class ImgUtil {
 			if (imgWriteParams.canWriteCompressed()) {
 				imgWriteParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 				imgWriteParams.setCompressionQuality(quality);
-				final ColorModel colorModel = renderedImage.getColorModel();// ColorModel.getRGBdefault();
+				final ColorModel colorModel = renderedImage.getColorModel();
 				imgWriteParams.setDestinationType(new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, 16)));
 			}
 		}

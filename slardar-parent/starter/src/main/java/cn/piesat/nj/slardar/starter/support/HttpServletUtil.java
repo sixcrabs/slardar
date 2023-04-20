@@ -47,7 +47,8 @@ public final class HttpServletUtil {
             request.getRequestDispatcher(path).forward(request, response);
             return null;
         } catch (ServletException | IOException e) {
-            throw new SlardarException(e); //.setCode(CODE_20001);
+            ///.setCode(CODE_20001);
+            throw new SlardarException(e);
         }
     }
 
@@ -133,9 +134,6 @@ public final class HttpServletUtil {
         if(secure) {
             sb.append("; Secure");
         }
-//        if(httpOnly) {
-//            sb.append("; HttpOnly");
-//        }
         if(StringUtils.hasText(sameSite)) {
             sb.append("; SameSite=").append(sameSite);
         }
@@ -301,7 +299,7 @@ public final class HttpServletUtil {
         }
     }
 
-    public static void sendJsonOK(HttpServletResponse response, Serializable result) {
+    public static void sendJsonOk(HttpServletResponse response, Serializable result) {
         sendJson(response, result, HttpStatus.OK);
     }
 
