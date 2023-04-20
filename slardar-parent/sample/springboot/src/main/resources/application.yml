@@ -13,6 +13,7 @@ slardar:
   token:
     type: jwt
   login:
+    post-only: false
     captcha-enabled: false
   ignores: /login,/sso-login
 
