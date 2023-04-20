@@ -163,6 +163,11 @@ public class SlardarProperties implements Serializable {
         private String url = AUTH_LOGIN_URL;
 
         /**
+         * 是否仅支持 post 方式访问login接口
+         */
+        private boolean postOnly = true;
+
+        /**
          * 登录成功返回 code 值
          */
         private int loginSuccessCode = 0;
@@ -187,6 +192,15 @@ public class SlardarProperties implements Serializable {
          * 互斥：另一个PC登录时 前一个token 会失效（登出）
          */
         private LoginConcurrentPolicy concurrentPolicy = LoginConcurrentPolicy.separate;
+
+        public boolean isPostOnly() {
+            return postOnly;
+        }
+
+        public LoginSettings setPostOnly(boolean postOnly) {
+            this.postOnly = postOnly;
+            return this;
+        }
 
         public String getUrl() {
             return url;
