@@ -47,6 +47,10 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
         if (!this.requestMatcher.matches(request)) {
             chain.doFilter(request, response);
         } else {
+            // FIXME: UT000010: Session is invalid
+            if(!request.isRequestedSessionIdValid()) {
+                request.changeSessionId();
+            }
             // 生成验证码
             CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(getSessionId(request));
             try (OutputStream os = response.getOutputStream()) {

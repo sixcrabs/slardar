@@ -78,11 +78,12 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 找出匹配的认证处理器
+                // FIXME: UT000010: Session is invalid
                 AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
                 SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setLoginDeviceType(getDeviceType(request))
-                        .setSessionId(request.getSession() != null ? request.getSession().getId() : "")
+                        .setSessionId(request.isRequestedSessionIdValid() ? request.getSession().getId() : "")
                         .setRequestHeaders(requestHeaders));
                 // 调用自定义实现的 provider 去实现特定的认证逻辑
                 // @see SlardarAuthenticationProvider
