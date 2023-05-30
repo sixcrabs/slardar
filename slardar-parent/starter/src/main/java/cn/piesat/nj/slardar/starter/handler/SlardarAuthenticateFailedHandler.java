@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -53,7 +55,8 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
 
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", 401, "message", e.getLocalizedMessage())));
+        int code = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ? 500 : 401;
+        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", code, "message", e.getLocalizedMessage())));
         try {
             slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
         } catch (SlardarException ex) {

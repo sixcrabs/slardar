@@ -12,23 +12,4 @@ import cn.piesat.nj.slardar.core.gateway.core.CurdGateway;
  * @version v1.0 2023/3/14
  */
 public interface AccountGateway extends CurdGateway<String, Account> {
-
-    /**
-     * find by openid
-     * 此时不需要租户 因为 openid 唯一
-     *
-     * @param openId
-     * @return
-     * @throws Exception
-     */
-    Account findByOpenId(String openId) throws Exception;
-
-    /**
-     * find by name
-     * @param name
-     * @param realm
-     * @throws Exception
-     * @return
-     */
-    Account findByName(String name, String realm) throws Exception;
 }
