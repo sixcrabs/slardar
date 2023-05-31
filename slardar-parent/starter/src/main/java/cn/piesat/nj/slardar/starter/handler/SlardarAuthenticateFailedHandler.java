@@ -47,16 +47,16 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         log.error("Authentication failed：{}", e.getLocalizedMessage());
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ?
+                HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
+        response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setHeader("Access-Control-Allow-Credentials","true");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        int code = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ? 500 : 401;
-        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", code, "message", e.getLocalizedMessage())));
+        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", status.value(), "message", e.getLocalizedMessage())));
         try {
             slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
         } catch (SlardarException ex) {
