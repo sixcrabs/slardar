@@ -8,28 +8,18 @@
  <dependency>
      <groupId>cn.piesat.nj</groupId>
      <artifactId>slardar-starter</artifactId>
-     <version>1.3.0-SNAPSHOT</version>
+     <version>1.3.2-SNAPSHOT</version>
 </dependency>
 ```
 
 #### 实现相关接口
 
-- 实现 `AccountGateway` (必须)
+- 实现 `AccountProvider`
 
 ```java
 @Component
-public class AccountGatewayImpl implements AccountGateway {
-
-    /**
-     * find by openid
-     *
-     * @param openId
-     * @return
-     */
-    @Override
-    public Account findByOpenId(String openId) {
-        return null;
-    }
+public class AccountProviderImpl implements AccountProvider {
+    
 
     /**
      * find by name
@@ -45,34 +35,28 @@ public class AccountGatewayImpl implements AccountGateway {
                 account.getName().equals(name) && account.getRealm().equals(realm)
         ).findFirst().orElse(null);
     }
-
-    /**
-     * 创建实体
-     *
-     * @param entity
-     * @return
-     */
-    @Override
-    public String create(Account entity) {
-        return null;
-    }
-
-    /**
-     * 更新实体
-     *
-     * @param entity
-     * @return
-     */
-    @Override
-    public boolean update(Account entity) {
-        return false;
-    }
-
     
 }
 ```
 
 - 实现 `AuditLogGateway`
+
+```java
+@Component
+public class AuditLogIngestImpl implements AuditLogIngest {
+
+    /**
+     * ingest log
+     *
+     * @param auditLog
+     */
+    @Override
+    public void ingest(AuditLog auditLog) {
+        // 这里入日志库或入到消息队列
+        System.out.println(auditLog);
+    }
+}
+```
 
 #### 增加配置信息
 
@@ -140,11 +124,10 @@ public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
 }
 ```
 
-#### 扩展
+#### 扩展 (WIP)
 
-- 自定义 token
+- 自定义 token 生成
 支持自定义 token 的创建、过期判断等逻辑方法
-
 
 - 监听登录/登出事件
 

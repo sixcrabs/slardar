@@ -20,8 +20,6 @@ import java.util.List;
 @Component
 public class AuditLogIngestImpl implements AuditLogIngest {
 
-
-
     /**
      * ingest log
      *
@@ -29,7 +27,7 @@ public class AuditLogIngestImpl implements AuditLogIngest {
      */
     @Override
     public void ingest(AuditLog auditLog) {
+        // 这里入日志库或入到消息队列
         System.out.println(auditLog);
-
     }
 }
