@@ -94,7 +94,7 @@ or
 
 - spring boot bean方式
 
-实现 `SlardarUrlRegistryCustomizer` 接口对接口进行特定权限控制
+实现 `SlardarUrlRegistryCustomizer` 进行特定权限控制
 
 ```java
 @Component
@@ -127,6 +127,7 @@ public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
 #### 5. 扩展 (WIP)
 
 - 自定义 token 生成
+
 支持自定义 token 的创建、过期判断等逻辑方法
 
 - 监听登录/登出事件
