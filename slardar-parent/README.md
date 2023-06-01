@@ -39,7 +39,7 @@ public class AccountProviderImpl implements AccountProvider {
 }
 ```
 
-- 实现 `AuditLogGateway`
+- 实现 `AuditLogIngest`
 
 ```java
 @Component
