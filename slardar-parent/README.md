@@ -2,7 +2,7 @@
 
 ### 接入
 
-#### 引入 `slardar-starter`
+#### 1. 引入 `slardar-starter`
 
 ```xml
  <dependency>
@@ -12,7 +12,7 @@
 </dependency>
 ```
 
-#### 实现相关接口
+#### 2. 实现相关接口
 
 - 实现 `AccountProvider`
 
@@ -58,7 +58,7 @@ public class AuditLogIngestImpl implements AuditLogIngest {
 }
 ```
 
-#### 增加配置信息
+#### 3. 增加配置信息
 
 必须配置：
 ```yaml
@@ -67,7 +67,7 @@ skv:
   uri: redis://localhost/0
 ```
 
-#### 实现接口权限控制
+#### 4. 权限控制
 
 - 使用注解方式
 
@@ -124,7 +124,7 @@ public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
 }
 ```
 
-#### 扩展 (WIP)
+#### 5. 扩展 (WIP)
 
 - 自定义 token 生成
 支持自定义 token 的创建、过期判断等逻辑方法
