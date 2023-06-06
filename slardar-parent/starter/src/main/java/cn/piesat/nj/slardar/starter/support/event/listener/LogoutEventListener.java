@@ -32,7 +32,12 @@ public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
     public void onEvent(LogoutEvent event) throws SlardarException {
         //
         try {
-            auditLogIngest.ingest(new AuditLog().setAccountName(event.payload().getAccountName()).setLogType("logout").setLogTime(LocalDateTime.now()));
+            LogoutEvent.Payload payload = event.payload();
+            AuditLog auditLog = new AuditLog();
+            auditLog.setAccountName(payload.getAccountName())
+                    .setLogType("logout")
+                    .setLogTime(LocalDateTime.now());
+            auditLogIngest.ingest(auditLog);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
