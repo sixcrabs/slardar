@@ -326,4 +326,37 @@ public final class HttpServletUtil {
         ret.put("message", msg);
         return ret;
     }
+
+    /**
+     * 获取ip地址
+     * @param request
+     * @return
+     */
+    public static String getIpAddr(HttpServletRequest request){
+        String ipAddress = null;
+        try {
+            ipAddress = request.getHeader("X-Forwarded-For");
+            if (ipAddress != null && ipAddress.length() != 0 && !"unknown".equalsIgnoreCase(ipAddress)) {
+                // 多次反向代理后会有多个ip值，第一个ip才是真实ip
+                if (ipAddress.indexOf(",") != -1) {
+                    ipAddress = ipAddress.split(",")[0];
+                }
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getHeader("Proxy-Client-IP");
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getHeader("HTTP_CLIENT_IP");
+            }
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                ipAddress = request.getRemoteAddr();
+            }
+        }catch (Exception e) {
+            log.error("HttpServletUtil ERROR ",e);
+        }
+        return ipAddress;
+    }
 }
