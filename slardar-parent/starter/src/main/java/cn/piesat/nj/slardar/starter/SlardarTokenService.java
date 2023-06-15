@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
@@ -175,7 +174,7 @@ public class SlardarTokenService implements InitializingBean {
             case separate:
                 break;
         }
-        String id = RandomUtil.simpleUUID();
+        String id = simpleUUID();
         // xxx_id
         String usernameKey = UNDERLINE_JOINER.join(username, id);
         SlardarToken.Payload payload = getTokenImpl().generate(usernameKey);
@@ -241,6 +240,15 @@ public class SlardarTokenService implements InitializingBean {
         // TODO: 需要转移到具体实现类里
         stringCommands.setex(key, getTokenImpl().getExpiration(), existedToken);
         return true;
+    }
+
+    /**
+     * 简化的UUID，去掉了横线
+     *
+     * @return 简化的UUID，去掉了横线
+     */
+    private String simpleUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /**
