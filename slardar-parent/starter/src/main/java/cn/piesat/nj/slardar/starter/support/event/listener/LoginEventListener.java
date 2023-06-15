@@ -7,7 +7,7 @@ import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
         try {
             LoginEvent.LoginEventPayload payload = event.payload();
             Account account = payload.getAccount();
-            String remoteAddr = payload.getRequest().getRemoteAddr();
+            String remoteAddr = HttpServletUtil.getIpAddr(payload.getRequest());
             AuditLog auditLog = new AuditLog();
             if (Objects.isNull(account)) {
                 if (auditLogIngest != null) {
