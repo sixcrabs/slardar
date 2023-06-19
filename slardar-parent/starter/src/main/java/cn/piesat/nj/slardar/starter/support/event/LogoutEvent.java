@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.support.event;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
@@ -16,14 +17,23 @@ public class LogoutEvent extends BaseSlardarEvent<LogoutEvent.Payload>{
         super(data);
     }
 
-    public LogoutEvent(String name) {
-        super(new Payload().setAccountName(name));
+    public LogoutEvent(String name,HttpServletRequest request) {
+        super(new Payload().setAccountName(name).setRequest(request));
     }
 
     public static class Payload implements Serializable {
 
         private String accountName;
+        private HttpServletRequest request;
 
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public Payload setRequest(HttpServletRequest request) {
+            this.request = request;
+            return this;
+        }
 
         public String getAccountName() {
             return accountName;

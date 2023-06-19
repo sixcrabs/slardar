@@ -95,7 +95,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
                     sendJsonOk(response, makeSuccessResult(""));
                     try {
-                        context.getEventManager().dispatch(new LogoutEvent(currentUsername));
+                        context.getEventManager().dispatch(new LogoutEvent(currentUsername,request));
                     } catch (SlardarException e) {
                         throw new RuntimeException(e);
                     }
