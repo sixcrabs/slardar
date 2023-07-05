@@ -6,9 +6,12 @@ import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -21,13 +24,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType;
+import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
  * 处理 token 验证
@@ -92,11 +98,17 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authToken = tokenService.getTokenValue(request);
-        SlardarException loginException = null;
+        SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken)) {
-            LoginDeviceType deviceType = getDeviceType(request);
-            String username = tokenService.getUsername(authToken);
-            if (!tokenService.isExpired(authToken, deviceType)) {
+            LoginDeviceType deviceType = null;
+            String username = null;
+            try {
+                deviceType = getDeviceType(request);
+                username = tokenService.getUsername(authToken);
+            } catch (Exception e) {
+                tokenValidateEx = new SlardarException(e.getLocalizedMessage());
+            }
+            if (Objects.isNull(tokenValidateEx) && !tokenService.isExpired(authToken, deviceType)) {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 加载详细信息
                     SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
@@ -107,24 +119,26 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
                         // TODO: 修改为事件
+                        LoginDeviceType finalDeviceType = deviceType;
                         POOL.submit(() -> {
                             // token 续期
-                            tokenService.renewToken(finalAuthToken, deviceType);
+                            tokenService.renewToken(finalAuthToken, finalDeviceType);
                         });
 
                     } else {
                         // 账户过期
-                        loginException = new SlardarException("account has expired");
+                        tokenValidateEx = new SlardarException("account has expired");
                     }
                 }
             } else {
-                loginException = new SlardarException("token has expired");
+                tokenValidateEx = new SlardarException("token is not valid");
             }
         }
-        if (loginException != null) {
-            forwardRequest(request, response, loginException, "remoteLoginException", "/remoteLoginException");
+        if (tokenValidateEx != null) {
+            forwardRequest(request, response, tokenValidateEx, "remoteLoginException", "/remoteLoginException");
+        } else {
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
     }
 
     /**
@@ -140,6 +154,14 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
         request.setAttribute(param, e);
-        request.getRequestDispatcher(url).forward(request, response);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setHeader("Access-Control-Allow-Credentials","true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", HttpStatus.UNAUTHORIZED.value(), "message", e.getLocalizedMessage())));
+//        request.getRequestDispatcher(url).forward(request, response);
     }
 }

@@ -270,6 +270,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
             HandlerMethod handlerMethod = methodEntry.getValue();
             if (handlerMethod.hasMethodAnnotation(SlardarIgnore.class)) {
+                // TODO: 这里 SlardarTokenRequiredFilter 需要添加 ignore url
                 Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 if (CollectionUtils.isEmpty(methods)) {
