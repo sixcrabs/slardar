@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.starter.filter;
 
 import cn.hutool.core.thread.NamedThreadFactory;
+import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
@@ -10,6 +11,7 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -62,6 +66,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     private final String[] ignoredUrls;
 
+    private final List<AntPathRequestMatcher> ignoredPathRequestMatchers = new ArrayList<>(1);
+
 
     public String[] getIgnoredUrls() {
         return ignoredUrls;
@@ -69,6 +75,9 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     public SlardarTokenRequiredFilter(String[] ignoredUrls) {
         this.ignoredUrls = ignoredUrls;
+        if (ignoredUrls != null && ignoredUrls.length > 0) {
+            Arrays.stream(ignoredUrls).forEach(url -> ignoredPathRequestMatchers.add(new AntPathRequestMatcher(url)));
+        }
     }
 
     /**
@@ -83,7 +92,17 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return Arrays.stream(ignoredUrls).anyMatch(url -> new AntPathRequestMatcher(url).matcher(request).isMatch());
+        return ignoredPathRequestMatchers.stream().anyMatch(matcher -> matcher.matcher(request).isMatch());
+    }
+
+    /**
+     * 外部添加过滤的url pattern
+     * @see cn.piesat.nj.slardar.core.SlardarIgnore
+     * @param antPattern
+     * @param method
+     */
+    public void addIgnoreUrlPattern(String antPattern, String method) {
+        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StrUtil.isBlank(method) ? null : method));
     }
 
     /**
@@ -156,7 +175,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
         request.setAttribute(param, e);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader("Access-Control-Allow-Credentials","true");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");

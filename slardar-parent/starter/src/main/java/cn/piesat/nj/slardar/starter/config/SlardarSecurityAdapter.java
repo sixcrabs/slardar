@@ -174,6 +174,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     /**
      * 使用注解 定义接口方法权限
+     *
      * @param registry
      */
     private void urlRegistryByAnnotation(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
@@ -270,15 +271,16 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
             HandlerMethod handlerMethod = methodEntry.getValue();
             if (handlerMethod.hasMethodAnnotation(SlardarIgnore.class)) {
-                // TODO: 这里 SlardarTokenRequiredFilter 需要添加 ignore url
                 Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 if (CollectionUtils.isEmpty(methods)) {
                     // 没有指定method
                     ignoredRequestConfigurer.antMatchers(patternValues.toArray(new String[0]));
+                    patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, null));
                 } else {
                     for (RequestMethod method : methods) {
                         ignoredRequestConfigurer.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0]));
+                        patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, method.name()));
                     }
                 }
             }
