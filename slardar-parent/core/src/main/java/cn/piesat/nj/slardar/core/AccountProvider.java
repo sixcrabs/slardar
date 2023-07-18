@@ -18,12 +18,12 @@ public interface AccountProvider {
      * @param realm
      * @return
      */
-    Account findByName(String accountName, String realm);
+    Account findByName(String accountName, String realm) throws SlardarException;
 
     /**
      * find by openid (pk)
      * @param openId
      * @return
      */
-    Account findByOpenId(String openId);
+    Account findByOpenId(String openId) throws SlardarException;
 }

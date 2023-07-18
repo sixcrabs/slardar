@@ -163,7 +163,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
         if (expired) {
             sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
-        // 在SSO认证中心已经登录，需要重定向回 Client 端 /ss/auth?url=http://client.com/xxxx
+        // 在SSO认证中心已经登录，需要重定向回 Client 端 /sso/auth?url=http://client.com/xxxx
         String redirectUrl = getParam(request, SSO_PARAM_REDIRECT);
         validateRedirectUrl(redirectUrl);
         // 生成 ticket, 带着ticket参数重定向回Client端
