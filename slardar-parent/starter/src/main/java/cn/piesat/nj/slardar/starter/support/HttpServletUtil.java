@@ -213,12 +213,13 @@ public final class HttpServletUtil {
 
     /**
      * get session id from request
+     * // FIXME: UT000010: Session is invalid
      *
      * @param request
      * @return
      */
     public static String getSessionId(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
         log.debug("session:{}", session == null ? "null" : session.toString());
         if (session != null) {
             String sessionId = session.getId();

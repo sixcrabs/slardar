@@ -83,7 +83,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setLoginDeviceType(getDeviceType(request))
-                        .setSessionId(request.isRequestedSessionIdValid() ? request.getSession().getId() : "")
+                        .setSessionId(getSessionId(request))
                         .setRequestHeaders(requestHeaders));
                 // 调用自定义实现的 provider 去实现特定的认证逻辑
                 // @see SlardarAuthenticationProvider
