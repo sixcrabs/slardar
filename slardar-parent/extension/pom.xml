@@ -16,4 +16,24 @@
         <slardar.version>1.3.3-SNAPSHOT</slardar.version>
     </properties>
 
+    <modules>
+        <module>ext-ldap</module>
+        <module>ext-activedirectory</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.piesat.nj</groupId>
+                <artifactId>slardar-core</artifactId>
+                <version>${slardar.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.piesat.nj</groupId>
+                <artifactId>slardar-starter</artifactId>
+                <version>${slardar.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

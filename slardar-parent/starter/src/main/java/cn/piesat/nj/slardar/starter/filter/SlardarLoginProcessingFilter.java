@@ -76,7 +76,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                     throw new AuthenticationServiceException("Login params cannot be null");
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
-                // 1. 找出匹配的认证处理器
+                // 1. 找出匹配的认证处理器 根据请求头参数： X-Auth-Type
                 // 2. 调用接口 将请求解析为 authentication 对象
                 // 3. 委托给 manager 去实现
                 SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));

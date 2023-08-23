@@ -60,5 +60,5 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      * @param authentication
      * @return
      */
-    abstract SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication);
+    protected abstract SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication);
 }

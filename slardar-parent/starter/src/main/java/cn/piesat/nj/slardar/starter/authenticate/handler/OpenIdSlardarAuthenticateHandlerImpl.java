@@ -47,7 +47,7 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
      * @return
      */
     @Override
-    SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
+    protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         return null;
     }
 }

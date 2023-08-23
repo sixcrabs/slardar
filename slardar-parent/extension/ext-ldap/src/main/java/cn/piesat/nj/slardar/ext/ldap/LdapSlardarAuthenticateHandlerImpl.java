@@ -1,6 +1,8 @@
-package cn.piesat.nj.slardar.starter.authenticate.handler;
+package cn.piesat.nj.slardar.ext.ldap;
 
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.nj.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
+import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -41,14 +43,16 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
         return null;
     }
 
+
     /**
      * 子类实现
+     * 访问ldap 进行认证 和 用户身份同步
      *
      * @param authentication
      * @return
      */
     @Override
-    SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
+    protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         return null;
     }
 }

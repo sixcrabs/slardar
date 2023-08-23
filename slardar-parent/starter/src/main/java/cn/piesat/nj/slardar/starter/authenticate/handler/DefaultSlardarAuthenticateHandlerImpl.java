@@ -94,7 +94,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
      * @return
      */
     @Override
-    SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
+    protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         SlardarUserDetailsServiceImpl userDetailsService = (SlardarUserDetailsServiceImpl) context.getBeanIfAvailable(UserDetailsService.class);
         PasswordEncoder passwordEncoder = context.getPwdEncoder();
         // 用户密码方式认证
