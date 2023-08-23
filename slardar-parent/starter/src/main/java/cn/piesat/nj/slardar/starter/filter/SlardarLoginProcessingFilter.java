@@ -1,11 +1,11 @@
 package cn.piesat.nj.slardar.starter.filter;
 
-import cn.piesat.nj.slardar.starter.AuthenticationRequestHandler;
+import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
+import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.support.SecUtil;
-import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpMethod;
@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
-import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
 
 /**
  * <p>
@@ -41,7 +40,7 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.*;
  */
 public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final AuthenticationRequestHandlerFactory requestHandlerFactory;
+    private final SlardarAuthenticateHandlerFactory authenticateHandlerFactory;
 
     private boolean postOnly = true;
 
@@ -51,10 +50,10 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                                         AuthenticationManager authenticationManager,
                                         AuthenticationFailureHandler authenticationFailureHandler,
                                         AuthenticationSuccessHandler authenticationSuccessHandler,
-                                        AuthenticationRequestHandlerFactory requestHandlerFactory) {
+                                        SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
         super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl()));
         this.postOnly = securityProperties.getLogin().isPostOnly();
-        this.requestHandlerFactory = requestHandlerFactory;
+        this.authenticateHandlerFactory = authenticateHandlerFactory;
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(authenticationFailureHandler);
@@ -64,7 +63,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         // 从请求中取出认证需要的信息 组装成 auth token
-        if (requestHandlerFactory != null) {
+        if (authenticateHandlerFactory != null) {
             if (this.postOnly && !HttpMethod.POST.matches(request.getMethod())) {
                 throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
             }
@@ -77,22 +76,24 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                     throw new AuthenticationServiceException("Login params cannot be null");
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
-                // 找出匹配的认证处理器
-                // FIXME: UT000010: Session is invalid
-                AuthenticationRequestHandler requestHandler = requestHandlerFactory.findRequestHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
-                SlardarAuthenticationToken authenticationToken = requestHandler.handle(new RequestWrapper()
+                // 1. 找出匹配的认证处理器
+                // 2. 调用接口 将请求解析为 authentication 对象
+                // 3. 委托给 manager 去实现
+                SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
+                SlardarAuthentication authenticationToken = authenticateHandler.handleRequest(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setLoginDeviceType(getDeviceType(request))
                         .setSessionId(getSessionId(request))
                         .setRequestHeaders(requestHeaders));
-                // 调用自定义实现的 provider 去实现特定的认证逻辑
-                // @see SlardarAuthenticationProvider
-                return this.getAuthenticationManager().authenticate(authenticationToken);
+                // 调用特定的认证逻辑
+                return authenticateHandler.doAuthenticate(authenticationToken);
             } catch (AuthenticationServiceException e) {
                 throw e;
+            } catch (SlardarException e) {
+                throw new AuthenticationServiceException(e.getLocalizedMessage());
             }
         } else {
-            throw new AuthenticationServiceException("must implements interface `AuthenticationRequestHandler`");
+            throw new AuthenticationServiceException("must implements interface `AuthenticationHandler`");
         }
     }
 

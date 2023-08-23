@@ -6,12 +6,11 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -133,7 +132,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                     SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                     // 判断当前登陆人的账户是否可用
                     if (userDetails.isEnabled()) {
-                        SlardarAuthenticationToken authenticationToken = new SlardarAuthenticationToken(username, "", userDetails);
+                        SlardarAuthentication authenticationToken = new SlardarAuthentication(username, "", userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;

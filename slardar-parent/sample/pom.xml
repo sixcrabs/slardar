@@ -20,7 +20,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <slardar.version>1.3.2-SNAPSHOT</slardar.version>
+        <slardar.version>1.3.3-SNAPSHOT</slardar.version>
         <sso.version>1.0.0-SNAPSHOT</sso.version>
     </properties>
 
@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>cn.piesat.v</groupId>
                 <artifactId>shared-app-starter</artifactId>
-                <version>1.2.0</version>
+                <version>1.3.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

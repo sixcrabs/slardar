@@ -7,14 +7,13 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
+import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
-import cn.piesat.nj.slardar.starter.handler.authentication.AuthenticationRequestHandlerFactory;
-import cn.piesat.nj.slardar.starter.provider.SlardarAuthenticationProviderImpl;
 import io.lettuce.core.RedisClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -108,24 +107,13 @@ public class SlardarBeanConfiguration {
     }
 
     /**
-     * 注入 认证请求handler factory
+     * 注入 认证 handler factory
      *
      * @return
      */
     @Bean
-    public AuthenticationRequestHandlerFactory authenticationRequestHandlerFactory() {
-        return new AuthenticationRequestHandlerFactory();
-    }
-
-    /**
-     * 认证的默认实现类
-     *
-     * @param context
-     * @return
-     */
-    @Bean
-    public SlardarAuthenticationProviderImpl authenticationProvider(SlardarContext context) {
-        return new SlardarAuthenticationProviderImpl(context);
+    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarContext context) {
+        return new SlardarAuthenticateHandlerFactory(context);
     }
 
     /**

@@ -2,6 +2,7 @@ package cn.piesat.nj.slardar.starter.support;
 
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -60,7 +61,7 @@ public final class SecUtil {
      * @return
      */
     public static String getCurrentUsername() {
-        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        SlardarAuthentication authentication = (SlardarAuthentication) SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return ANONYMOUS;
         } else {
@@ -69,7 +70,7 @@ public final class SecUtil {
     }
 
     public static boolean isAuthenticated() {
-        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        SlardarAuthentication authentication = (SlardarAuthentication) SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return false;
         } else {
@@ -83,7 +84,7 @@ public final class SecUtil {
      * @return
      */
     public static Account getAccount() {
-        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        SlardarAuthentication authentication = (SlardarAuthentication) SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return new Account();
         } else {
@@ -97,7 +98,7 @@ public final class SecUtil {
      * @return
      */
     public static UserDetails getUserDetails() {
-        SlardarAuthenticationToken authentication = (SlardarAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        SlardarAuthentication authentication = (SlardarAuthentication) SecurityContextHolder.getContext().getAuthentication();
         if (Objects.isNull(authentication)) {
             return new SlardarUserDetails(new Account());
         } else {

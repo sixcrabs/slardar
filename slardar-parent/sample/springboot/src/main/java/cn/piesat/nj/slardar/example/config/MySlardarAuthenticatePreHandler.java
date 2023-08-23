@@ -1,9 +1,9 @@
 package cn.piesat.nj.slardar.example.config;
 
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.config.SlardarAuthenticationBeforeHandler;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @version v1.0 2023/4/14
  */
 @Component
-public class MySlardarAuthenticationBeforeHandler implements SlardarAuthenticationBeforeHandler {
+public class MySlardarAuthenticatePreHandler implements SlardarAuthenticatePreHandler {
 
     /**
      * 在进入认证前 由应用前置处理，
@@ -23,14 +23,14 @@ public class MySlardarAuthenticationBeforeHandler implements SlardarAuthenticati
      * - 判断登录端类型
      * - 判断客户端ip等
      *
-     * @param authenticationToken
+     * @param authentication
      * @throws SlardarException 抛出异常 则终止认证
      */
     @Override
-    public void before(SlardarAuthenticationToken authenticationToken) throws SlardarException {
+    public void preHandle(SlardarAuthentication authentication) throws SlardarException {
         // 这里可以访问数据库进行一系列操作
-        LoginDeviceType loginDeviceType = authenticationToken.getLoginDeviceType();
-        String accountName = authenticationToken.getAccountName();
+        LoginDeviceType loginDeviceType = authentication.getLoginDeviceType();
+        String accountName = authentication.getAccountName();
         if ("zhangsan".equals(accountName)) {
             if (loginDeviceType.equals(LoginDeviceType.APP)) {
                 throw new SlardarException("账号【%s】不允许在 %s 登录", accountName, "APP");

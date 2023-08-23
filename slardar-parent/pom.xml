@@ -13,6 +13,7 @@
         <module>sample</module>
         <module>sso</module>
         <module>gateway-helper</module>
+        <module>extension</module>
     </modules>
     <packaging>pom</packaging>
 

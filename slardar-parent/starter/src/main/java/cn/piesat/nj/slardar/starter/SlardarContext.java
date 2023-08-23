@@ -3,8 +3,6 @@ package cn.piesat.nj.slardar.starter;
 import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.gateway.AccountGateway;
-import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
-import cn.piesat.nj.slardar.core.gateway.UserProfileGateway;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
@@ -87,7 +85,7 @@ public class SlardarContext implements ApplicationContextAware {
         }
     }
 
-    private <T> T getBeanIfAvailable(Class<T> clazz) {
+    public  <T> T getBeanIfAvailable(Class<T> clazz) {
         ObjectProvider<T> provider = getBeanProvider(clazz);
         return provider.getIfAvailable();
     }

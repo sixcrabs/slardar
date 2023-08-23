@@ -1,7 +1,8 @@
-package cn.piesat.nj.slardar.starter.support;
+package cn.piesat.nj.slardar.starter.authenticate;
 
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.util.StringUtils;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
+public class SlardarAuthentication extends AbstractAuthenticationToken {
 
     private SlardarUserDetails userDetails;
 
@@ -46,7 +47,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      * 认证类型
-     * wxapp/...
+     * open-id/ldap/....
      */
     private String authType;
 
@@ -56,7 +57,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
     private LoginDeviceType loginDeviceType;
 
 
-    public SlardarAuthenticationToken(String accountNameOrOpenId, String authType, SlardarUserDetails details) {
+    public SlardarAuthentication(String accountNameOrOpenId, String authType, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
         if (Constants.AUTH_TYPE_WX_APP.equals(authType)) {
@@ -81,7 +82,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return password;
     }
 
-    public SlardarAuthenticationToken setPassword(String password) {
+    public SlardarAuthentication setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -90,7 +91,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return authType;
     }
 
-    public SlardarAuthenticationToken setAuthType(String authType) {
+    public SlardarAuthentication setAuthType(String authType) {
         this.authType = authType;
         return this;
     }
@@ -99,7 +100,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return userDetails;
     }
 
-    public SlardarAuthenticationToken setUserDetails(SlardarUserDetails userDetails) {
+    public SlardarAuthentication setUserDetails(SlardarUserDetails userDetails) {
         this.userDetails = userDetails;
         return this;
     }
@@ -108,7 +109,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return loginDeviceType;
     }
 
-    public SlardarAuthenticationToken setLoginDeviceType(LoginDeviceType loginDeviceType) {
+    public SlardarAuthentication setLoginDeviceType(LoginDeviceType loginDeviceType) {
         this.loginDeviceType = loginDeviceType;
         return this;
     }
@@ -117,7 +118,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return sessionId;
     }
 
-    public SlardarAuthenticationToken setSessionId(String sessionId) {
+    public SlardarAuthentication setSessionId(String sessionId) {
         this.sessionId = sessionId;
         return this;
     }
@@ -126,7 +127,7 @@ public class SlardarAuthenticationToken extends AbstractAuthenticationToken {
         return realm;
     }
 
-    public SlardarAuthenticationToken setRealm(String realm) {
+    public SlardarAuthentication setRealm(String realm) {
         this.realm = realm;
         return this;
     }

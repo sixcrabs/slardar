@@ -2,7 +2,6 @@ package cn.piesat.nj.slardar.starter.handler;
 
 import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
-import cn.piesat.nj.slardar.core.AccountStatus;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.core.entity.Account;
@@ -11,7 +10,7 @@ import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationToken;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -96,7 +95,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
      */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        SlardarAuthenticationToken authenticationToken = (SlardarAuthenticationToken) authentication;
+        SlardarAuthentication authenticationToken = (SlardarAuthentication) authentication;
         SlardarUserDetails userDetails = authenticationToken.getUserDetails();
         //获取token,将token存储到redis中
         String token = tokenService.createToken(String.valueOf(authenticationToken.getPrincipal()),
