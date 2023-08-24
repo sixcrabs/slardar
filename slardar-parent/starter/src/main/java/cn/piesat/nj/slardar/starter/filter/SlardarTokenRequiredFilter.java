@@ -134,6 +134,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                     if (userDetails.isEnabled()) {
                         SlardarAuthentication authenticationToken = new SlardarAuthentication(username, "", userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        authenticationToken.setAuthenticated(true);
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
                         // TODO: 修改为事件

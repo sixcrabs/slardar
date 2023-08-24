@@ -5,7 +5,11 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import org.springframework.security.authentication.AuthenticationServiceException;
+
+import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
+import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
 
 /**
  * <p>
@@ -52,6 +56,14 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
 
     protected SlardarProperties getProperties() {
         return context.getBeanIfAvailable(SlardarProperties.class);
+    }
+
+    protected String getRealm(final SlardarLoginProcessingFilter.RequestWrapper requestWrapper) {
+        if (requestWrapper.getRequestHeaders().containsKey(HEADER_KEY_OF_REALM)) {
+            return requestWrapper.getRequestHeaders().getOrDefault(HEADER_KEY_OF_REALM, REALM_MASTER);
+        } else {
+            return requestWrapper.getRequestParams().getOrDefault("realm", REALM_MASTER);
+        }
     }
 
 

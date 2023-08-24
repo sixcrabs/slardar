@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
@@ -46,7 +47,8 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        log.error("Authentication failed：{}", e.getLocalizedMessage());
+        String errMsg = e.getLocalizedMessage();
+        log.error("Authentication failed：{}", errMsg);
         HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ?
                 HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
         response.setStatus(status.value());
@@ -56,7 +58,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", status.value(), "message", e.getLocalizedMessage())));
+        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", status.value(), "message", Objects.isNull(errMsg)?"Null":errMsg)));
         try {
             slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
         } catch (SlardarException ex) {

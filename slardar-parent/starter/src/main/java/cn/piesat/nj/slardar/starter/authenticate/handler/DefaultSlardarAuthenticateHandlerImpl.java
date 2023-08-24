@@ -17,8 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
-import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
-import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
 
 /**
  * <p>
@@ -77,16 +75,6 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                 .setPassword(password);
     }
 
-
-
-    private String getRealm(final SlardarLoginProcessingFilter.RequestWrapper requestWrapper) {
-        if (requestWrapper.getRequestHeaders().containsKey(HEADER_KEY_OF_REALM)) {
-            return requestWrapper.getRequestHeaders().getOrDefault(HEADER_KEY_OF_REALM, REALM_MASTER);
-        } else {
-            return requestWrapper.getRequestParams().getOrDefault("realm", REALM_MASTER);
-        }
-    }
-
     /**
      * 子类实现
      *
@@ -104,7 +92,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         if (!Objects.isNull(userDetails)) {
             if (passwordEncoder.matches(authentication.getPassword(), userDetails.getPassword())) {
                 try {
-                    authentication.setUserDetails((SlardarUserDetails) userDetails);
+                    authentication.setUserDetails((SlardarUserDetails) userDetails).setAuthenticated(true);
                     return authentication;
                 } catch (Exception e) {
                     throw new AuthenticationServiceException(e.getLocalizedMessage());

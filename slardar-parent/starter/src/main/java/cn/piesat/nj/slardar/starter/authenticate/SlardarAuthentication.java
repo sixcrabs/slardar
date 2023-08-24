@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter.authenticate;
 
-import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -25,10 +24,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
      */
     private final String accountName;
 
-    /**
-     * openid
-     */
-    private final String openId;
+//    private final String openId;
 
     /**
      * 密码
@@ -57,26 +53,23 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
     private LoginDeviceType loginDeviceType;
 
 
-    public SlardarAuthentication(String accountNameOrOpenId, String authType, SlardarUserDetails details) {
+    public SlardarAuthentication(String principal, String authType, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
-        if (Constants.AUTH_TYPE_WX_APP.equals(authType)) {
-            this.openId = accountNameOrOpenId;
-            this.accountName = null;
-        } else {
-            this.accountName = accountNameOrOpenId;
-            this.openId = null;
-        }
-        this.setAuthenticated(true);
+        this.accountName = principal;
+//        if (Constants.AUTH_TYPE_WX_APP.equals(authType)) {
+//            this.openId = principal;
+//            this.accountName = null;
+//        } else {
+//            this.accountName = principal;
+//            this.openId = null;
+//        }
     }
 
     public String getAccountName() {
         return accountName;
     }
 
-    public String getOpenId() {
-        return openId;
-    }
 
     public String getPassword() {
         return password;
@@ -132,13 +125,23 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
         return this;
     }
 
+    /**
+     * 账户密码等凭证
+     * @return
+     */
     @Override
     public Object getCredentials() {
         return this.password;
     }
 
+    /**
+     * 账户名 或 openid 等
+     * TODO: principal 需要封装
+     * @return
+     */
     @Override
     public Object getPrincipal() {
-        return StringUtils.hasText(this.accountName) ? this.accountName : this.openId;
+        return this.accountName;
+//        return StringUtils.hasText(this.accountName) ? this.accountName : this.openId;
     }
 }

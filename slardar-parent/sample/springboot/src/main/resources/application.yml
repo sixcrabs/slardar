@@ -8,6 +8,9 @@ skv:
 
 
 slardar:
+  ldap:
+    url: ldap://124.221.177.135:389
+    base: dc=test,dc=cn
   sso-server:
     ctx-path: /sso
   token:
