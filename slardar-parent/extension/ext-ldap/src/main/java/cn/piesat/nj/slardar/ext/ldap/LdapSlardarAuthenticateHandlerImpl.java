@@ -16,13 +16,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.*;
-import java.util.HashMap;
 
 /**
  * <p>
- * .TODO:
  * 使用 LDAP 进行身份认证
  * </p>
  *
