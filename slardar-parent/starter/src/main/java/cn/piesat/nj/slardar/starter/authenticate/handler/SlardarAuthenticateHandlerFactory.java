@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.token.SlardarToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.HashMap;
@@ -23,6 +25,8 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
     private final SlardarContext slardarContext;
 
     private static final Map<String, SlardarAuthenticateHandler> REPO = new HashMap<>(1);
+
+    private static final Logger logger = LoggerFactory.getLogger(SlardarAuthenticateHandlerFactory.class);
 
     public SlardarAuthenticateHandlerFactory(SlardarContext slardarContext) {
         this.slardarContext = slardarContext;
@@ -47,5 +51,7 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
             impl.setSlardarContext(this.slardarContext);
             REPO.put(impl.type(), impl);
         }
+        logger.info("[slardar] 已加载 [] 个认证组件实现");
+
     }
 }

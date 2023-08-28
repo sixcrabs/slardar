@@ -178,20 +178,20 @@ public class SlardarProperties implements Serializable {
         private Boolean captchaEnabled = true;
 
         /**
-         * 是否开启加密设置
+         * 密码加密设置
          */
-        private boolean cryptoEnabled = false;
-
-        /**
-         * AES 加密 私钥 必须 16位
-         */
-        private String cryptoSecretKey = "abcdefghijklmnop";
+        private EncryptSetting encrypt;
 
         /**
          * 是否同端互斥，默认不互斥，即 两个pc登录返回的token都可用
          * 互斥：另一个PC登录时 前一个token 会失效（登出）
          */
         private LoginConcurrentPolicy concurrentPolicy = LoginConcurrentPolicy.separate;
+
+
+        public EncryptSetting getEncrypt() {
+            return encrypt;
+        }
 
         public boolean isPostOnly() {
             return postOnly;
@@ -230,20 +230,11 @@ public class SlardarProperties implements Serializable {
         }
 
         public boolean isCryptoEnabled() {
-            return cryptoEnabled;
+            return encrypt.isEnabled();
         }
 
-        public LoginSettings setCryptoEnabled(boolean cryptoEnabled) {
-            this.cryptoEnabled = cryptoEnabled;
-            return this;
-        }
-
-        public String getCryptoSecretKey() {
-            return cryptoSecretKey;
-        }
-
-        public LoginSettings setCryptoSecretKey(String cryptoSecretKey) {
-            this.cryptoSecretKey = cryptoSecretKey;
+        public LoginSettings setEncrypt(EncryptSetting encrypt) {
+            this.encrypt = encrypt;
             return this;
         }
 
@@ -253,6 +244,57 @@ public class SlardarProperties implements Serializable {
 
         public LoginSettings setConcurrentPolicy(LoginConcurrentPolicy concurrentPolicy) {
             this.concurrentPolicy = concurrentPolicy;
+            return this;
+        }
+    }
+
+
+    /**
+     * 密码加密参数
+     */
+    public static class EncryptSetting {
+
+        /**
+         * 默认关闭
+         */
+        private boolean enabled;
+
+        /**
+         * 加密模式 默认 aes
+         * 可自行扩展
+         */
+        private String mode = "AES";
+
+        /**
+         * 密钥
+         */
+        private String secretKey;
+
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public EncryptSetting setEnabled(boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public String getMode() {
+            return mode;
+        }
+
+        public EncryptSetting setMode(String mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public EncryptSetting setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
             return this;
         }
     }

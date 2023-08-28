@@ -88,9 +88,13 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         // 用户密码方式认证
         String accountName = authentication.getAccountName();
         UserDetails userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
+        String password = authentication.getPassword();
+        // TODO:
+
+
         // 验证密码是否正确
         if (!Objects.isNull(userDetails)) {
-            if (passwordEncoder.matches(authentication.getPassword(), userDetails.getPassword())) {
+            if (passwordEncoder.matches(password, userDetails.getPassword())) {
                 try {
                     authentication.setUserDetails((SlardarUserDetails) userDetails).setAuthenticated(true);
                     return authentication;
