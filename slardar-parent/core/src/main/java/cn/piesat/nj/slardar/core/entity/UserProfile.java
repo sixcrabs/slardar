@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.core.entity;
 
-import cn.piesat.nj.slardar.core.AccountStatus;
 import cn.piesat.nj.slardar.core.entity.core.BaseRealmEntity;
 
 import java.util.List;

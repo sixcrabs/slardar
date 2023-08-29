@@ -2,7 +2,13 @@ package cn.piesat.nj.slardar.starter.authenticate.crypto.impl;
 
 import com.antherd.smcrypto.sm4.Sm4;
 import com.antherd.smcrypto.sm4.Sm4Options;
+import com.bastiaanjansen.otp.HMACAlgorithm;
+import com.bastiaanjansen.otp.SecretGenerator;
+import com.bastiaanjansen.otp.TOTPGenerator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,5 +46,56 @@ class Sm4CryptoTest {
         sm4Options6.setPadding("none");
         String decrypt = Sm4.decrypt(ciphertext, key, sm4Options6);
         System.out.println(decrypt);
+    }
+
+    TOTPGenerator totp;
+
+    @BeforeEach
+    void setUp() {
+        // 生成密钥
+        String secret = "AO5BGGUEV3LCFOKTLZXDO2MC4KQMMZM4";//
+//        SecretGenerator.generate();
+        totp = new TOTPGenerator.Builder(secret.getBytes())
+                .withHOTPGenerator(builder -> {
+                    // 一次性密码的长度
+                    builder.withPasswordLength(6);
+                    // 散列算法
+                    builder.withAlgorithm(HMACAlgorithm.SHA512);
+                })
+                // 时间周期
+                .withPeriod(Duration.ofSeconds(20))
+                .build();
+    }
+
+    @Test
+    void test2() {
+        System.out.println("验证code：" + totp.verify("537761"));
+    }
+
+    @Test
+    void testTOTP() throws InterruptedException {
+
+        // 生成一次性密码
+        String code = totp.now();
+        System.out.println("totp生成的一次性密码：" + code);
+        Thread.sleep(5000);
+        String code1 = totp.now();
+        System.out.println("code1:" + code1);
+
+//        TOTPGenerator nTotp = new TOTPGenerator.Builder(secret)
+//                .withHOTPGenerator(builder -> {
+//                    // 一次性密码的长度
+//                    builder.withPasswordLength(6);
+//                    // 散列算法
+//                    builder.withAlgorithm(HMACAlgorithm.SHA512);
+//                })
+//                // 时间周期
+//                .withPeriod(Duration.ofSeconds(30))
+//                .build();
+        boolean verify = totp.verify(code);
+        System.out.println("totp验证一次性密码结果：" + verify);
+
+        System.out.println("验证code1：" + totp.verify(code1));
+
     }
 }

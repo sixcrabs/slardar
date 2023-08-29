@@ -6,6 +6,7 @@ import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHand
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpMethod;
@@ -78,7 +79,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 1. 找出匹配的认证处理器 根据请求头参数： X-Auth-Type
                 // 2. 调用接口 将请求解析为 authentication 对象
-                // 3. 委托给 manager 去实现
+                // 3. 交给对应的handler去认证
                 SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
                 SlardarAuthentication authenticationToken = authenticateHandler.handleRequest(new RequestWrapper()
                         .setRequestParams(requestParam)
@@ -96,53 +97,5 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
             throw new AuthenticationServiceException("must implements interface `AuthenticationHandler`");
         }
     }
-
-    public static class RequestWrapper {
-
-        private Map<String, String> requestParams;
-
-        private String sessionId;
-
-        private Map<String, String> requestHeaders;
-
-        private LoginDeviceType loginDeviceType;
-
-        public Map<String, String> getRequestParams() {
-            return requestParams;
-        }
-
-        public RequestWrapper setRequestParams(Map<String, String> requestParams) {
-            this.requestParams = requestParams;
-            return this;
-        }
-
-        public LoginDeviceType getLoginDeviceType() {
-            return loginDeviceType;
-        }
-
-        public RequestWrapper setLoginDeviceType(LoginDeviceType loginDeviceType) {
-            this.loginDeviceType = loginDeviceType;
-            return this;
-        }
-
-        public String getSessionId() {
-            return sessionId;
-        }
-
-        public RequestWrapper setSessionId(String sessionId) {
-            this.sessionId = sessionId;
-            return this;
-        }
-
-        public Map<String, String> getRequestHeaders() {
-            return requestHeaders;
-        }
-
-        public RequestWrapper setRequestHeaders(Map<String, String> requestHeaders) {
-            this.requestHeaders = requestHeaders;
-            return this;
-        }
-    }
-
 
 }

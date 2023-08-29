@@ -71,7 +71,7 @@ public class SlardarUserDetailsServiceImpl implements UserDetailsService {
      * @return
      * @throws UsernameNotFoundException
      */
-    public UserDetails loadUserByAccount(String accountName, String realm) throws UsernameNotFoundException {
+    public SlardarUserDetails loadUserByAccount(String accountName, String realm) throws UsernameNotFoundException {
         Account account = null;
         try {
             account = accountProvider.findByName(accountName, realm);

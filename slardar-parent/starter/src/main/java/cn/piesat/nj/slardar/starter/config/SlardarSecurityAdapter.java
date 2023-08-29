@@ -85,6 +85,8 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final SlardarAuthenticatedRequestFilter authenticatedRequestFilter;
 
+    private final SlardarMfaLoginFilter mfaLoginFilter;
+
     private final SlardarProperties properties;
 
     private final List<SlardarIgnoringCustomizer> ignoringCustomizerList;
@@ -94,12 +96,13 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     public SlardarSecurityAdapter(SlardarTokenRequiredFilter tokenRequiredFilter,
                                   SlardarCaptchaFilter captchaFilter,
                                   SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
-                                  SlardarProperties properties,
+                                  SlardarMfaLoginFilter mfaLoginFilter, SlardarProperties properties,
                                   ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList,
                                   ObjectProvider<List<SlardarUrlRegistryCustomizer>> urlRegistryCustomizerProvider) {
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.captchaFilter = captchaFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
+        this.mfaLoginFilter = mfaLoginFilter;
         this.properties = properties;
         this.ignoringCustomizerList = ignoringCustomizerList.getIfAvailable();
         this.urlRegistryCustomizerList = urlRegistryCustomizerProvider.getIfAvailable();
@@ -162,8 +165,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         httpSecurity.addFilterBefore(loginProcessingFilter(properties, getManagerBean(), authenticateFailedHandler, authenticateSucceedHandler, authenticateHandlerFactory),
                 SlardarTokenRequiredFilter.class);
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
-
-
+        httpSecurity.addFilterAfter(mfaLoginFilter, SlardarLoginProcessingFilter.class);
     }
 
     /**

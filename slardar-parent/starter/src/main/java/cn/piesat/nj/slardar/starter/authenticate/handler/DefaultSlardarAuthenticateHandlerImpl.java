@@ -1,9 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
-import cn.hutool.crypto.symmetric.AES;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
@@ -11,8 +8,11 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcher;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcherFactory;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -55,7 +55,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
      * @throws AuthenticationServiceException
      */
     @Override
-    public SlardarAuthentication handleRequest(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException {
         // 根据设置来确定是否需要启用验证码流程
         SlardarProperties properties = getProperties();
         CaptchaComponent captchaComponent = context.getBeanIfAvailable(CaptchaComponent.class);
@@ -95,7 +95,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         SlardarProperties properties = getProperties();
         // 用户密码方式认证
         String accountName = authentication.getAccountName();
-        UserDetails userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
+        SlardarUserDetails userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
         String password = authentication.getPassword();
         if (properties.getLogin().getEncrypt().isEnabled()) {
             SlardarCryptoFactory slardarCryptoFactory = context.getBeanIfAvailable(SlardarCryptoFactory.class);
@@ -112,7 +112,12 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         if (!Objects.isNull(userDetails)) {
             if (passwordEncoder.matches(password, userDetails.getPassword())) {
                 try {
-                    authentication.setUserDetails((SlardarUserDetails) userDetails).setAuthenticated(true);
+                    // 双因素认证
+                    if (properties.getMfa().isEnabled()) {
+
+
+                    }
+                    authentication.setUserDetails(userDetails).setAuthenticated(true);
                     return authentication;
                 } catch (Exception e) {
                     throw new AuthenticationServiceException(e.getLocalizedMessage());

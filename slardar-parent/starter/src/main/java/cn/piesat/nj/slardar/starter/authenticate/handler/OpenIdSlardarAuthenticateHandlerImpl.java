@@ -3,7 +3,7 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
 
@@ -32,7 +32,7 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
 
 
     @Override
-    public SlardarAuthentication handleRequest(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException {
         String openid = requestWrapper.getRequestParams().get("openid");
         if (StrUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");

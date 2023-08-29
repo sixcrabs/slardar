@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
 
 /**
@@ -33,7 +34,7 @@ public interface SlardarAuthenticateHandler {
      * @return
      * @throws AuthenticationServiceException
      */
-    SlardarAuthentication handleRequest(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException;
+    SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException;
 
     /**
      * 执行认证

@@ -9,7 +9,10 @@ import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcherFactory;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
+import cn.piesat.nj.slardar.starter.filter.SlardarMfaLoginFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
@@ -68,6 +71,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入时间管理
+     *
      * @return
      */
     @Bean
@@ -110,14 +114,40 @@ public class SlardarBeanConfiguration {
 
     /**
      * 加密 factory
+     *
      * @param context
      * @return
      */
     @Bean
     public SlardarCryptoFactory slardarCryptoFactory(SlardarContext context) {
         return new SlardarCryptoFactory(context);
-
     }
+
+
+    /**
+     * otp 发送 factory
+     *
+     * @param context
+     * @return
+     */
+    @Bean
+    public OtpDispatcherFactory otpDispatcherFactory(SlardarContext context) {
+        return new OtpDispatcherFactory(context);
+    }
+
+    /**
+     * 处理 MFA 认证
+     * @param otpDispatcherFactory
+     * @param slardarProperties
+     * @param kvStore
+     * @return
+     */
+    @Bean
+    public SlardarMfaAuthService slardarMfaAuthService(OtpDispatcherFactory otpDispatcherFactory, SlardarProperties slardarProperties,
+                                                       KvStore kvStore) {
+        return new SlardarMfaAuthService(otpDispatcherFactory, slardarProperties, kvStore);
+    }
+
     /**
      * 注入 认证 handler factory
      *
@@ -200,6 +230,15 @@ public class SlardarBeanConfiguration {
     @Bean
     public SlardarCaptchaFilter slardarCaptchaFilter() {
         return new SlardarCaptchaFilter();
+    }
+
+    /**
+     * MFA 登录过滤器
+     * @return
+     */
+    @Bean
+    public SlardarMfaLoginFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService) {
+        return new SlardarMfaLoginFilter(mfaAuthService);
     }
 
     /**

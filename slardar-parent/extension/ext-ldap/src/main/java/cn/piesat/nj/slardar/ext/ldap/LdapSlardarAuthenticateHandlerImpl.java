@@ -8,6 +8,7 @@ import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
+import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
      * @throws AuthenticationServiceException
      */
     @Override
-    public SlardarAuthentication handleRequest(SlardarLoginProcessingFilter.RequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException {
         String username = requestWrapper.getRequestParams().get("username");
         String password = requestWrapper.getRequestParams().get("password");
         // 租户信息 默认为 master
