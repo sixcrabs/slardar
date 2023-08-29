@@ -22,7 +22,7 @@ public class Sm4Crypto implements SlardarCrypto {
     /**
      * // 16 进制字符串，要求为 128 比特
      */
-    private String key = "0123456789abcdeffedcba9876543210";
+    private String key = "0a1b2c3d4e5f6f7e8d9cba9876543210";
 
     /**
      * 加密模式

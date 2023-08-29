@@ -55,6 +55,6 @@ public class SlardarCryptoFactory implements InitializingBean {
             impl.setContext(this.slardarContext);
             REPO.put(impl.mode().toUpperCase(), impl);
         }
-        logger.info("[slardar] 已加载 [] 个登录加密组件实现");
+        logger.info("[slardar] 已加载 [{}] 个登录加密组件实现", REPO.size());
     }
 }

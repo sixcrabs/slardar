@@ -1,9 +1,16 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.Mode;
+import cn.hutool.crypto.Padding;
+import cn.hutool.crypto.symmetric.AES;
 import cn.piesat.nj.slardar.core.Constants;
+import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
+import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
@@ -85,13 +92,22 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
     protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         SlardarUserDetailsServiceImpl userDetailsService = (SlardarUserDetailsServiceImpl) context.getBeanIfAvailable(UserDetailsService.class);
         PasswordEncoder passwordEncoder = context.getPwdEncoder();
+        SlardarProperties properties = getProperties();
         // 用户密码方式认证
         String accountName = authentication.getAccountName();
         UserDetails userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
         String password = authentication.getPassword();
-        // TODO:
-
-
+        if (properties.getLogin().getEncrypt().isEnabled()) {
+            SlardarCryptoFactory slardarCryptoFactory = context.getBeanIfAvailable(SlardarCryptoFactory.class);
+            // 解密
+            try {
+                SlardarCrypto crypto = slardarCryptoFactory.findCrypto(properties.getLogin().getEncrypt().getMode());
+                password = crypto.decrypt(password);
+            } catch (SlardarException e) {
+                throw new AuthenticationServiceException(StrUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),
+                        e.getLocalizedMessage()));
+            }
+        }
         // 验证密码是否正确
         if (!Objects.isNull(userDetails)) {
             if (passwordEncoder.matches(password, userDetails.getPassword())) {

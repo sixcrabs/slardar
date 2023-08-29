@@ -180,7 +180,7 @@ public class SlardarProperties implements Serializable {
         /**
          * 密码加密设置
          */
-        private EncryptSetting encrypt;
+        private EncryptSetting encrypt = new EncryptSetting();
 
         /**
          * 是否同端互斥，默认不互斥，即 两个pc登录返回的token都可用

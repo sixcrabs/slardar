@@ -51,7 +51,7 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
             impl.setSlardarContext(this.slardarContext);
             REPO.put(impl.type(), impl);
         }
-        logger.info("[slardar] 已加载 [] 个认证组件实现");
+        logger.info("[slardar] 已加载 [{}] 个认证组件实现", REPO.size());
 
     }
 }

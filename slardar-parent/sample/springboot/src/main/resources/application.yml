@@ -18,6 +18,9 @@ slardar:
   login:
     post-only: false
     captcha-enabled: false
+    encrypt:
+      enabled: true
+      mode: sm4
   ignores: /login,/sso-login
 
 

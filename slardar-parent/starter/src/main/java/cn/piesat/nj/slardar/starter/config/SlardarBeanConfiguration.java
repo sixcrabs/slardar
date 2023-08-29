@@ -7,6 +7,7 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
+import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
@@ -106,6 +107,17 @@ public class SlardarBeanConfiguration {
         return new SlardarAccessDeniedHandler();
     }
 
+
+    /**
+     * 加密 factory
+     * @param context
+     * @return
+     */
+    @Bean
+    public SlardarCryptoFactory slardarCryptoFactory(SlardarContext context) {
+        return new SlardarCryptoFactory(context);
+
+    }
     /**
      * 注入 认证 handler factory
      *
