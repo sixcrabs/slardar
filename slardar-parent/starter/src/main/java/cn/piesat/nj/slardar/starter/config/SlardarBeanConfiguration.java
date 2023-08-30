@@ -24,6 +24,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
@@ -159,6 +161,18 @@ public class SlardarBeanConfiguration {
     }
 
     /**
+     * MFA 登录过滤器
+     *
+     * @return
+     */
+    @Bean
+    public SlardarMfaLoginFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
+                                                       AuthenticationFailureHandler failureHandler,
+                                                       AuthenticationSuccessHandler successHandler) {
+        return new SlardarMfaLoginFilter(mfaAuthService, failureHandler, successHandler);
+    }
+
+    /**
      * 注入上下文 context
      *
      * @return
@@ -206,7 +220,7 @@ public class SlardarBeanConfiguration {
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
         ignores = ArrayUtil.append(ignores, "/oauth2/**",
-                properties.getLogin().getUrl(), "/error");
+                properties.getLogin().getUrl(), "/error", "/mfa-login");
         return new SlardarTokenRequiredFilter(ignores);
     }
 
@@ -232,14 +246,6 @@ public class SlardarBeanConfiguration {
         return new SlardarCaptchaFilter();
     }
 
-    /**
-     * MFA 登录过滤器
-     * @return
-     */
-    @Bean
-    public SlardarMfaLoginFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService) {
-        return new SlardarMfaLoginFilter(mfaAuthService);
-    }
 
     /**
      * 配置地址栏不能识别 // 的情况

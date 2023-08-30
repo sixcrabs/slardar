@@ -104,7 +104,7 @@ public class EmailOtpDispatcher implements OtpDispatcher {
 
     private String emailText(String otpCode, Account account) {
         return StrUtil.format("<p>Hi, <strong>{}</strong></p> <p> 看起来你正试图使用你的用户名和密码登录。" +
-                        "作为一项额外的安全措施(双因素认证)，您需要输入此电子邮件中提供的OTP代码（一次性密码）</p> <p> The OTP code is: <strong> {} </strong> <br> 有效期5分钟 </p>",
+                        "作为一项额外的安全措施(双因素认证)，您需要输入此电子邮件中提供的OTP代码（一次性密码）</p> <p> The OTP code is: <strong> {} </strong> <br> 有效期 <strong>5</strong> 分钟 </p>",
                 account.getName(), otpCode);
     }
 

@@ -22,7 +22,6 @@ public class ApiController {
 
 
     @GetMapping("/hi")
-    @SlardarAuthority("hasRole('ADMIN')")
     public Resp sayHi() {
         return Resp.of("Hello, ".concat(RandomUtil.randomString(6)));
     }

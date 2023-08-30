@@ -288,10 +288,14 @@ public final class HttpServletUtil {
      * @param result
      * @throws IOException
      */
-    public static void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
+    public static void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus, String originValue) {
         response.setStatus(httpStatus.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Origin", originValue);
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         try {
             response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
             response.getWriter().flush();
@@ -301,13 +305,14 @@ public final class HttpServletUtil {
     }
 
     public static void sendJsonOk(HttpServletResponse response, Serializable result) {
-        sendJson(response, result, HttpStatus.OK);
+        sendJson(response, result, HttpStatus.OK, "");
     }
 
-    public static HashMap<String, Object> makeResult(Object result, int code) {
+    public static HashMap<String, Object> makeResult(Object result, int code, String msg) {
         HashMap<String, Object> ret = new HashMap<>(2);
         ret.put("code", code);
         ret.put("data", result);
+        ret.put("message", msg);
         return ret;
     }
 

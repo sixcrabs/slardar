@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
@@ -51,33 +52,24 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
-        Map<String, Object> resp = new HashMap<>(1);
+        HashMap<String, Object> resp;
         HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ?
                 HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
         if (e instanceof MfaVerifyRequiredException) {
             // 单独处理MFA 异常
-            resp.put("code", 1008);
-            resp.put("key", ((MfaVerifyRequiredException) e).getKey());
-            resp.put("message", "MFA authentication required!");
+            resp = makeResult(((MfaVerifyRequiredException) e).getKey(), 1008, "MFA authentication required!");
         } else {
             String errMsg = e.getLocalizedMessage();
             log.error("Authentication failed：{}", errMsg);
-            resp.put("code", status.value());
-            resp.put("message", Objects.isNull(errMsg) ? "Null" : errMsg);
+            resp = makeErrorResult(Objects.isNull(errMsg) ? "Null" : errMsg, status.value());
             try {
                 slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
             } catch (SlardarException ex) {
                 log.error(ex.getLocalizedMessage());
             }
         }
-        response.setStatus(status.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().println(GSON.toJson(resp));
-        response.getWriter().flush();
+        sendJson(response, resp, status, request.getHeader("Origin"));
+//        response.getWriter().println(GSON.toJson(resp));
+//        response.getWriter().flush();
     }
 }

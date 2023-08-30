@@ -46,6 +46,7 @@ public class AccountProviderImpl implements AccountProvider {
         profile.setRealm("master");
         profile.setDeleted(0);
         profile.setId(RandomUtil.randomString(8));
+        profile.setEmail("1075618458@qq.com");
         profile.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER")));
         profile.setAuthorities(Lists.newArrayList(new Authority().setContent("READ_URL")));
 

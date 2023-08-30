@@ -35,7 +35,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
@@ -96,9 +96,10 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     /**
      * 外部添加过滤的url pattern
-     * @see cn.piesat.nj.slardar.core.SlardarIgnore
+     *
      * @param antPattern
      * @param method
+     * @see cn.piesat.nj.slardar.core.SlardarIgnore
      */
     public void addIgnoreUrlPattern(String antPattern, String method) {
         ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StrUtil.isBlank(method) ? null : method));
@@ -173,14 +174,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
         request.setAttribute(param, e);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", HttpStatus.UNAUTHORIZED.value(), "message", e.getLocalizedMessage())));
+        sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
+//        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", HttpStatus.UNAUTHORIZED.value(), "message", e.getLocalizedMessage())));
 //        request.getRequestDispatcher(url).forward(request, response);
     }
 }

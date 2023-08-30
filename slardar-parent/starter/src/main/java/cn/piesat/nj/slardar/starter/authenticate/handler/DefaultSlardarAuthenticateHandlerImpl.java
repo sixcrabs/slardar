@@ -8,15 +8,14 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
-import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcher;
-import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcherFactory;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,10 +51,10 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
      * 处理认证请求
      *
      * @return
-     * @throws AuthenticationServiceException
+     * @throws AuthenticationException
      */
     @Override
-    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
         // 根据设置来确定是否需要启用验证码流程
         SlardarProperties properties = getProperties();
         CaptchaComponent captchaComponent = context.getBeanIfAvailable(CaptchaComponent.class);
@@ -114,13 +113,21 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                 try {
                     // 双因素认证
                     if (properties.getMfa().isEnabled()) {
-
-
+                        SlardarMfaAuthService mfaAuthService = context.getBeanIfAvailable(SlardarMfaAuthService.class);
+                        String key = mfaAuthService.generateAndDispatch(userDetails);
+                        if (StrUtil.isBlank(key)) {
+                            throw new AuthenticationServiceException("`MFA` key error");
+                        }
+                        throw new MfaVerifyRequiredException("MFA Authentication required!", key);
                     }
                     authentication.setUserDetails(userDetails).setAuthenticated(true);
                     return authentication;
                 } catch (Exception e) {
-                    throw new AuthenticationServiceException(e.getLocalizedMessage());
+                    if (e instanceof MfaVerifyRequiredException) {
+                        throw (MfaVerifyRequiredException) e;
+                    } else {
+                        throw new AuthenticationServiceException(e.getLocalizedMessage());
+                    }
                 }
             } else {
                 throw new AuthenticationServiceException(String.format("账户 [%s] 密码不匹配", userDetails.getUsername()));

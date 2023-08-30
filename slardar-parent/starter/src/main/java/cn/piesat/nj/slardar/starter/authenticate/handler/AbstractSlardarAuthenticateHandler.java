@@ -7,6 +7,7 @@ import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
 import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
@@ -42,7 +43,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      * @throws AuthenticationServiceException
      */
     @Override
-    public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws AuthenticationServiceException {
+    public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws AuthenticationException {
         SlardarAuthenticatePreHandler authenticationBeforeHandler = context.getBeanIfAvailable(SlardarAuthenticatePreHandler.class);
         if (authenticationBeforeHandler != null) {
             try {

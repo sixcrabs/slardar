@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.mfa;
 
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
  * @author Alex
  * @version v1.0 2023/8/29
  */
-public class MfaVerifyRequiredException extends AuthenticationException {
+public class MfaVerifyRequiredException extends AuthenticationServiceException {
 
     private final String key;
 

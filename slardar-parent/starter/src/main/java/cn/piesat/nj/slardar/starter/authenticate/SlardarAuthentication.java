@@ -53,17 +53,23 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
     private LoginDeviceType loginDeviceType;
 
 
+    /**
+     *
+     * @param principal  用户名
+     * @param authType
+     * @param details
+     */
     public SlardarAuthentication(String principal, String authType, SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
         this.accountName = principal;
-//        if (Constants.AUTH_TYPE_WX_APP.equals(authType)) {
-//            this.openId = principal;
-//            this.accountName = null;
-//        } else {
-//            this.accountName = principal;
-//            this.openId = null;
-//        }
+        this.authType = authType;
+    }
+
+    public SlardarAuthentication( SlardarUserDetails details) {
+        super(Objects.isNull(details) ? null : details.getAuthorities());
+        this.userDetails = details;
+        this.accountName = details.getUsername();
     }
 
     public String getAccountName() {

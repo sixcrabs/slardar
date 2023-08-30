@@ -5,6 +5,7 @@ import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
+import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.filter.*;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
@@ -288,6 +289,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     public AuthenticationManager getManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
 
     /**
      * 登录请求

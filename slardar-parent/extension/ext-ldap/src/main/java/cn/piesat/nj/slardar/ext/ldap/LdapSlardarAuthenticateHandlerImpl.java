@@ -13,6 +13,7 @@ import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 
@@ -52,7 +53,7 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
      * @throws AuthenticationServiceException
      */
     @Override
-    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationServiceException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
         String username = requestWrapper.getRequestParams().get("username");
         String password = requestWrapper.getRequestParams().get("password");
         // 租户信息 默认为 master

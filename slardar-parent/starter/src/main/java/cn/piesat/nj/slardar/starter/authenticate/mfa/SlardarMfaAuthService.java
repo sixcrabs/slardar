@@ -4,13 +4,17 @@ import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.bastiaanjansen.otp.HMACAlgorithm;
 import com.bastiaanjansen.otp.SecretGenerator;
 import com.bastiaanjansen.otp.TOTPGenerator;
+import com.google.gson.Gson;
 
 import java.time.Duration;
 import java.util.Objects;
+
+import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 
 /**
  * <p>
@@ -55,20 +59,22 @@ public class SlardarMfaAuthService {
     /**
      * 生成并发送 OTP
      *
-     * @param account
+     * @param userDetails
      * @return key 用于标记此次OTP记录
      * @throws SlardarException
      */
-    public String generateAndDispatch(Account account) throws SlardarException {
+    public String generateAndDispatch(SlardarUserDetails userDetails) throws SlardarException {
         // 生成密钥
         byte[] secret = SecretGenerator.generate();
         String uuid = RandomUtil.simpleUUID();
         boolean b = keyStore.setex(uuid, new String(secret), TTL.toMillis() / 1000L);
+        // 同时保存 user details
+        keyStore.setex(uuid.concat("_account"), GSON.toJson(userDetails), (TTL.toMillis() / 1000L) + 5L);
         if (b) {
             // 创建 otp code
             TOTPGenerator generator = getGenerator(secret);
             String code = generator.now();
-            dispatcher.dispatch(code, account);
+            dispatcher.dispatch(code, userDetails.getAccount());
             // TODO
             return uuid;
         }
@@ -90,8 +96,16 @@ public class SlardarMfaAuthService {
         }
         TOTPGenerator generator = getGenerator(secret.getBytes());
         // store里失效
-        keyStore.del(key);
+        keyStore.setex(key, "", 1L);
         return generator.verify(otpCode);
+    }
+
+
+    public SlardarUserDetails getUserDetails(String key) {
+        String accountKey = key.concat("_account");
+        String value = keyStore.get(accountKey);
+        keyStore.setex(accountKey, "", 1L);
+        return GSON.fromJson(value, SlardarUserDetails.class);
     }
 
 
