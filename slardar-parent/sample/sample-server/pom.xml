@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>slardar-sample-springboot</artifactId>
+    <artifactId>slardar-sample-server</artifactId>
 
 
     <dependencies>

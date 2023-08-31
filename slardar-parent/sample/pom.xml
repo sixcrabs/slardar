@@ -11,8 +11,8 @@
     </parent>
 
     <modules>
-        <module>springboot</module>
-        <module>sso-client-springboot</module>
+        <module>sample-server</module>
+        <module>sample-client</module>
     </modules>
 
 

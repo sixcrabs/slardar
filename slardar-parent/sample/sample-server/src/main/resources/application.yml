@@ -19,9 +19,18 @@ slardar:
     post-only: false
     captcha-enabled: false
     encrypt:
-      enabled: true
+      enabled: false
       mode: sm4
-  ignores: /login,/sso-login
+  ignores: /login,/sso-login,/mfa-login
+  mfa:
+    enabled: false
+    otp-mode: email
+    email:
+      host: smtp.163.com
+      port: 25
+      username: yxfacw@163.com
+      password: ZYAHAOPEZGKGLABK
+
 
 
 spring:

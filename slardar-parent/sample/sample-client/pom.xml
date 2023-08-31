@@ -9,7 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>slardar-sso-client-springboot</artifactId>
+    <artifactId>slardar-sample-client</artifactId>
 
     <dependencies>
 
