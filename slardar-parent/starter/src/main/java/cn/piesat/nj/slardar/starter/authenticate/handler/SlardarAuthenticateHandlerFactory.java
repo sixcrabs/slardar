@@ -3,7 +3,6 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.token.SlardarToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

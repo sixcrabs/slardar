@@ -12,9 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version v1.0 2023/3/14
  */
 @SpringBootApplication(scanBasePackages = "cn.piesat")
-public class DemoApplication {
+public class SlardarServerApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(SlardarServerApp.class, args);
     }
 }

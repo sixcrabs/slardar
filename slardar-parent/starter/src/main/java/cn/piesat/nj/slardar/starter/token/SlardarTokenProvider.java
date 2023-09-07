@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * @author alex
  * @version v1.0 2022/9/27
  */
-public interface SlardarToken {
+public interface SlardarTokenProvider {
 
     /**
      * token 类型

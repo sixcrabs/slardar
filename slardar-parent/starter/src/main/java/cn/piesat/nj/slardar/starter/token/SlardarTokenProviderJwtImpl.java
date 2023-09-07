@@ -18,14 +18,14 @@ import java.util.Map;
 
 /**
  * <p>
- * jwt 实现 token 生成验证等
+ * jwt 实现 token
  * </p>
  *
  * @author alex
  * @version v1.0 2022/9/27
  */
-@AutoService(SlardarToken.class)
-public class SlardarTokenJwtImpl implements SlardarToken {
+@AutoService(SlardarTokenProvider.class)
+public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
 
@@ -37,7 +37,7 @@ public class SlardarTokenJwtImpl implements SlardarToken {
 
     private Long expiration;
 
-    private static final Logger log = LoggerFactory.getLogger(SlardarTokenJwtImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SlardarTokenProviderJwtImpl.class);
 
 
     /**

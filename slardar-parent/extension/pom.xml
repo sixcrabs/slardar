@@ -19,6 +19,7 @@
     <modules>
         <module>ext-ldap</module>
         <module>ext-activedirectory</module>
+        <module>ext-license</module>
     </modules>
 
     <dependencyManagement>

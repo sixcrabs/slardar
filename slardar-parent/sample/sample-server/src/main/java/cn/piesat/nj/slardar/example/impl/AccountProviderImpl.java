@@ -7,14 +7,11 @@ import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.Authority;
 import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
-import cn.piesat.nj.slardar.core.entity.core.BaseEntity;
-import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import com.google.common.collect.Lists;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

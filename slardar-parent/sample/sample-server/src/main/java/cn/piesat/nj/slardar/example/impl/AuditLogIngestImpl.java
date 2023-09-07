@@ -2,9 +2,6 @@ package cn.piesat.nj.slardar.example.impl;
 
 import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
-import cn.piesat.nj.slardar.core.entity.Role;
-import cn.piesat.nj.slardar.core.gateway.AuditLogGateway;
-import cn.piesat.nj.slardar.starter.support.SecUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

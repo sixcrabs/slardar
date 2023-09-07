@@ -2,5 +2,5 @@ server:
   port: 9700
 
 slardar:
-  sso-client:
+  sso:
     server-url: http://localhost:9600/sso

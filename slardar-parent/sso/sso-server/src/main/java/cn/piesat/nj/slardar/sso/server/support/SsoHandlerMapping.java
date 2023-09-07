@@ -17,7 +17,7 @@ public enum SsoHandlerMapping {
     checkTicket,
 
     // 用户详情
-    userdetails;
+    userDetails;
 
 
 }

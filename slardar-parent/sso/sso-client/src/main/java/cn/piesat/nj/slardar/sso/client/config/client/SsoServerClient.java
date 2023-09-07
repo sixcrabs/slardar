@@ -15,7 +15,7 @@ import retrofit2.http.Query;
  * @author Alex
  * @version v1.0 2023/4/3
  */
-@MrClient(name = "sso-server-client", url = "${slardar.sso-client.server-url}")
+@MrClient(name = "sso-server-client", url = "${slardar.sso.server-url}")
 public interface SsoServerClient {
 
     /**
@@ -31,7 +31,7 @@ public interface SsoServerClient {
      * @param token
      * @return
      */
-    @POST("userdetails")
+    @POST("userDetails")
     RestApiResult<Account> getUserDetails(@Header("Authorization") String token);
 
 

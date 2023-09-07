@@ -32,6 +32,9 @@ $('.login-btn').click(function () {
                 sa.hideLoading();
                 if (res.code === 0) {
                     layer.msg('登录成功', {anim: 0, icon: 6});
+                    let token = res.data.token
+                    // TODO: 这里需要设置 token 的有效期
+                    document.cookie = `Authorization=${token}`;
                     setTimeout(function () {
                         // 这里刷新当前页面 进入认证中心的判断逻辑
                         location.reload();

@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.example;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.token.SlardarToken;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
  * @author Alex
  * @version v1.0 2023/3/17
  */
-@AutoService(SlardarToken.class)
-public class MyTokenImpl implements SlardarToken {
+@AutoService(SlardarTokenProvider.class)
+public class MyTokenProviderImpl implements SlardarTokenProvider {
     /**
      * token 类型
      * - jwt

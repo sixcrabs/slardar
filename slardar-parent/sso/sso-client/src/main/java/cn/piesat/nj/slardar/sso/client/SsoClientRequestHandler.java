@@ -4,6 +4,7 @@ import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
 import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
 import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import cn.piesat.nj.slardar.sso.client.support.HttpServletUtil;
 import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
 import cn.piesat.nj.slardar.sso.client.support.SsoException;
 import org.slf4j.Logger;
@@ -112,7 +113,10 @@ public class SsoClientRequestHandler {
             RestApiResult<String> apiResult = serverClient.checkTicket(ticket);
             if (apiResult.isSuccessful()) {
                 // 返回 token
-                sendJsonOk(response, apiResult.getData());
+                String accessToken = apiResult.getData();
+                // set cookie
+                HttpServletUtil.setCookie(response, "Authorization", accessToken, 0, "", "", "");
+                sendJsonOk(response, accessToken);
             } else {
                 throw new SsoException(apiResult.getMessage());
             }

@@ -2,8 +2,7 @@ package cn.piesat.nj.slardar.starter.config;
 
 import cn.piesat.nj.slardar.starter.authenticate.mfa.impl.EmailOtpDispatcher;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenJwtImpl;
-import com.google.common.annotations.VisibleForTesting;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenProviderJwtImpl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -509,7 +508,7 @@ public class SlardarProperties implements Serializable {
      */
     public static class TokenSettings {
 
-        private String type = SlardarTokenJwtImpl.NAME;
+        private String type = SlardarTokenProviderJwtImpl.NAME;
 
         /**
          * 设置 token name，默认 Authorization

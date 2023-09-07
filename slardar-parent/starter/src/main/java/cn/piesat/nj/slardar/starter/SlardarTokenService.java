@@ -5,8 +5,8 @@ import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.token.SlardarToken;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenJwtImpl;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenProvider;
+import cn.piesat.nj.slardar.starter.token.SlardarTokenProviderJwtImpl;
 import com.google.common.base.Joiner;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -177,8 +177,9 @@ public class SlardarTokenService implements InitializingBean {
         String id = simpleUUID();
         // xxx_id
         String usernameKey = UNDERLINE_JOINER.join(username, id);
-        SlardarToken.Payload payload = getTokenImpl().generate(usernameKey);
+        SlardarTokenProvider.Payload payload = getTokenImpl().generate(usernameKey);
         // TODO: into store
+        // TODO: 这里token的 有效期也需要返回给客户端 用户缓存等
         setCommands.sadd(username, id);
         stringCommands.setex(key(usernameKey, deviceType), Duration.between(LocalDateTime.now(), payload.getExpiresAt()).getSeconds(),
                 payload.getTokenValue());
@@ -289,19 +290,19 @@ public class SlardarTokenService implements InitializingBean {
     }
 
 
-    private static final Map<String, SlardarToken> TOKEN_IMPLS = new HashMap<>(1);
+    private static final Map<String, SlardarTokenProvider> TOKEN_IMPLS = new HashMap<>(1);
 
     @Override
     public void afterPropertiesSet() throws Exception {
         // 获取所有的 token 实现 并存入 缓存
-        ServiceLoader<SlardarToken> impls = ServiceLoader.load(SlardarToken.class);
-        for (SlardarToken tokenImpl : impls) {
+        ServiceLoader<SlardarTokenProvider> impls = ServiceLoader.load(SlardarTokenProvider.class);
+        for (SlardarTokenProvider tokenImpl : impls) {
             tokenImpl.initialize(this.slardarContext);
             TOKEN_IMPLS.put(tokenImpl.type(), tokenImpl);
         }
     }
 
-    private SlardarToken getTokenImpl() {
-        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenJwtImpl());
+    private SlardarTokenProvider getTokenImpl() {
+        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenProviderJwtImpl());
     }
 }

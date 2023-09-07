@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@ConfigurationProperties(prefix = "slardar.sso-client")
+@ConfigurationProperties(prefix = "slardar.sso")
 public class SsoClientProperties {
 
     /**

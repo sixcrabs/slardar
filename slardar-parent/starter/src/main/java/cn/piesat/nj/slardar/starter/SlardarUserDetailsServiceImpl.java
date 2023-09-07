@@ -3,7 +3,6 @@ package cn.piesat.nj.slardar.starter;
 import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

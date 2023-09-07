@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * <p>
  * 客户端 可以是一个web页面或 一个接口服务 或 一个第三方应用
+ * oauth 规范里的 client 概念
  * </p>
  *
  * @author Alex
@@ -62,7 +63,84 @@ public class Client extends BaseRealmEntity<String> {
     private Map<String, Object> attributes;
 
 
+    public String getClientId() {
+        return clientId;
+    }
 
+    public Client setClientId(String clientId) {
+        this.clientId = clientId;
+        return this;
+    }
 
+    public String getClientSecret() {
+        return clientSecret;
+    }
 
+    public Client setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
+        return this;
+    }
+
+    public List<String> getClientScopes() {
+        return clientScopes;
+    }
+
+    public Client setClientScopes(List<String> clientScopes) {
+        this.clientScopes = clientScopes;
+        return this;
+    }
+
+    public String getAdminUrl() {
+        return adminUrl;
+    }
+
+    public Client setAdminUrl(String adminUrl) {
+        this.adminUrl = adminUrl;
+        return this;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public Client setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Client setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public int getDisabled() {
+        return disabled;
+    }
+
+    public Client setDisabled(int disabled) {
+        this.disabled = disabled;
+        return this;
+    }
+
+    public int getFullScopeAllowed() {
+        return fullScopeAllowed;
+    }
+
+    public Client setFullScopeAllowed(int fullScopeAllowed) {
+        this.fullScopeAllowed = fullScopeAllowed;
+        return this;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public Client setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+        return this;
+    }
 }

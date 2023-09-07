@@ -2,7 +2,6 @@ package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.AuditLogIngest;
-import cn.piesat.nj.slardar.core.gateway.AccountGateway;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
@@ -31,15 +30,6 @@ public class SlardarContext implements ApplicationContextAware {
         return getBeanOrDefault(PasswordEncoder.class, new BCryptPasswordEncoder());
     }
 
-    /**
-     * get account gateway
-     *
-     * @return
-     */
-    @Deprecated
-    public AccountGateway getAccountGateway() {
-        return getBean(AccountGateway.class);
-    }
 
     /**
      * get real implement of {@link AuditLogIngest}

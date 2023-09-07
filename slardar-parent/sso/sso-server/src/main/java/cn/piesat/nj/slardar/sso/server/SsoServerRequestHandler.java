@@ -10,6 +10,7 @@ import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
+import io.netty.util.internal.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -85,7 +86,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                 case checkTicket:
                     handleSsoTicketCheck(request, response);
                     break;
-                case userdetails:
+                case userDetails:
                     handleUserDetails(request, response);
                     break;
                 default:
@@ -115,9 +116,10 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                 // get user details
                 String username = tokenService.getUsername(tokenValue);
                 SlardarUserDetails details = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
-                if (details.getAccount() != null) {
-                    details.getAccount().setPassword("");
-                }
+                // FIXME: 这里返回给客户端需要屏蔽一些信息 如 密码等
+//                if (details.getAccount() != null) {
+//                    details.getAccount().setPassword("");
+//                }
                 sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
             } catch (UsernameNotFoundException e) {
                 throw new SsoException(e.getLocalizedMessage()).setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
@@ -167,7 +169,8 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
         String redirectUrl = getParam(request, SSO_PARAM_REDIRECT);
         validateRedirectUrl(redirectUrl);
         // 生成 ticket, 带着ticket参数重定向回Client端
-        String ticket = ticketService.createTicket(getSessionId(request));
+        // FIXME: 这里需要根据 token 生成  而不是：getSessionId(request)
+        String ticket = ticketService.createTicket(tokenValue);
         try {
             response.sendRedirect(redirectUrl.concat("?ticket=").concat(ticket));
         } catch (IOException e) {

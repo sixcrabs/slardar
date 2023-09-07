@@ -15,7 +15,7 @@ import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.SSO_TOKEN_KEY
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@ConfigurationProperties(prefix = "slardar.sso-server")
+@ConfigurationProperties(prefix = "slardar.sso")
 public class SsoServerProperties {
 
     /**
