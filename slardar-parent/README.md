@@ -8,7 +8,7 @@
  <dependency>
      <groupId>cn.piesat.nj</groupId>
      <artifactId>slardar-starter</artifactId>
-     <version>1.3.2-SNAPSHOT</version>
+     <version>1.3.4-SNAPSHOT</version>
 </dependency>
 ```
 
