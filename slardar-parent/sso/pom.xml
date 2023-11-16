@@ -11,6 +11,7 @@
     </parent>
 
     <artifactId>slardar-sso-parent</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>sso-client</module>

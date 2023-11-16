@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  * @version v1.0 2023/4/3
  */
 @MrClient(name = "sso-server-client", url = "${slardar.sso.server-url}")
-public interface SsoServerClient {
+public interface SsoServerApiClient {
 
     /**
      * check ticket

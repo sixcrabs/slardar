@@ -4,7 +4,7 @@ import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
 import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
-import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import cn.piesat.nj.slardar.sso.client.config.client.SsoServerApiClient;
 import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
     private final SsoClientProperties clientProperties;
 
     @Resource
-    private SsoServerClient serverClient;
+    private SsoServerApiClient serverClient;
 
     public SsoClientTokenFilter(SsoClientProperties clientProperties) {
         this.clientProperties = clientProperties;

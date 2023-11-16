@@ -3,7 +3,7 @@ package cn.piesat.nj.slardar.sso.client;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.sso.client.config.SsoClientProperties;
 import cn.piesat.nj.slardar.sso.client.config.client.RestApiResult;
-import cn.piesat.nj.slardar.sso.client.config.client.SsoServerClient;
+import cn.piesat.nj.slardar.sso.client.config.client.SsoServerApiClient;
 import cn.piesat.nj.slardar.sso.client.support.HttpServletUtil;
 import cn.piesat.nj.slardar.sso.client.support.SsoClientHandlerMapping;
 import cn.piesat.nj.slardar.sso.client.support.SsoException;
@@ -34,7 +34,7 @@ public class SsoClientRequestHandler {
     private final SsoClientProperties clientProperties;
 
     @Resource
-    private SsoServerClient serverClient;
+    private SsoServerApiClient serverClient;
 
     public SsoClientRequestHandler(SsoClientProperties clientProperties) {
         this.clientProperties = clientProperties;
