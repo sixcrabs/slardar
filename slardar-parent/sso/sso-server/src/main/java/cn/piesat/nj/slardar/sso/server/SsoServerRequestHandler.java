@@ -3,14 +3,13 @@ package cn.piesat.nj.slardar.sso.server;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.nj.slardar.sso.server.support.SsoException;
 import cn.piesat.nj.slardar.sso.server.support.SsoHandlerMapping;
-import cn.piesat.nj.slardar.starter.SlardarContext;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
-import io.netty.util.internal.ObjectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -49,14 +48,14 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SlardarTokenService tokenService;
 
-    private final SlardarContext context;
+    private final SlardarSpiContext context;
 
     private final SsoTicketService ticketService;
 
     @Resource
     private UserDetailsService userDetailsService;
 
-    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarContext context, SsoTicketService ticketService) {
+    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarSpiContext context, SsoTicketService ticketService) {
         this.serverProperties = serverProperties;
         this.tokenService = context.getBean(SlardarTokenService.class);
         this.context = context;

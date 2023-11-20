@@ -2,6 +2,8 @@ package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
 import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
@@ -45,7 +47,7 @@ public class SlardarTokenService {
     private final SlardarProperties slardarProperties;
 
     @Resource
-    private SpringSlardarSpiFactory spiFactory;
+    private SlardarSpiFactory spiFactory;
 
     private static final String TOKEN_KEY_PREFIX = "account_token";
 
@@ -59,12 +61,12 @@ public class SlardarTokenService {
 
     private final RedisSetCommands<String, String> setCommands;
 
-    private final SlardarContext slardarContext;
+    private final SlardarSpiContext slardarContext;
 
     public static final Logger log = LoggerFactory.getLogger(SlardarTokenService.class);
 
 
-    public SlardarTokenService(SlardarProperties slardarProperties, SlardarContext context,
+    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiContext context,
                                KvStore kvStore, RedisClient redisClient) {
         this.slardarProperties = slardarProperties;
         this.kvStore = kvStore;

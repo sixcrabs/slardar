@@ -4,7 +4,7 @@ import cn.piesat.nj.slardar.core.AuditLogIngest;
 import cn.piesat.nj.slardar.core.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
 
     private final AuditLogIngest auditLogIngest;
 
-    public LogoutEventListener(SlardarContext slardarContext) {
+    public LogoutEventListener(SlardarSpiContext slardarContext) {
         this.auditLogIngest = slardarContext.getAuditLogIngest();
     }
 

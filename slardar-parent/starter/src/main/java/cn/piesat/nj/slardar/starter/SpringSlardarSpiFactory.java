@@ -111,7 +111,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         ServiceLoader<SlardarTokenProvider> tokenProviders = ServiceLoader.load(SlardarTokenProvider.class);
         for (SlardarTokenProvider tokenImpl : tokenProviders) {
             tokenImpl.initialize(this.spiContext);
-            TOKEN_REPO.put(tokenImpl.name(), tokenImpl);
+            TOKEN_REPO.put(tokenImpl.name().toUpperCase(), tokenImpl);
         }
 
     }

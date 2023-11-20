@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,13 +21,13 @@ import java.util.ServiceLoader;
  */
 public class SlardarAuthenticateHandlerFactory implements InitializingBean {
 
-    private final SlardarContext slardarContext;
+    private final SlardarSpiContext slardarContext;
 
     private static final Map<String, SlardarAuthenticateHandler> REPO = new HashMap<>(1);
 
     private static final Logger logger = LoggerFactory.getLogger(SlardarAuthenticateHandlerFactory.class);
 
-    public SlardarAuthenticateHandlerFactory(SlardarContext slardarContext) {
+    public SlardarAuthenticateHandlerFactory(SlardarSpiContext slardarContext) {
         this.slardarContext = slardarContext;
     }
 
@@ -44,7 +44,7 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // 获取所有的 token 实现 并存入 缓存
+        // FIXME: 获取所有的 token 实现 并存入 缓存
         ServiceLoader<SlardarAuthenticateHandler> impls = ServiceLoader.load(SlardarAuthenticateHandler.class);
         for (SlardarAuthenticateHandler impl : impls) {
             impl.setSlardarContext(this.slardarContext);

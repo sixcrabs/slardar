@@ -5,7 +5,8 @@ import cn.piesat.nj.slardar.core.AccountInfoDTO;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
@@ -63,7 +64,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 
     private final SlardarTokenService tokenService;
 
-    private final SlardarContext context;
+    private final SlardarSpiContext context;
 
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateSucceedHandler.class);
 
@@ -77,7 +78,8 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.registerModule(javaTimeModule);
     }
 
-    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarTokenService tokenService, SlardarContext context) {
+    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarTokenService tokenService,
+                                             SlardarSpiContext context) {
         this.securityProperties = securityProperties;
         this.tokenService = tokenService;
         this.context = context;
@@ -127,7 +129,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.writeValue(response.getWriter(), res);
         clearAuthenticationAttributes(request);
         try {
-            context.getEventManager().dispatch(new LoginEvent(getAccount(), true, request));
+            context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(getAccount(), true, request));
         } catch (SlardarException e) {
             e.printStackTrace();
         }

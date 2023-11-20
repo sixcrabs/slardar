@@ -6,7 +6,7 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
 
     private final AuditLogIngest auditLogIngest;
 
-    public LoginEventListener(SlardarContext slardarContext) {
+    public LoginEventListener(SlardarSpiContext slardarContext) {
         this.auditLogIngest = slardarContext.getAuditLogIngest();
     }
 

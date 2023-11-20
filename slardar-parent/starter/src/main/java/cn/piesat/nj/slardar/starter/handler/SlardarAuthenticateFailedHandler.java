@@ -1,7 +1,8 @@
 package cn.piesat.nj.slardar.starter.handler;
 
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
@@ -31,11 +32,11 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
  */
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 
-    private final SlardarContext slardarContext;
+    private final SlardarSpiContext slardarContext;
 
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateFailedHandler.class);
 
-    public SlardarAuthenticateFailedHandler(SlardarContext slardarContext) {
+    public SlardarAuthenticateFailedHandler(SlardarSpiContext slardarContext) {
         this.slardarContext = slardarContext;
     }
 
@@ -58,7 +59,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
             log.error("Authentication failed：{}", errMsg);
             resp = makeErrorResult(Objects.isNull(errMsg) ? "Null" : errMsg, status.value());
             try {
-                slardarContext.getEventManager().dispatch(new LoginEvent(request, e));
+                slardarContext.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(request, e));
             } catch (SlardarException ex) {
                 log.error(ex.getLocalizedMessage());
             }

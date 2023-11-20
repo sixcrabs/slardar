@@ -1,8 +1,7 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -21,7 +20,7 @@ public interface SlardarAuthenticateHandler {
      * 注入 context
      * @param context
      */
-    void setSlardarContext(SlardarContext context);
+    void setSlardarContext(SlardarSpiContext context);
 
     /**
      * 认证处理类型 用于区分

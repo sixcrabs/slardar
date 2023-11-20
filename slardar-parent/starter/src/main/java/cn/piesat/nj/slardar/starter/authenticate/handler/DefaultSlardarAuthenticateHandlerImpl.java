@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
@@ -90,7 +91,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
     @Override
     protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         SlardarUserDetailsServiceImpl userDetailsService = (SlardarUserDetailsServiceImpl) context.getBeanIfAvailable(UserDetailsService.class);
-        PasswordEncoder passwordEncoder = context.getPwdEncoder();
+        PasswordEncoder passwordEncoder = context.getBeanOrDefault(PasswordEncoder.class, new BCryptPasswordEncoder());
         SlardarProperties properties = getProperties();
         // 用户密码方式认证
         String accountName = authentication.getAccountName();

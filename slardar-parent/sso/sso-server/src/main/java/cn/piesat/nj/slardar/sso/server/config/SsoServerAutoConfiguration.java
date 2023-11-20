@@ -1,9 +1,9 @@
 package cn.piesat.nj.slardar.sso.server.config;
 
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.sso.server.SsoServerRequestFilter;
 import cn.piesat.nj.slardar.sso.server.SsoServerRequestHandler;
 import cn.piesat.nj.slardar.sso.server.SsoTicketService;
-import cn.piesat.nj.slardar.starter.SlardarContext;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class SsoServerAutoConfiguration {
     }
 
     @Bean
-    public SsoServerRequestHandler requestHandler(SsoServerProperties serverProperties, SlardarContext context,
+    public SsoServerRequestHandler requestHandler(SsoServerProperties serverProperties, SlardarSpiContext context,
                                                   SsoTicketService ssoTicketService) {
         return new SsoServerRequestHandler(serverProperties, context, ssoTicketService);
     }

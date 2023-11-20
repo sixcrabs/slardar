@@ -1,7 +1,7 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
@@ -22,7 +22,7 @@ import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
  */
 public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthenticateHandler {
 
-    protected SlardarContext context;
+    protected SlardarSpiContext context;
 
     /**
      * 注入 context
@@ -30,7 +30,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      * @param context
      */
     @Override
-    public void setSlardarContext(SlardarContext context) {
+    public void setSlardarContext(SlardarSpiContext context) {
         this.context = context;
     }
 

@@ -2,7 +2,8 @@ package cn.piesat.nj.slardar.starter.filter;
 
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
@@ -50,12 +51,12 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     private final List<RequestMatcher> requestMatchers;
 
-    private final SlardarContext context;
+    private final SlardarSpiContext context;
 
     @Autowired
     private SlardarTokenService tokenService;
 
-    public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarContext context) {
+    public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarSpiContext context) {
         this.context = context;
         this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher(AUTH_USER_DETAILS_URL, HttpMethod.POST.name()),
                 new AntPathRequestMatcher(AUTH_LOGOUT_URL, HttpMethod.POST.name()));
@@ -95,7 +96,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
                     sendJsonOk(response, makeSuccessResult(""));
                     try {
-                        context.getEventManager().dispatch(new LogoutEvent(currentUsername,request));
+                        context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(currentUsername,request));
                     } catch (SlardarException e) {
                         throw new RuntimeException(e);
                     }

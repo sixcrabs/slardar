@@ -12,7 +12,7 @@
     <artifactId>slardar-gateway-helper</artifactId>
 
     <properties>
-        <slardar.version>1.3.3-SNAPSHOT</slardar.version>
+        <slardar.version>1.3.4-SNAPSHOT</slardar.version>
     </properties>
 
     <dependencies>

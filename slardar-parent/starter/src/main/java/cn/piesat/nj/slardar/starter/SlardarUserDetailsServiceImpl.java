@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter;
 import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,12 +21,9 @@ import java.util.Objects;
  */
 public class SlardarUserDetailsServiceImpl implements UserDetailsService {
 
-//    private final SlardarContext slardarContext;
-
     private final AccountProvider accountProvider;
 
-    public SlardarUserDetailsServiceImpl(SlardarContext slardarContext) {
-//        this.slardarContext = slardarContext;
+    public SlardarUserDetailsServiceImpl(SlardarSpiContext slardarContext) {
         this.accountProvider = slardarContext.getAccountProvider();
     }
 

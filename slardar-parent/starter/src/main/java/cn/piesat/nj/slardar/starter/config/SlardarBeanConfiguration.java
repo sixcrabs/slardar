@@ -84,7 +84,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarContext context) {
+    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarSpiContext context) {
         return new SlardarAuthenticateFailedHandler(context);
     }
 
@@ -96,7 +96,8 @@ public class SlardarBeanConfiguration {
      */
     @Bean
     public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties,
-                                                                        SlardarTokenService tokenService, SlardarContext context) {
+                                                                        SlardarTokenService tokenService,
+                                                                        SlardarSpiContext context) {
         return new SlardarAuthenticateSucceedHandler(properties, tokenService, context);
     }
 
@@ -130,7 +131,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarContext context) {
+    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarSpiContext context) {
         return new SlardarAuthenticateHandlerFactory(context);
     }
 
@@ -145,16 +146,6 @@ public class SlardarBeanConfiguration {
                                                        AuthenticationSuccessHandler successHandler) {
         return new SlardarMfaLoginFilter(mfaAuthService, failureHandler, successHandler);
     }
-
-    /**
-     * 注入上下文 context
-     *
-     * @return
-     */
-//    @Bean
-//    public SlardarContext slardarContext() {
-//        return new SlardarContext();
-//    }
 
     @Bean
     public SlardarSpiContext slardarSpiContext() {
@@ -174,7 +165,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarUserDetailsServiceImpl userDetailsService(SlardarContext context) {
+    public SlardarUserDetailsServiceImpl userDetailsService(SlardarSpiContext context) {
         return new SlardarUserDetailsServiceImpl(context);
     }
 
@@ -188,7 +179,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarTokenService tokenService(SlardarContext context, SlardarProperties properties, KvStore kvStore, RedisClient redisClient) {
+    public SlardarTokenService tokenService(SlardarSpiContext context, SlardarProperties properties, KvStore kvStore, RedisClient redisClient) {
         return new SlardarTokenService(properties, context, kvStore, redisClient);
     }
 
@@ -217,7 +208,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
+    public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarSpiContext context) {
         return new SlardarAuthenticatedRequestFilter(properties, context);
     }
 
