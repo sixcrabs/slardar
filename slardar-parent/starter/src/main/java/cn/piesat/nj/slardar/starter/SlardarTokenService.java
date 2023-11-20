@@ -1,22 +1,22 @@
 package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.skv.core.KvStore;
+import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenProvider;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenProviderJwtImpl;
 import com.google.common.base.Joiner;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.api.sync.RedisSetCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -40,9 +40,12 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class SlardarTokenService implements InitializingBean {
+public class SlardarTokenService {
 
     private final SlardarProperties slardarProperties;
+
+    @Resource
+    private SpringSlardarSpiFactory spiFactory;
 
     private static final String TOKEN_KEY_PREFIX = "account_token";
 
@@ -290,19 +293,12 @@ public class SlardarTokenService implements InitializingBean {
     }
 
 
-    private static final Map<String, SlardarTokenProvider> TOKEN_IMPLS = new HashMap<>(1);
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // 获取所有的 token 实现 并存入 缓存
-        ServiceLoader<SlardarTokenProvider> impls = ServiceLoader.load(SlardarTokenProvider.class);
-        for (SlardarTokenProvider tokenImpl : impls) {
-            tokenImpl.initialize(this.slardarContext);
-            TOKEN_IMPLS.put(tokenImpl.type(), tokenImpl);
-        }
-    }
-
     private SlardarTokenProvider getTokenImpl() {
-        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenProviderJwtImpl());
+        try {
+            return spiFactory.findTokenProvider(this.slardarProperties.getToken().getType());
+        } catch (SlardarException e) {
+            throw new RuntimeException(e);
+        }
+//        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenProviderJwtImpl());
     }
 }

@@ -1,8 +1,15 @@
+/*
+ * @Author: alex
+ * @Date: 2023-11-16 21:09:15
+ * @LastEditTime: 2023-11-17 18:25:28
+ * @LastEditors: alex
+ */
 package cn.piesat.nj.slardar.example;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,7 +34,7 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return "my";
     }
 
@@ -37,7 +44,7 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @param context
      */
     @Override
-    public void initialize(SlardarContext context) {
+    public void initialize(SlardarSpiContext context) {
 
 
 
@@ -50,9 +57,12 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public Payload generate(UserDetails userDetails) {
+    public Payload generate(Object userDetails) {
+        UserDetails data = (UserDetails) userDetails;
         return new Payload().setTokenValue(RandomUtil.randomString(5)).setExpiresAt(LocalDateTime.now().plusHours(1L));
     }
+
+
 
     /**
      * 生成 token
@@ -96,4 +106,6 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
     public long getExpiration() {
         return 120000;
     }
+
+
 }

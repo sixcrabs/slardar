@@ -3,13 +3,10 @@ package cn.piesat.nj.slardar.starter.config;
 import cn.hutool.core.util.ArrayUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.skv.starter.config.KvAutoConfiguration;
-import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.SlardarEventManager;
-import cn.piesat.nj.slardar.starter.SlardarTokenService;
-import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
-import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
+import cn.piesat.nj.slardar.starter.*;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
-import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcherFactory;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.nj.slardar.starter.filter.SlardarMfaLoginFilter;
@@ -115,39 +112,16 @@ public class SlardarBeanConfiguration {
 
 
     /**
-     * 加密 factory
-     *
-     * @param context
-     * @return
-     */
-    @Bean
-    public SlardarCryptoFactory slardarCryptoFactory(SlardarContext context) {
-        return new SlardarCryptoFactory(context);
-    }
-
-
-    /**
-     * otp 发送 factory
-     *
-     * @param context
-     * @return
-     */
-    @Bean
-    public OtpDispatcherFactory otpDispatcherFactory(SlardarContext context) {
-        return new OtpDispatcherFactory(context);
-    }
-
-    /**
      * 处理 MFA 认证
-     * @param otpDispatcherFactory
+     * @param spiFactory
      * @param slardarProperties
      * @param kvStore
      * @return
      */
     @Bean
-    public SlardarMfaAuthService slardarMfaAuthService(OtpDispatcherFactory otpDispatcherFactory, SlardarProperties slardarProperties,
+    public SlardarMfaAuthService slardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties,
                                                        KvStore kvStore) {
-        return new SlardarMfaAuthService(otpDispatcherFactory, slardarProperties, kvStore);
+        return new SlardarMfaAuthService(spiFactory, slardarProperties, kvStore);
     }
 
     /**
@@ -177,9 +151,20 @@ public class SlardarBeanConfiguration {
      *
      * @return
      */
+//    @Bean
+//    public SlardarContext slardarContext() {
+//        return new SlardarContext();
+//    }
+
     @Bean
-    public SlardarContext slardarContext() {
-        return new SlardarContext();
+    public SlardarSpiContext slardarSpiContext() {
+        return new SpringSlardarContextImpl();
+    }
+
+
+    @Bean
+    public SlardarSpiFactory slardarSpiFactory(SlardarSpiContext spiContext) {
+        return new SpringSlardarSpiFactory(spiContext);
     }
 
     /**

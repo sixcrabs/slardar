@@ -1,3 +1,9 @@
+/*
+ * @Author: alex
+ * @Date: 2023-04-19 23:26:48
+ * @LastEditTime: 2023-11-17 17:59:15
+ * @LastEditors: alex
+ */
 package cn.piesat.nj.slardar.starter;
 
 import cn.piesat.nj.slardar.core.SlardarEvent;
@@ -30,31 +36,33 @@ public class SlardarEventManager implements ApplicationContextAware {
 
     private ApplicationContext context;
 
-    private static final Map<Class<? extends SlardarEvent>, List<SlardarEventListener>> CACHE =
-            new ConcurrentHashMap<>(1);
+    private static final Map<Class<? extends SlardarEvent>, List<SlardarEventListener>> CACHE = new ConcurrentHashMap<>(
+            1);
 
     private static final ThreadPoolExecutor POOL = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
-            Runtime.getRuntime().availableProcessors()*2, 30L, TimeUnit.SECONDS,
+            Runtime.getRuntime().availableProcessors() * 2, 30L, TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(1024), new ThreadFactoryBuilder()
-            .setDaemon(true).setNameFormat("slardar-event-thread-%d").build(), new ThreadPoolExecutor.AbortPolicy());
+                    .setDaemon(true).setNameFormat("slardar-event-thread-%d").build(),
+            new ThreadPoolExecutor.AbortPolicy());
 
     public <T extends SlardarEvent> void dispatch(T event) throws SlardarException {
         List<SlardarEventListener> candidates = findCandidates(event.getClass());
         // 提交到线程池中运行
         candidates.forEach(slardarEventListener -> {
-           POOL.execute(() -> {
-               try {
-                   slardarEventListener.onEvent(event);
-               } catch (SlardarException e) {
-                   e.printStackTrace();
-               }
-           });
+            POOL.execute(() -> {
+                try {
+                    slardarEventListener.onEvent(event);
+                } catch (SlardarException e) {
+                    e.printStackTrace();
+                }
+            });
         });
     }
 
     private List<SlardarEventListener> findCandidates(Class<? extends SlardarEvent> eventClass) {
         return CACHE.computeIfAbsent(eventClass, clazz -> {
-            Map<String, SlardarEventListener> listenerBeans = context.getBeansOfType(SlardarEventListener.class, true, true);
+            Map<String, SlardarEventListener> listenerBeans = context.getBeansOfType(SlardarEventListener.class, true,
+                    true);
             return listenerBeans.values().stream()
                     .filter(slardarEventListener -> slardarEventListener.support(eventClass))
                     .collect(Collectors.toList());

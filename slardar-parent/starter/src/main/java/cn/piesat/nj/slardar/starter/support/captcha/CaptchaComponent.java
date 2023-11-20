@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.support.captcha;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.captcha.generator.RandomGenerator;
@@ -86,7 +86,7 @@ public class CaptchaComponent {
      */
     public boolean verify(String sessionId, String code) {
         String captchaCode = store.get(CAPTCHA_KEY_PREFIX.concat(sessionId));
-        if (StrUtil.isBlank(captchaCode)) {
+        if (StringUtil.isBlank(captchaCode)) {
             // 已过期或不存在
             return false;
         }

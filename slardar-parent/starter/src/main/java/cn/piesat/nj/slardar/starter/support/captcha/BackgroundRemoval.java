@@ -1,8 +1,8 @@
 package cn.piesat.nj.slardar.starter.support.captcha;
 
 import cn.hutool.core.io.FileTypeUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.ArrayUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -313,7 +313,7 @@ public class BackgroundRemoval {
 		for (Map.Entry<String, Integer> entry : map.entrySet()) {
 			String key = entry.getKey();
 			Integer temp = entry.getValue();
-			if (StrUtil.isBlank(max) || temp > num) {
+			if (StringUtil.isBlank(max) || temp > num) {
 				max = key;
 				num = temp;
 			}
@@ -346,7 +346,7 @@ public class BackgroundRemoval {
 		String type = FileTypeUtil.getType(input);
 		// 类型对比
 		if (!ArrayUtil.contains(imagesType, type)) {
-			throw new IllegalArgumentException(StrUtil.format("文件类型{}不支持", type));
+			throw new IllegalArgumentException(StringUtil.format("文件类型{}不支持", type));
 		}
 		return false;
 	}

@@ -1,8 +1,8 @@
 package cn.piesat.nj.slardar.starter.support.captcha.generator;
 
-import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.CharUtil;
 
 import static cn.hutool.core.util.StrUtil.sub;
 

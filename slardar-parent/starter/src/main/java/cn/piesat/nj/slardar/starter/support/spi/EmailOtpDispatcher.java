@@ -1,12 +1,12 @@
-package cn.piesat.nj.slardar.starter.authenticate.mfa.impl;
+package cn.piesat.nj.slardar.starter.support.spi;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
-import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatchResult;
-import cn.piesat.nj.slardar.starter.authenticate.mfa.OtpDispatcher;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.mfa.SlardarOtpDispatcher;
+import cn.piesat.nj.slardar.spi.mfa.OtpDispatchResult;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
@@ -26,8 +26,8 @@ import java.util.Objects;
  * @author Alex
  * @version v1.0 2023/8/29
  */
-@AutoService(OtpDispatcher.class)
-public class EmailOtpDispatcher implements OtpDispatcher {
+@AutoService(SlardarOtpDispatcher.class)
+public class EmailOtpDispatcher implements SlardarOtpDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailOtpDispatcher.class);
 
@@ -49,7 +49,7 @@ public class EmailOtpDispatcher implements OtpDispatcher {
      * @return
      */
     @Override
-    public String mode() {
+    public String name() {
         return MODE;
     }
 
@@ -59,7 +59,7 @@ public class EmailOtpDispatcher implements OtpDispatcher {
      * @param context
      */
     @Override
-    public void setContext(SlardarContext context) {
+    public void initialize(SlardarSpiContext context) {
         // 这里读取email 配置
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         SlardarProperties.MfaSettings mfa = properties.getMfa();
@@ -99,11 +99,11 @@ public class EmailOtpDispatcher implements OtpDispatcher {
     }
 
     private String emailSubject(Account account) {
-        return StrUtil.format("[slardar] OTP for logging in to your account: {}", account.getName());
+        return StringUtil.format("[slardar] OTP for logging in to your account: {}", account.getName());
     }
 
     private String emailText(String otpCode, Account account) {
-        return StrUtil.format("<p>Hi, <strong>{}</strong></p> <p> 看起来你正试图使用你的用户名和密码登录。" +
+        return StringUtil.format("<p>Hi, <strong>{}</strong></p> <p> 看起来你正试图使用你的用户名和密码登录。" +
                         "作为一项额外的安全措施(双因素认证)，您需要输入此电子邮件中提供的OTP代码（一次性密码）</p> <p> The OTP code is: <strong> {} </strong> <br> 有效期 <strong>5</strong> 分钟 </p>",
                 account.getName(), otpCode);
     }

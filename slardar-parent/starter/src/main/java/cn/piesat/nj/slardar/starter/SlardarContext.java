@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author Alex
  * @version v1.0 2023/3/14
  */
+@Deprecated
 public class SlardarContext implements ApplicationContextAware {
 
     private ApplicationContext context;

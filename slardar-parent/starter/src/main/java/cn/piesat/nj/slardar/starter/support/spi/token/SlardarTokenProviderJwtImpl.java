@@ -1,6 +1,7 @@
-package cn.piesat.nj.slardar.starter.token;
+package cn.piesat.nj.slardar.starter.support.spi.token;
 
-import cn.piesat.nj.slardar.starter.SlardarContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.shared.timer.cron.DateTimeUtil;
 import com.google.auto.service.AutoService;
@@ -48,7 +49,7 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return NAME;
     }
 
@@ -58,17 +59,21 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
      * @param context
      */
     @Override
-    public void initialize(SlardarContext context) {
+    public void initialize(SlardarSpiContext context) {
         secret = context.getBean(SlardarProperties.class).getToken().getJwt().getSignKey();
         expiration = context.getBean(SlardarProperties.class).getToken().getJwt().getExpiration();
     }
 
 
     @Override
-    public Payload generate(UserDetails userDetails) {
-        return generate(userDetails.getUsername());
-
+    public Payload generate(Object userDetails) {
+        if (userDetails instanceof UserDetails) {
+            return generate(((UserDetails)userDetails).getUsername());
+        } else {
+            return null;
+        }
     }
+
 
     @Override
     public Payload generate(String username) {

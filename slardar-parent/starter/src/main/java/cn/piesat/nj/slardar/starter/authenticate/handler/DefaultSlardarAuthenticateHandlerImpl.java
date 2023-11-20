@@ -3,11 +3,11 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
+import cn.piesat.nj.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
-import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
-import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCryptoFactory;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
@@ -97,10 +97,10 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         SlardarUserDetails userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
         String password = authentication.getPassword();
         if (properties.getLogin().getEncrypt().isEnabled()) {
-            SlardarCryptoFactory slardarCryptoFactory = context.getBeanIfAvailable(SlardarCryptoFactory.class);
+            SlardarSpiFactory spiFactory = context.getBeanIfAvailable(SlardarSpiFactory.class);
             // 解密
             try {
-                SlardarCrypto crypto = slardarCryptoFactory.findCrypto(properties.getLogin().getEncrypt().getMode());
+                SlardarCrypto crypto = spiFactory.findCrypto(properties.getLogin().getEncrypt().getMode());
                 password = crypto.decrypt(password);
             } catch (SlardarException e) {
                 throw new AuthenticationServiceException(StrUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),

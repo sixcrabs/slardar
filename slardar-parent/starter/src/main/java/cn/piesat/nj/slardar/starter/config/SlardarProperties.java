@@ -1,8 +1,8 @@
 package cn.piesat.nj.slardar.starter.config;
 
-import cn.piesat.nj.slardar.starter.authenticate.mfa.impl.EmailOtpDispatcher;
+import cn.piesat.nj.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
-import cn.piesat.nj.slardar.starter.token.SlardarTokenProviderJwtImpl;
+import cn.piesat.nj.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 

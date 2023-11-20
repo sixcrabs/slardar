@@ -1,12 +1,14 @@
-package cn.piesat.nj.slardar.starter.authenticate.crypto.impl;
+package cn.piesat.nj.slardar.starter.support.spi.crypto;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.Mode;
 import cn.hutool.crypto.Padding;
 import cn.hutool.crypto.symmetric.AES;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.SlardarSpi;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.google.auto.service.AutoService;
 
@@ -34,7 +36,7 @@ public class AESCrypto implements SlardarCrypto {
      * @return
      */
     @Override
-    public String mode() {
+    public String name() {
         return MODE;
     }
 
@@ -44,11 +46,11 @@ public class AESCrypto implements SlardarCrypto {
      * @param context
      */
     @Override
-    public void setContext(SlardarContext context) {
+    public void initialize(SlardarSpiContext context) {
 
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         String secretKey = properties.getLogin().getEncrypt().getSecretKey();
-        if (StrUtil.isBlank(secretKey)) {
+        if (StringUtil.isBlank(secretKey)) {
             secretKey = "ab0c1de2fg3hi4jk5lmnopqrstuvwxyz";
         }
         aes = new AES(Mode.ECB, Padding.ISO10126Padding, secretKey.getBytes());

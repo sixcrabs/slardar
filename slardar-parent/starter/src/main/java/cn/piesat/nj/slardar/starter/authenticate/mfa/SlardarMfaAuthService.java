@@ -4,6 +4,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
+import cn.piesat.nj.slardar.spi.mfa.SlardarOtpDispatcher;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.bastiaanjansen.otp.HMACAlgorithm;
@@ -26,7 +28,7 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
  */
 public class SlardarMfaAuthService {
 
-    private final OtpDispatcherFactory dispatcherFactory;
+    private final SlardarSpiFactory dispatcherFactory;
 
     private final SlardarProperties slardarProperties;
 
@@ -37,9 +39,9 @@ public class SlardarMfaAuthService {
      */
     private static final Duration TTL = Duration.ofSeconds(60 * 5);
 
-    private OtpDispatcher dispatcher;
+    private SlardarOtpDispatcher dispatcher;
 
-    public SlardarMfaAuthService(OtpDispatcherFactory dispatcherFactory, SlardarProperties slardarProperties, KvStore keyStore) {
+    public SlardarMfaAuthService(SlardarSpiFactory dispatcherFactory, SlardarProperties slardarProperties, KvStore keyStore) {
         this.dispatcherFactory = dispatcherFactory;
         this.slardarProperties = slardarProperties;
         this.keyStore = keyStore;
@@ -49,7 +51,7 @@ public class SlardarMfaAuthService {
     private void init() {
         String otpMode = slardarProperties.getMfa().getOtpMode();
         try {
-            dispatcher = dispatcherFactory.findDispatcher(otpMode);
+            dispatcher = dispatcherFactory.findOtpDispatcher(otpMode);
         } catch (SlardarException e) {
             e.printStackTrace();
         }

@@ -1,8 +1,8 @@
-package cn.piesat.nj.slardar.starter.authenticate.crypto.impl;
+package cn.piesat.nj.slardar.starter.support.spi.crypto;
 
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.SlardarContext;
-import cn.piesat.nj.slardar.starter.authenticate.crypto.SlardarCrypto;
+import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import com.antherd.smcrypto.sm4.Sm4;
 import com.antherd.smcrypto.sm4.Sm4Options;
@@ -31,7 +31,7 @@ public class Sm4Crypto implements SlardarCrypto {
      * @return
      */
     @Override
-    public String mode() {
+    public String name() {
         return "sm4";
     }
 
@@ -41,7 +41,7 @@ public class Sm4Crypto implements SlardarCrypto {
      * @param context
      */
     @Override
-    public void setContext(SlardarContext context) {
+    public void initialize(SlardarSpiContext context) {
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         SlardarProperties.EncryptSetting encrypt = properties.getLogin().getEncrypt();
         if (encrypt.getSecretKey() != null) {

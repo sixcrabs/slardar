@@ -1,7 +1,7 @@
 package cn.piesat.nj.slardar.starter.filter;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarTokenService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
@@ -102,7 +102,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      * @see cn.piesat.nj.slardar.core.SlardarIgnore
      */
     public void addIgnoreUrlPattern(String antPattern, String method) {
-        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StrUtil.isBlank(method) ? null : method));
+        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));
     }
 
     /**

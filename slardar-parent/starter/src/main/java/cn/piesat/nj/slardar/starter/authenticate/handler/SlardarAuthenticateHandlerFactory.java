@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarContext;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
     }
 
     public SlardarAuthenticateHandler findAuthenticateHandler(String type) throws SlardarException {
-        if (StrUtil.isBlank(type)) {
+        if (StringUtil.isBlank(type)) {
             return REPO.get(DefaultSlardarAuthenticateHandlerImpl.NAME);
         }
         if (REPO.containsKey(type)) {

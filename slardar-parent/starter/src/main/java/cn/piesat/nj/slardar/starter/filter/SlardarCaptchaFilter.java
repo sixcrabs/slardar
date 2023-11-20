@@ -47,7 +47,7 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
         if (!this.requestMatcher.matches(request)) {
             chain.doFilter(request, response);
         } else {
-            // 生成验证码
+            // TODO: 支持多种可定制化方式 生成验证码
             CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(getSessionId(request));
             try (OutputStream os = response.getOutputStream()) {
                 response.setHeader("Pragma", "no-cache");

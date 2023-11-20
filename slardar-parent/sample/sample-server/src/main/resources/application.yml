@@ -35,6 +35,6 @@ slardar:
 
 spring:
   application:
-    name: slardar-demo
+    name: slardar-server-demo
 swagger:
   enabled: true

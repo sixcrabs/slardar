@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
@@ -35,7 +35,7 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
     @Override
     public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
         String openid = requestWrapper.getRequestParams().get("openid");
-        if (StrUtil.isBlank(openid)) {
+        if (StringUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");
         }
         return new SlardarAuthentication(openid, Constants.AUTH_TYPE_WX_APP, null);
