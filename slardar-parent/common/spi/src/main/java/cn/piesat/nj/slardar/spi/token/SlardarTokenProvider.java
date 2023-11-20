@@ -1,42 +1,25 @@
-package cn.piesat.nj.slardar.starter.token;
+package cn.piesat.nj.slardar.spi.token;
 
-import cn.piesat.nj.slardar.starter.SlardarContext;
-import org.springframework.security.core.userdetails.UserDetails;
+import cn.piesat.nj.slardar.spi.SlardarSpi;
 
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * token 接口
- * 应用方可自行实现 token
+ * token provider
  * </p>
  *
  * @author alex
- * @version v1.0 2022/9/27
+ * @version v1.0 2023/11/20
  */
-public interface SlardarTokenProvider {
-
-    /**
-     * token 类型
-     * - jwt
-     * - ...
-     * @return
-     */
-    String type();
-
-
-    /**
-     * 初始化
-     * @param context
-     */
-    void initialize(SlardarContext context);
+public interface SlardarTokenProvider extends SlardarSpi {
 
     /**
      * 生成 token
      * @param userDetails
      * @return
      */
-    Payload generate(UserDetails userDetails);
+    Payload generate(Object userDetails);
 
     /**
      * 生成 token
@@ -71,12 +54,12 @@ public interface SlardarTokenProvider {
         /**
          * token 值
          */
-       private String tokenValue;
+        private String tokenValue;
 
         /**
          * 过期日期
          */
-       private LocalDateTime expiresAt;
+        private LocalDateTime expiresAt;
 
         public String getTokenValue() {
             return tokenValue;

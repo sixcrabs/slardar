@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>slardar-common-parent</artifactId>
+        <groupId>cn.piesat.nj</groupId>
+        <version>1.3.4-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>slardar-common-spi</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.piesat.nj</groupId>
+            <artifactId>slardar-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- for spi -->
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

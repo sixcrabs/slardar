@@ -1,6 +1,5 @@
-package cn.piesat.nj.slardar.starter.authenticate.mfa;
+package cn.piesat.nj.slardar.spi.mfa;
 
-import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -27,7 +26,7 @@ public class OtpDispatchResult {
         return new OtpDispatchResult().setOtpCode(otpCode).setOtpMode(mode).setMsg(msg).setSucceeded(true);
     }
 
-    public static OtpDispatchResult ofFailure(String otpCode, String mode, @NotNull Exception ex) {
+    public static OtpDispatchResult ofFailure(String otpCode, String mode, Exception ex) {
         return new OtpDispatchResult().setOtpCode(otpCode).setOtpMode(mode).setMsg(ex.getLocalizedMessage()).setSucceeded(false);
     }
 
