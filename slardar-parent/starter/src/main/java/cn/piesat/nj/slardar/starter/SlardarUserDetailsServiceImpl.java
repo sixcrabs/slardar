@@ -57,7 +57,7 @@ public class SlardarUserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String accountName) throws UsernameNotFoundException {
-        return loadUserByAccount(accountName, Constants.REALM_MASTER);
+        return loadUserByAccount(accountName, Constants.REALM_EMPTY);
     }
 
     /**

@@ -5,7 +5,7 @@ import cn.piesat.nj.slardar.core.entity.core.BaseEntity;
 import java.util.List;
 import java.util.Map;
 
-import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
+import static cn.piesat.nj.slardar.core.Constants.REALM_EMPTY;
 
 /**
  * <p>
@@ -48,7 +48,7 @@ public class Realm extends BaseEntity<String> {
      * @return
      */
     public boolean isMaster() {
-        return REALM_MASTER.equalsIgnoreCase(name);
+        return REALM_EMPTY.equalsIgnoreCase(name);
     }
 
 

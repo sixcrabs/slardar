@@ -10,7 +10,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.AuthenticationException;
 
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
-import static cn.piesat.nj.slardar.core.Constants.REALM_MASTER;
+import static cn.piesat.nj.slardar.core.Constants.REALM_EMPTY;
 
 /**
  * <p>
@@ -61,9 +61,9 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
 
     protected String getRealm(final RequestWrapper requestWrapper) {
         if (requestWrapper.getRequestHeaders().containsKey(HEADER_KEY_OF_REALM)) {
-            return requestWrapper.getRequestHeaders().getOrDefault(HEADER_KEY_OF_REALM, REALM_MASTER);
+            return requestWrapper.getRequestHeaders().getOrDefault(HEADER_KEY_OF_REALM, REALM_EMPTY);
         } else {
-            return requestWrapper.getRequestParams().getOrDefault("realm", REALM_MASTER);
+            return requestWrapper.getRequestParams().getOrDefault("realm", REALM_EMPTY);
         }
     }
 

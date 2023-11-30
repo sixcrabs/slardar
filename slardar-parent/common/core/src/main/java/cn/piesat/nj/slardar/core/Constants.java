@@ -10,7 +10,7 @@ package cn.piesat.nj.slardar.core;
  */
 public final class Constants {
 
-    public static final String REALM_MASTER = "master";
+    public static final String REALM_EMPTY = "";
 
     public static final String BEARER = "Bearer ";
 
