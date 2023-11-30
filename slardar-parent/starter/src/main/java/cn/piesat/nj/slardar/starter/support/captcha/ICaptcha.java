@@ -5,6 +5,12 @@ import java.io.Serializable;
 
 /**
  * 验证码接口，提供验证码对象接口定义
+ * 验证码：
+ * - 仅数字
+ * - 数字 + 字母
+ * - 仅字母
+ * - gif 动态
+ * -
  * 
  * @author looly
  *

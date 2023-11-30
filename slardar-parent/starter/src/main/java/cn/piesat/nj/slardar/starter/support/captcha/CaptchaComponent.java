@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.support.captcha;
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.support.captcha.generator.MathGenerator;
 import cn.piesat.nj.slardar.starter.support.captcha.generator.RandomGenerator;
 import cn.piesat.nj.slardar.starter.support.captcha.impl.LineCaptcha;
 import org.slf4j.Logger;
@@ -48,8 +49,10 @@ public class CaptchaComponent {
      */
     public CaptchaPayload generate(int width, int height, String sessionId) {
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(width, height);
-        RandomGenerator randomGenerator = new RandomGenerator(settings.getRandomBase(), settings.getLength());
-        lineCaptcha.setGenerator(randomGenerator);
+        // TODO: 这里支持多种验证码选项 留给 SPI 配置参数控制
+//        RandomGenerator randomGenerator = new RandomGenerator(settings.getRandomBase(), settings.getLength());
+        MathGenerator mathGenerator = new MathGenerator(1);
+        lineCaptcha.setGenerator(mathGenerator);
         //  验证码值
         String code = lineCaptcha.getCode();
         CaptchaPayload payload = new CaptchaPayload();
