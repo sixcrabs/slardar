@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
@@ -46,8 +45,7 @@ public class SlardarTokenService {
 
     private final SlardarProperties slardarProperties;
 
-    @Resource
-    private SlardarSpiFactory spiFactory;
+    private final SlardarSpiFactory spiFactory;
 
     private static final String TOKEN_KEY_PREFIX = "account_token";
 
@@ -66,9 +64,10 @@ public class SlardarTokenService {
     public static final Logger log = LoggerFactory.getLogger(SlardarTokenService.class);
 
 
-    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiContext context,
+    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory, SlardarSpiContext context,
                                KvStore kvStore, RedisClient redisClient) {
         this.slardarProperties = slardarProperties;
+        this.spiFactory = spiFactory;
         this.kvStore = kvStore;
         this.slardarContext = context;
         this.redisClient = redisClient;
