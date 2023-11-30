@@ -21,6 +21,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -69,13 +70,24 @@ public class SlardarBeanConfiguration {
             "/v2/api-docs"};
 
     /**
-     * 注入时间管理
+     * 注入事件管理
      *
      * @return
      */
     @Bean
     public SlardarEventManager eventManager() {
         return new SlardarEventManager();
+    }
+
+
+    /**
+     * 默认的密码 encoder
+     *
+     * @return
+     */
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     /**
@@ -114,6 +126,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 处理 MFA 认证
+     *
      * @param spiFactory
      * @param slardarProperties
      * @param kvStore
@@ -179,7 +192,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarTokenService tokenService(SlardarSpiContext context,SlardarSpiFactory spiFactory,
+    public SlardarTokenService tokenService(SlardarSpiContext context, SlardarSpiFactory spiFactory,
                                             SlardarProperties properties, KvStore kvStore, RedisClient redisClient) {
         return new SlardarTokenService(properties, spiFactory, context, kvStore, redisClient);
     }
