@@ -83,6 +83,12 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         }
     }
 
+    /**
+     * TODO:
+     * @param name
+     * @return
+     * @throws SlardarException
+     */
     @Override
     public SlardarCaptchaGenerator findCaptchaGenerator(String name) throws SlardarException {
         return null;
@@ -90,7 +96,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // TODO: 加载所有需要的 SPI 实现
+        // 加载所有需要的 SPI 实现
         // 获取所有的 otp 发送实现 并存入 缓存
         ServiceLoader<SlardarOtpDispatcher> impls = ServiceLoader.load(SlardarOtpDispatcher.class);
         for (SlardarOtpDispatcher impl : impls) {

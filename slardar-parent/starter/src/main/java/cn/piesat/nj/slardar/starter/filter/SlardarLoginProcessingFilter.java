@@ -4,6 +4,7 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
@@ -86,6 +87,7 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                         .setLoginDeviceType(getDeviceType(request))
                         .setSessionId(getSessionId(request))
                         .setRequestHeaders(requestHeaders));
+                authenticationToken.setReqClientIp(HttpServletUtil.geRequestIpAddress(request));
                 // 调用特定的认证逻辑
                 return authenticateHandler.doAuthenticate(authenticationToken);
             } catch (AuthenticationServiceException e) {

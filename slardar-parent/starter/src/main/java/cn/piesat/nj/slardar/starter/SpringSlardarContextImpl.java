@@ -8,6 +8,11 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * <p>
  * spring impl of spi context
@@ -23,6 +28,18 @@ public class SpringSlardarContextImpl implements SlardarSpiContext, ApplicationC
     @Override
     public <T> T getBean(Class<T> clazz) {
         return context.getBean(clazz);
+    }
+
+    /**
+     * get beans by type
+     *
+     * @param clazz
+     * @return
+     */
+    @Override
+    public <T> Collection<T> getBeans(Class<T> clazz) {
+        Map<String, T> beansOfType = context.getBeansOfType(clazz);
+        return beansOfType.values();
     }
 
     @Override

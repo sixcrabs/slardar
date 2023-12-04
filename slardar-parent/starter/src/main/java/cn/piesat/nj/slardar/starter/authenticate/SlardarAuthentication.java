@@ -52,6 +52,10 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
      */
     private LoginDeviceType loginDeviceType;
 
+    /**
+     * 请求客户端 IP
+     */
+    private String reqClientIp;
 
     /**
      *
@@ -70,6 +74,15 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
         this.accountName = details.getUsername();
+    }
+
+    public String getReqClientIp() {
+        return reqClientIp;
+    }
+
+    public SlardarAuthentication setReqClientIp(String reqClientIp) {
+        this.reqClientIp = reqClientIp;
+        return this;
     }
 
     public String getAccountName() {

@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -208,6 +209,34 @@ public class SlardarProperties implements Serializable {
          */
         private LoginConcurrentPolicy concurrentPolicy = LoginConcurrentPolicy.separate;
 
+        /**
+         * 登录最大允许尝试次数 默认 5次
+         */
+        private Integer maxAttemptsBeforeLocked = 5;
+
+        /**
+         * 登录失败最大次数后锁定时间 默认 1分钟
+         */
+        private Duration failedLockDuration = Duration.ofMinutes(1L);
+
+
+        public Integer getMaxAttemptsBeforeLocked() {
+            return maxAttemptsBeforeLocked;
+        }
+
+        public LoginSettings setMaxAttemptsBeforeLocked(Integer maxAttemptsBeforeLocked) {
+            this.maxAttemptsBeforeLocked = maxAttemptsBeforeLocked;
+            return this;
+        }
+
+        public Duration getFailedLockDuration() {
+            return failedLockDuration;
+        }
+
+        public LoginSettings setFailedLockDuration(Duration failedLockDuration) {
+            this.failedLockDuration = failedLockDuration;
+            return this;
+        }
 
         public EncryptSetting getEncrypt() {
             return encrypt;

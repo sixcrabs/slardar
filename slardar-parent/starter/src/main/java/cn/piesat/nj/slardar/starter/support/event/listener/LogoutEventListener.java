@@ -42,7 +42,7 @@ public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
                     .setLogType("logout")
                     .setLogTime(LocalDateTime.now())
                     .setClientType(getDeviceType(request).name());
-            auditLog.setClientIp(HttpServletUtil.getIpAddr(request));
+            auditLog.setClientIp(HttpServletUtil.geRequestIpAddress(request));
             auditLogIngest.ingest(auditLog);
         } catch (Exception e) {
             throw new RuntimeException(e);

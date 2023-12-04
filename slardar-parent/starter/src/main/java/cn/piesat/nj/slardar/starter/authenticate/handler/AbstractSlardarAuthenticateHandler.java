@@ -9,6 +9,8 @@ import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 
+import java.util.Collection;
+
 import static cn.piesat.nj.slardar.core.Constants.HEADER_KEY_OF_REALM;
 import static cn.piesat.nj.slardar.core.Constants.REALM_EMPTY;
 
@@ -44,12 +46,15 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      */
     @Override
     public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws AuthenticationException {
-        SlardarAuthenticatePreHandler authenticationBeforeHandler = context.getBeanIfAvailable(SlardarAuthenticatePreHandler.class);
-        if (authenticationBeforeHandler != null) {
-            try {
-                authenticationBeforeHandler.preHandle(authentication);
-            } catch (SlardarException e) {
-                throw new AuthenticationServiceException(e.getLocalizedMessage());
+        // TBD: 多个 prehandler 都需要处理
+        Collection<SlardarAuthenticatePreHandler> preHandlers = context.getBeans(SlardarAuthenticatePreHandler.class);
+        if (preHandlers != null && preHandlers.size() > 0) {
+            for (SlardarAuthenticatePreHandler preHandler : preHandlers) {
+                try {
+                    preHandler.preHandle(authentication);
+                } catch (SlardarException e) {
+                    throw new AuthenticationServiceException(e.getLocalizedMessage());
+                }
             }
         }
         return doAuthenticate0(authentication);
@@ -70,6 +75,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
 
     /**
      * 子类实现
+     *
      * @param authentication
      * @return
      */

@@ -51,8 +51,6 @@ public class SlardarTokenService {
 
     private static final Joiner UNDERLINE_JOINER = Joiner.on("_");
 
-    private final KvStore kvStore;
-
     private final RedisClient redisClient;
 
     private final RedisCommands<String, String> stringCommands;
@@ -64,11 +62,10 @@ public class SlardarTokenService {
     public static final Logger log = LoggerFactory.getLogger(SlardarTokenService.class);
 
 
-    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory, SlardarSpiContext context,
-                               KvStore kvStore, RedisClient redisClient) {
+    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory,
+                               SlardarSpiContext context, RedisClient redisClient) {
         this.slardarProperties = slardarProperties;
         this.spiFactory = spiFactory;
-        this.kvStore = kvStore;
         this.slardarContext = context;
         this.redisClient = redisClient;
         this.stringCommands = redisClient.connect().sync();

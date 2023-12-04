@@ -50,7 +50,7 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
         try {
             LoginEvent.LoginEventPayload payload = event.payload();
             Account account = payload.getAccount();
-            String remoteAddr = HttpServletUtil.getIpAddr(payload.getRequest());
+            String remoteAddr = HttpServletUtil.geRequestIpAddress(payload.getRequest());
             AuditLog auditLog = new AuditLog();
             if (Objects.isNull(account)) {
                 if (auditLogIngest != null) {

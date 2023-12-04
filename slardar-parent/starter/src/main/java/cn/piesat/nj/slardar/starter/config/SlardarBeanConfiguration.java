@@ -187,14 +187,13 @@ public class SlardarBeanConfiguration {
      *
      * @param context
      * @param properties
-     * @param kvStore
      * @param redisClient
      * @return
      */
     @Bean
     public SlardarTokenService tokenService(SlardarSpiContext context, SlardarSpiFactory spiFactory,
-                                            SlardarProperties properties, KvStore kvStore, RedisClient redisClient) {
-        return new SlardarTokenService(properties, spiFactory, context, kvStore, redisClient);
+                                            SlardarProperties properties, RedisClient redisClient) {
+        return new SlardarTokenService(properties, spiFactory, context, redisClient);
     }
 
     /**
