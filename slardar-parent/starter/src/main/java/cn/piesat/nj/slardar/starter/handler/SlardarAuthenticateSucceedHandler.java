@@ -121,6 +121,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
                 .setAccountExpired(account.isExpired())
                 .setAccountLocked(account.isLocked())
                 .setToken(token)
+                .setAccountPwdValidRemainDays(account.getPwdValidRemainDays())
                 .setAuthorities(AuthorityUtils.authorityListToSet(authorities))
                 .setUserProfile(account.getUserProfile())
                 .setOpenId(account.getOpenId());

@@ -3,6 +3,8 @@ package cn.piesat.nj.slardar.spi;
 import cn.piesat.nj.slardar.core.AccountProvider;
 import cn.piesat.nj.slardar.core.AuditLogIngest;
 
+import java.util.Collection;
+
 /**
  * <p>
  * context for spi
@@ -22,6 +24,14 @@ public interface SlardarSpiContext {
      * @return
      */
     <T> T getBean(Class<T> clazz);
+
+    /**
+     * get beans by type
+     * @param clazz
+     * @return
+     * @param <T>
+     */
+    <T> Collection<T> getBeans(Class<T> clazz);
 
     /**
      * get bean if available

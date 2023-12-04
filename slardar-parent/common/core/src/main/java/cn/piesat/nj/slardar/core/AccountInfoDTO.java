@@ -32,6 +32,20 @@ public class AccountInfoDTO implements Serializable {
      */
     private Set<String> authorities;
 
+    /**
+     * 账户口令剩余有效天数
+     * 若应用方返回该参数，则会进行相应判断 置空则不会判断
+     */
+    private Integer accountPwdValidRemainDays;
+
+    public Integer getAccountPwdValidRemainDays() {
+        return accountPwdValidRemainDays;
+    }
+
+    public AccountInfoDTO setAccountPwdValidRemainDays(Integer accountPwdValidRemainDays) {
+        this.accountPwdValidRemainDays = accountPwdValidRemainDays;
+        return this;
+    }
 
     public Set<String> getAuthorities() {
         return authorities;

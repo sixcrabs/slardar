@@ -42,11 +42,27 @@ public class Account extends BaseRealmEntity<String> {
      */
     private LocalDateTime expireAt;
 
+
+    /**
+     * 密码口令剩余有效天数
+     * 若应用方返回该参数，则会进行相应判断 置空则不会判断
+     */
+    private Integer pwdValidRemainDays;
+
     /**
      * 账号对应的用户信息
      */
     private UserProfile userProfile;
 
+
+    public Integer getPwdValidRemainDays() {
+        return pwdValidRemainDays;
+    }
+
+    public Account setPwdValidRemainDays(Integer pwdValidRemainDays) {
+        this.pwdValidRemainDays = pwdValidRemainDays;
+        return this;
+    }
 
     /**
      * 是否可用

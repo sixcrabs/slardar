@@ -1,8 +1,11 @@
 package cn.piesat.nj.slardar.starter.support;
 
+import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
@@ -14,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -22,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static cn.piesat.nj.slardar.core.Constants.MOBILE_AGENTS;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
@@ -108,7 +114,7 @@ public final class HttpServletUtil {
      * @param maxAge
      * @param domain
      * @param path
-     * @param sameSite  第三方限制级别（Strict=完全禁止，Lax=部分允许，None=不限制）
+     * @param sameSite    第三方限制级别（Strict=完全禁止，Lax=部分允许，None=不限制）
      */
     public static void setCookie(final HttpServletResponse response, String cookieName, String cookieValue,
                                  Integer maxAge, String domain, String path, String sameSite) {
@@ -131,10 +137,10 @@ public final class HttpServletUtil {
             sb.append("; Path=").append(path);
         }
         boolean secure = true;
-        if(secure) {
+        if (secure) {
             sb.append("; Secure");
         }
-        if(StringUtils.hasText(sameSite)) {
+        if (StringUtils.hasText(sameSite)) {
             sb.append("; SameSite=").append(sameSite);
         }
         response.addHeader("Set-Cookie", sb.toString());
@@ -333,35 +339,79 @@ public final class HttpServletUtil {
         return ret;
     }
 
+    //本地ip地址
+    public static final String LOCAL_IP = "127.0.0.1";
+    //默认ip地址
+    public static final String DEFAULT_IP = "0:0:0:0:0:0:0:1";
+    //默认ip地址长度
+    public static final int DEFAULT_IP_LENGTH = 15;
+
+    public static InetAddress localAddress;
+
+    static {
+        getLocalIpAsync();
+    }
+
+    private static void getLocalIpAsync() {
+        ThreadUtil.newThread(() -> {
+            try {
+                // TBD: 这行代码执行有时候会特别慢 预先处理
+                localAddress = InetAddress.getLocalHost();
+            } catch (UnknownHostException e) {
+                log.error("InetAddress getLocalHost error In HttpUtils getRealIpAddress: ", e);
+            }
+
+        }, "local-ip-get").start();
+    }
+
     /**
      * 获取ip地址
+     *
      * @param request
      * @return
      */
-    public static String getIpAddr(HttpServletRequest request){
+    public static String geRequestIpAddress(HttpServletRequest request) {
         String ipAddress = null;
         try {
             ipAddress = request.getHeader("X-Forwarded-For");
-            if (ipAddress != null && ipAddress.length() != 0 && !"unknown".equalsIgnoreCase(ipAddress)) {
-                // 多次反向代理后会有多个ip值，第一个ip才是真实ip
-                if (ipAddress.indexOf(",") != -1) {
-                    ipAddress = ipAddress.split(",")[0];
-                }
-            }
             if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                //apache服务代理
                 ipAddress = request.getHeader("Proxy-Client-IP");
             }
             if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                //weblogic 代理
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
             if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("HTTP_CLIENT_IP");
             }
+
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+                //nginx代理
+                ipAddress = request.getHeader("X-Real-IP");
+            }
             if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getRemoteAddr();
+                if (StrUtil.equals(ipAddress, LOCAL_IP) || StrUtil.equals(ipAddress, DEFAULT_IP)) {
+                    //根据网卡取本机配置的IP
+                    if (Objects.isNull(localAddress)) {
+                        getLocalIpAsync();
+                    }
+                    InetAddress iNet = localAddress;
+                    ipAddress = iNet.getHostAddress();
+                }
             }
-        }catch (Exception e) {
-            log.error("HttpServletUtil ERROR ",e);
+
+            //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+            //"***.***.***.***".length() = 15
+            if (!StringUtils.isEmpty(ipAddress) && ipAddress.length() > DEFAULT_IP_LENGTH) {
+                if (ipAddress.indexOf(",") > 0) {
+                    ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("HttpServletUtil ERROR ", e);
         }
         return ipAddress;
     }
