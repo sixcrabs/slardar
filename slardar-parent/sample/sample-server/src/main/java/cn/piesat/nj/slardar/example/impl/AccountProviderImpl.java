@@ -66,6 +66,8 @@ public class AccountProviderImpl implements AccountProvider {
         zhangsan.setId(RandomUtil.randomString(8));
         zhangsan.setStatus(AccountStatus.accessible)
                 .setUserProfile(profile);
+        // 口令过期剩余天数
+        zhangsan.setPwdValidRemainDays(5);
 
         Account lisi = new Account().setName("lisi")
                 .setPassword(ENCODER.encode("lisi123"));
@@ -101,7 +103,7 @@ public class AccountProviderImpl implements AccountProvider {
     public Account findByName(String name, String realm) {
         // 数据库查询
         return ACCOUNTS.stream().filter(account ->
-                account.getName().equals(name) && account.getRealm().equals(realm)
+                account.getName().equals(name)
         ).findFirst().orElse(null);
     }
 }

@@ -21,6 +21,8 @@ slardar:
     encrypt:
       enabled: false
       mode: sm4
+    max-attempts-before-locked: 3
+    failed-lock-duration: 2m
   ignores: /login,/sso-login,/mfa-login
   mfa:
     enabled: false
