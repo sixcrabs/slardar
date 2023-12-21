@@ -19,7 +19,7 @@
     </modules>
 
     <properties>
-        <slardar.version>1.3.5-SNAPSHOT</slardar.version>
+        <slardar.version>1.3.6-SNAPSHOT</slardar.version>
     </properties>
 
    <dependencyManagement>
