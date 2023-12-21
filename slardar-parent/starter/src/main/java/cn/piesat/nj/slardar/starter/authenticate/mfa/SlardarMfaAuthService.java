@@ -68,7 +68,7 @@ public class SlardarMfaAuthService {
     public String generateAndDispatch(SlardarUserDetails userDetails) throws SlardarException {
         // 生成密钥
         byte[] secret = SecretGenerator.generate();
-        String uuid = RandomUtil.simpleUUID();
+        String uuid = RandomUtil.randomString(16);
         boolean b = keyStore.setex(uuid, new String(secret), TTL.toMillis() / 1000L);
         // 同时保存 user details
         keyStore.setex(uuid.concat("_account"), GSON.toJson(userDetails), (TTL.toMillis() / 1000L) + 5L);

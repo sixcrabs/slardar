@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,13 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 */
 public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
 
+    private final SlardarAuthenticateService authenticateService;
+
+    public SlardarAccessDeniedHandler(SlardarAuthenticateService authenticateService) {
+        this.authenticateService = authenticateService;
+    }
+
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
         //设置跨域
@@ -32,7 +40,7 @@ public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
 
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", 403, "message", e.getLocalizedMessage())));
+        response.getWriter().println(GSON.toJson(authenticateService.getAuthResultHandler().authDeniedResult(e)));
         response.getWriter().flush();
     }
 }

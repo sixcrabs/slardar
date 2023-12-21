@@ -1,11 +1,13 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.piesat.nj.skv.core.KvStore;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
+import cn.piesat.nj.slardar.spi.authentication.SlardarAuthenticateResultHandler;
 import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
+import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultHandler;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
@@ -31,17 +33,21 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
 
 /**
  * <p>
- * 登录后认证 token 处理
+ * 认证service
+ * - token
  * - jwt token 是token 实现之一
  * - 此模块内实现 token 生成 注销 刷新等
  * - 同端互斥 多端并存 实现
- * - ....
+ * - 认证结果处理
+ * `- succeed
+ * - fail
+ * - deny
  * </p>
  *
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class SlardarTokenService {
+public class SlardarAuthenticateService {
 
     private final SlardarProperties slardarProperties;
 
@@ -59,11 +65,11 @@ public class SlardarTokenService {
 
     private final SlardarSpiContext slardarContext;
 
-    public static final Logger log = LoggerFactory.getLogger(SlardarTokenService.class);
+    public static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateService.class);
 
 
-    public SlardarTokenService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory,
-                               SlardarSpiContext context, RedisClient redisClient) {
+    public SlardarAuthenticateService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory,
+                                      SlardarSpiContext context, RedisClient redisClient) {
         this.slardarProperties = slardarProperties;
         this.spiFactory = spiFactory;
         this.slardarContext = context;
@@ -159,15 +165,15 @@ public class SlardarTokenService {
      * @param concurrentPolicy
      * @return
      */
-    public String createToken(@NonNull String username, @NonNull LoginDeviceType deviceType, @NonNull LoginConcurrentPolicy concurrentPolicy) {
+    public SlardarTokenProvider.Payload createToken(@NonNull String username, @NonNull LoginDeviceType deviceType, @NonNull LoginConcurrentPolicy concurrentPolicy) {
         switch (concurrentPolicy) {
             case mutex:
                 // 移除同端的token 重新生成
                 removeTokens(username, deviceType);
                 break;
             case share:
-                String existedToken = getExistedToken(username, deviceType);
-                if (StringUtils.hasText(existedToken)) {
+                SlardarTokenProvider.Payload existedToken = getExistedToken(username, deviceType);
+                if (StringUtils.hasText(existedToken.getTokenValue())) {
                     return existedToken;
                 }
                 break;
@@ -180,11 +186,11 @@ public class SlardarTokenService {
         String usernameKey = UNDERLINE_JOINER.join(username, id);
         SlardarTokenProvider.Payload payload = getTokenImpl().generate(usernameKey);
         // TODO: into store
-        // TODO: 这里token的 有效期也需要返回给客户端 用户缓存等
+        // 有效期也需要返回给客户端 用户缓存等
         setCommands.sadd(username, id);
         stringCommands.setex(key(usernameKey, deviceType), Duration.between(LocalDateTime.now(), payload.getExpiresAt()).getSeconds(),
                 payload.getTokenValue());
-        return payload.getTokenValue();
+        return payload;
     }
 
     /**
@@ -213,7 +219,7 @@ public class SlardarTokenService {
      * @param tokenValue
      * @return
      */
-    public String refreshToken(String tokenValue, LoginDeviceType deviceType) {
+    public SlardarTokenProvider.Payload refreshToken(String tokenValue, LoginDeviceType deviceType) {
         String username = getTokenImpl().getSubject(tokenValue);
         String key = key(username, deviceType);
         String existedToken = getFromRedis(key);
@@ -260,13 +266,19 @@ public class SlardarTokenService {
      * @param deviceType
      * @return 返回 空 表示不存在 或 已过期
      */
-    private String getExistedToken(String username, LoginDeviceType deviceType) {
+    private SlardarTokenProvider.Payload getExistedToken(String username, LoginDeviceType deviceType) {
         // 取第一个以 username_xx 为key的值
         Set<String> ids = setCommands.smembers(username);
+        String redisKey = "";
         if (ids != null && ids.size() > 0) {
-            return getFromRedis(key(UNDERLINE_JOINER.join(username, ids.iterator().next()), deviceType));
+            redisKey = key(UNDERLINE_JOINER.join(username, ids.iterator().next()), deviceType);
+        } else {
+            redisKey = key(username, deviceType);
         }
-        return getFromRedis(key(username, deviceType));
+        // 返回剩余秒数
+        Long remainSeconds = stringCommands.ttl(redisKey);
+        String tokenValue = getFromRedis(redisKey);
+        return new SlardarTokenProvider.Payload().setTokenValue(tokenValue).setExpiresAt(LocalDateTime.now().plusSeconds(remainSeconds));
     }
 
     /**
@@ -297,6 +309,29 @@ public class SlardarTokenService {
         } catch (SlardarException e) {
             throw new RuntimeException(e);
         }
-//        return TOKEN_IMPLS.getOrDefault(this.slardarProperties.getToken().getType(), new SlardarTokenProviderJwtImpl());
+    }
+
+    /**
+     * 获取默认的结果处理
+     *
+     * @return
+     */
+    public SlardarAuthenticateResultHandler getAuthResultHandler() {
+        String resultHandlerType = slardarProperties.getLogin().getResultHandlerType();
+        return getAuthResultHandler(StringUtil.isBlank(resultHandlerType) ? SlardarDefaultAuthenticateResultHandler.NAME : resultHandlerType);
+    }
+
+    /**
+     * 获取自定义的结果处理
+     *
+     * @param name
+     * @return
+     */
+    public SlardarAuthenticateResultHandler getAuthResultHandler(String name) {
+        try {
+            return spiFactory.findAuthenticateResultHandler(name);
+        } catch (SlardarException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

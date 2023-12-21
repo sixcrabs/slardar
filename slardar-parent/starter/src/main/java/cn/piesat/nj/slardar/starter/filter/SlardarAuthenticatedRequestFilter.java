@@ -4,7 +4,7 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
-import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
@@ -54,7 +54,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
     private final SlardarSpiContext context;
 
     @Autowired
-    private SlardarTokenService tokenService;
+    private SlardarAuthenticateService tokenService;
 
     public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarSpiContext context) {
         this.context = context;

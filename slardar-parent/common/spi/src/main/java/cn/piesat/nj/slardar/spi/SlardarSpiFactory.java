@@ -1,6 +1,7 @@
 package cn.piesat.nj.slardar.spi;
 
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.spi.authentication.SlardarAuthenticateResultHandler;
 import cn.piesat.nj.slardar.spi.captcha.SlardarCaptchaGenerator;
 import cn.piesat.nj.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.spi.mfa.SlardarOtpDispatcher;
@@ -23,6 +24,8 @@ public interface SlardarSpiFactory {
     SlardarTokenProvider findTokenProvider(String name) throws SlardarException;
 
     SlardarCaptchaGenerator findCaptchaGenerator(String name) throws SlardarException;
+
+    SlardarAuthenticateResultHandler findAuthenticateResultHandler(String name) throws SlardarException;
 
 
 }

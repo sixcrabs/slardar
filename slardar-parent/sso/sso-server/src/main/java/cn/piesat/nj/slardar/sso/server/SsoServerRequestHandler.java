@@ -7,7 +7,7 @@ import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.nj.slardar.sso.server.support.SsoException;
 import cn.piesat.nj.slardar.sso.server.support.SsoHandlerMapping;
-import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SsoServerProperties serverProperties;
 
-    private final SlardarTokenService tokenService;
+    private final SlardarAuthenticateService tokenService;
 
     private final SlardarSpiContext context;
 
@@ -57,7 +57,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarSpiContext context, SsoTicketService ticketService) {
         this.serverProperties = serverProperties;
-        this.tokenService = context.getBean(SlardarTokenService.class);
+        this.tokenService = context.getBean(SlardarAuthenticateService.class);
         this.context = context;
         this.ticketService = ticketService;
     }

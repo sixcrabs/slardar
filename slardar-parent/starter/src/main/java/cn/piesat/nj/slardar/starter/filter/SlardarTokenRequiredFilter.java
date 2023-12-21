@@ -3,7 +3,7 @@ package cn.piesat.nj.slardar.starter.filter;
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.SlardarTokenService;
+import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
@@ -55,7 +55,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
             3000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(512), new NamedThreadFactory("auth-token-%d", true));
 
     @Resource
-    private SlardarTokenService tokenService;
+    private SlardarAuthenticateService tokenService;
 
     /**
      * 忽略的url pattern

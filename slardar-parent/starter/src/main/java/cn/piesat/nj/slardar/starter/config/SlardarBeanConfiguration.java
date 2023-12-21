@@ -96,8 +96,8 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarSpiContext context) {
-        return new SlardarAuthenticateFailedHandler(context);
+    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarSpiContext context, SlardarAuthenticateService authenticateService) {
+        return new SlardarAuthenticateFailedHandler(context, authenticateService);
     }
 
     /**
@@ -108,7 +108,7 @@ public class SlardarBeanConfiguration {
      */
     @Bean
     public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties,
-                                                                        SlardarTokenService tokenService,
+                                                                        SlardarAuthenticateService tokenService,
                                                                         SlardarSpiContext context) {
         return new SlardarAuthenticateSucceedHandler(properties, tokenService, context);
     }
@@ -119,8 +119,8 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAccessDeniedHandler accessDeniedHandler() {
-        return new SlardarAccessDeniedHandler();
+    public SlardarAccessDeniedHandler accessDeniedHandler(SlardarAuthenticateService authenticateService) {
+        return new SlardarAccessDeniedHandler(authenticateService);
     }
 
 
@@ -183,7 +183,7 @@ public class SlardarBeanConfiguration {
     }
 
     /**
-     * 注入 token 处理 service
+     * 注入认证处理 service
      *
      * @param context
      * @param properties
@@ -191,9 +191,11 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarTokenService tokenService(SlardarSpiContext context, SlardarSpiFactory spiFactory,
-                                            SlardarProperties properties, RedisClient redisClient) {
-        return new SlardarTokenService(properties, spiFactory, context, redisClient);
+    public SlardarAuthenticateService authenticateService(SlardarSpiContext context,
+                                                          SlardarSpiFactory spiFactory,
+                                                          SlardarProperties properties,
+                                                          RedisClient redisClient) {
+        return new SlardarAuthenticateService(properties, spiFactory, context, redisClient);
     }
 
     /**

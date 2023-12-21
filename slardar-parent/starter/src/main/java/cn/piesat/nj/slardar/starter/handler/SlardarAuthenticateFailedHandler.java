@@ -2,6 +2,7 @@ package cn.piesat.nj.slardar.starter.handler;
 
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
@@ -19,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Map;
 
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 
@@ -34,10 +35,13 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     private final SlardarSpiContext slardarContext;
 
+    private final SlardarAuthenticateService authenticateService;
+
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateFailedHandler.class);
 
-    public SlardarAuthenticateFailedHandler(SlardarSpiContext slardarContext) {
+    public SlardarAuthenticateFailedHandler(SlardarSpiContext slardarContext, SlardarAuthenticateService authenticateService) {
         this.slardarContext = slardarContext;
+        this.authenticateService = authenticateService;
     }
 
 
@@ -55,9 +59,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
             // 单独处理MFA 异常
             resp = makeResult(((MfaVerifyRequiredException) e).getKey(), 1008, "MFA authentication required!");
         } else {
-            String errMsg = e.getLocalizedMessage();
-            log.error("Authentication failed：{}", errMsg);
-            resp = makeErrorResult(Objects.isNull(errMsg) ? "Null" : errMsg, status.value());
+            resp = (HashMap<String, Object>) authenticateService.getAuthResultHandler().authFailedResult(e);
             try {
                 slardarContext.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(request, e));
             } catch (SlardarException ex) {
@@ -65,7 +67,5 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
             }
         }
         sendJson(response, resp, status, request.getHeader("Origin"));
-//        response.getWriter().println(GSON.toJson(resp));
-//        response.getWriter().flush();
     }
 }

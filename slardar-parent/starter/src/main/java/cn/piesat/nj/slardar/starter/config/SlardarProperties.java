@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.config;
 
+import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultHandler;
 import cn.piesat.nj.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
@@ -179,6 +180,11 @@ public class SlardarProperties implements Serializable {
     public static class LoginSettings {
 
         /**
+         * 认证结果处理类型 可自定义 SPI 实现返回结果的定制
+         */
+        private String resultHandlerType = SlardarDefaultAuthenticateResultHandler.NAME;
+
+        /**
          * 登录的 url
          */
         private String url = AUTH_LOGIN_URL;
@@ -219,6 +225,14 @@ public class SlardarProperties implements Serializable {
          */
         private Duration failedLockDuration = Duration.ofMinutes(1L);
 
+        public String getResultHandlerType() {
+            return resultHandlerType;
+        }
+
+        public LoginSettings setResultHandlerType(String resultHandlerType) {
+            this.resultHandlerType = resultHandlerType;
+            return this;
+        }
 
         public Integer getMaxAttemptsBeforeLocked() {
             return maxAttemptsBeforeLocked;

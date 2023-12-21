@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.core;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -28,6 +29,11 @@ public class AccountInfoDTO implements Serializable {
     private String token;
 
     /**
+     * token 过期时间
+     */
+    private LocalDateTime tokenExpiresAt;
+
+    /**
      * authority
      */
     private Set<String> authorities;
@@ -37,6 +43,16 @@ public class AccountInfoDTO implements Serializable {
      * 若应用方返回该参数，则会进行相应判断 置空则不会判断
      */
     private Integer accountPwdValidRemainDays;
+
+
+    public LocalDateTime getTokenExpiresAt() {
+        return tokenExpiresAt;
+    }
+
+    public AccountInfoDTO setTokenExpiresAt(LocalDateTime tokenExpiresAt) {
+        this.tokenExpiresAt = tokenExpiresAt;
+        return this;
+    }
 
     public Integer getAccountPwdValidRemainDays() {
         return accountPwdValidRemainDays;
