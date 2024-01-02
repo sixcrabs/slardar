@@ -81,16 +81,6 @@ public class SlardarBeanConfiguration {
 
 
     /**
-     * 默认的密码 encoder
-     *
-     * @return
-     */
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
      * 注入 认证失败 handler
      *
      * @return
