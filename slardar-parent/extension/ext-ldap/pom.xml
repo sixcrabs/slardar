@@ -18,6 +18,11 @@
             <artifactId>slardar-starter</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.piesat.nj</groupId>
+            <artifactId>slardar-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 
