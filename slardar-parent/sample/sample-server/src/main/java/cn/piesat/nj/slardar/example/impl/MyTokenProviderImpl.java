@@ -4,7 +4,7 @@
  * @LastEditTime: 2023-11-17 18:25:28
  * @LastEditors: alex
  */
-package cn.piesat.nj.slardar.example;
+package cn.piesat.nj.slardar.example.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;

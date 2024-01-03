@@ -26,5 +26,6 @@ public class AuditLogIngestImpl implements AuditLogIngest {
     public void ingest(AuditLog auditLog) {
         // 这里入日志库或入到消息队列
         System.out.println(auditLog);
+        System.out.println(auditLog.getDetail());
     }
 }

@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.example.config;
+package cn.piesat.nj.slardar.example.event;
 
 import cn.piesat.nj.slardar.core.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
@@ -9,14 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
- * .
+ * .演示自定义处理 login 事件
  * </p>
  *
  * @author Alex
  * @version v1.0 2023/4/14
  */
 @Component
-public class MyEventListener implements SlardarEventListener<LoginEvent> {
+public class AnotherLoginEventListener implements SlardarEventListener<LoginEvent> {
 
     /**
      * 控制消费的次序 值越小越在前

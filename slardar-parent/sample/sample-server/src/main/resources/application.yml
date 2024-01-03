@@ -2,6 +2,7 @@ server:
   port: 9600
 
 
+
 skv:
   type: redis
   uri: redis://localhost/0
@@ -21,8 +22,8 @@ slardar:
     encrypt:
       enabled: false
       mode: sm4
-    max-attempts-before-locked: 3
-    failed-lock-duration: 2m
+    max-attempts-before-locked: 3 # 最大尝试次数
+    failed-lock-duration: 2m   # 失败锁定时间
   ignores: /login,/sso-login,/mfa-login
   mfa:
     enabled: false
@@ -36,6 +37,8 @@ slardar:
 
 
 spring:
+#  main:
+#    allow-bean-definition-overriding: true
   application:
     name: slardar-server-demo
 swagger:

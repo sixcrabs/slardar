@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * <p>
- * .
+ * 演示在登录之前 做前置处理
+ * 如 阻止某些账号登录， ip 黑白名单，判断登录端来源等
  * </p>
  *
  * @author Alex
