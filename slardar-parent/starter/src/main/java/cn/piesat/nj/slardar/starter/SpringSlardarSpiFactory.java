@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
@@ -53,7 +52,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
 
     @Override
     public SlardarCrypto findCrypto(String name) throws SlardarException {
-        if (StrUtil.isBlank(name)) {
+        if (StringUtil.isBlank(name)) {
             return CRYPTO_REPO.get(MODE);
         }
         if (CRYPTO_REPO.containsKey(name.toUpperCase())) {

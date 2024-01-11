@@ -3,8 +3,9 @@ package cn.piesat.nj.slardar.starter.support.captcha.generator;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.misc.hutool.mini.CharUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 
-import static cn.hutool.core.util.StrUtil.sub;
+import static cn.piesat.nj.misc.hutool.mini.StringUtil.sub;
 
 /**
  * 数字计算验证码生成器
@@ -44,7 +45,7 @@ public class MathGenerator implements CodeGenerator {
 		number1 = padAfter(number1, this.numberLength, CharUtil.SPACE);
 		number2 = padAfter(number2, this.numberLength, CharUtil.SPACE);
 
-		return StrUtil.builder()
+		return StringUtil.builder()
 				.append(number1)
 				.append(RandomUtil.randomChar(OPERATORS))
 				.append(number2)

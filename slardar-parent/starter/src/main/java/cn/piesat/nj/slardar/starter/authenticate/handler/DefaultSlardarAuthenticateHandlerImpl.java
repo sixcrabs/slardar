@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
@@ -161,7 +161,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                 SlardarCrypto crypto = spiFactory.findCrypto(properties.getLogin().getEncrypt().getMode());
                 password = crypto.decrypt(password);
             } catch (SlardarException e) {
-                throw new AuthenticationServiceException(StrUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),
+                throw new AuthenticationServiceException(StringUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),
                         e.getLocalizedMessage()));
             }
         }
@@ -173,7 +173,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                     if (properties.getMfa().isEnabled()) {
                         SlardarMfaAuthService mfaAuthService = context.getBeanIfAvailable(SlardarMfaAuthService.class);
                         String key = mfaAuthService.generateAndDispatch(userDetails);
-                        if (StrUtil.isBlank(key)) {
+                        if (StringUtil.isBlank(key)) {
                             triggerFailedLock(accountName);
                             throw new AuthenticationServiceException("`MFA` key error");
                         }
