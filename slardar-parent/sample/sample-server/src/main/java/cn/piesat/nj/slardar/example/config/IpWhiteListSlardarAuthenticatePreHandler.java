@@ -19,7 +19,7 @@ import java.util.ArrayList;
 @Component
 public class IpWhiteListSlardarAuthenticatePreHandler implements SlardarAuthenticatePreHandler {
 
-    private static final  ArrayList<String> ipList = Lists.newArrayList("");
+    private static final  ArrayList<String> ipList = Lists.newArrayList("127.0.0.1");
 
     /**
      * 在进入认证前 由应用前置处理，
@@ -34,8 +34,6 @@ public class IpWhiteListSlardarAuthenticatePreHandler implements SlardarAuthenti
     public void preHandle(SlardarAuthentication authentication) throws SlardarException {
         String clientIp = authentication.getReqClientIp();
         // 这里进行ip 白名单控制
-
-
         System.out.println(clientIp);
     }
 }

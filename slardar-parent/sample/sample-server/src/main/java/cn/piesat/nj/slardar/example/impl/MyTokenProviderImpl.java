@@ -44,9 +44,6 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      */
     @Override
     public void initialize(SlardarSpiContext context) {
-
-
-
     }
 
     /**
@@ -82,7 +79,7 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      */
     @Override
     public String getSubject(String tokenValue) {
-        return "zhangsan";
+        return "";
     }
 
     /**
