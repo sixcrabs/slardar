@@ -15,9 +15,15 @@ public enum SsoHandlerMapping {
     logout,
     // 验证 ticket
     checkTicket,
+    checkticket,
 
     // 用户详情
-    userDetails;
+    userdetails,
+    userDetails,
+
+    // 验证token是否有效
+    validatetoken,
+    validateToken;
 
 
 }

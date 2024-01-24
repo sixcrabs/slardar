@@ -52,6 +52,10 @@ public class SsoException extends Exception {
         return GSON.toJson(map);
     }
 
+    public String getCauseMessage() {
+        return this.getCause() != null ? this.getCause().getLocalizedMessage() : super.getMessage();
+    }
+
     public int getCode() {
         return code;
     }

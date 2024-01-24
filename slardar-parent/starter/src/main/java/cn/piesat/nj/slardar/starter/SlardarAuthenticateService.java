@@ -139,14 +139,34 @@ public class SlardarAuthenticateService {
      */
     public boolean isExpired(String tokenValue, LoginDeviceType deviceType) {
         String username = getTokenImpl().getSubject(tokenValue);
+        if (Objects.isNull(username)) {
+            return true;
+        }
         return !hasFromRedis(key(username, deviceType));
     }
+
+    /**
+     * token 剩余有效时间
+     * @param tokenValue
+     * @param deviceType
+     * @return
+     */
+    public long ttl(String tokenValue, LoginDeviceType deviceType) {
+        String username = getTokenImpl().getSubject(tokenValue);
+        if (Objects.isNull(username)) {
+            return 0L;
+        }
+        return stringCommands.ttl(key(username, deviceType));
+    }
+
+
 
     public boolean isExpired(String tokenValue) {
         return isExpired(tokenValue, LoginDeviceType.PC);
     }
 
     /**
+     * FIXME:
      * get username from token
      *
      * @param tokenValue

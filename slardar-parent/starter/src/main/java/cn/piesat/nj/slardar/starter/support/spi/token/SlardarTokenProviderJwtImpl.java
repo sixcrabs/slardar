@@ -36,6 +36,11 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
 
     private String secret;
 
+    /**
+     * 允许的时间偏移 秒,
+     */
+    private long allowedClockSkewSeconds = 30L;
+
     private Long expiration;
 
     private static final Logger log = LoggerFactory.getLogger(SlardarTokenProviderJwtImpl.class);
@@ -62,6 +67,7 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
     public void initialize(SlardarSpiContext context) {
         secret = context.getBean(SlardarProperties.class).getToken().getJwt().getSignKey();
         expiration = context.getBean(SlardarProperties.class).getToken().getJwt().getExpiration();
+        allowedClockSkewSeconds = context.getBean(SlardarProperties.class).getToken().getJwt().getAllowedClockSkewSeconds();
     }
 
 
@@ -171,10 +177,11 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
         try {
             claims = Jwts.parser()
                     .setSigningKey(secret)
+                    .setAllowedClockSkewSeconds(allowedClockSkewSeconds)
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
-            log.info("JWT格式验证失败");
+            log.error("JWT格式验证失败: {}", e.getLocalizedMessage());
         }
         return claims;
     }

@@ -3,13 +3,19 @@ package cn.piesat.nj.slardar.sso.server;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.core.entity.UserProfile;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
+import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
+import cn.piesat.nj.slardar.sso.server.config.SlardarSsoUserDetailsHandler;
 import cn.piesat.nj.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.nj.slardar.sso.server.support.SsoException;
 import cn.piesat.nj.slardar.sso.server.support.SsoHandlerMapping;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
+import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,7 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static cn.piesat.nj.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
 import static cn.piesat.nj.slardar.sso.server.support.SsoConstants.*;
@@ -40,7 +51,7 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
+public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, SlardarSsoUserDetailsHandler {
 
     private static final Logger log = LoggerFactory.getLogger(SsoServerRequestHandler.class);
 
@@ -55,7 +66,9 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
     @Resource
     private UserDetailsService userDetailsService;
 
-    public SsoServerRequestHandler(SsoServerProperties serverProperties, SlardarSpiContext context, SsoTicketService ticketService) {
+    public SsoServerRequestHandler(SsoServerProperties serverProperties,
+                                   SlardarSpiContext context,
+                                   SsoTicketService ticketService) {
         this.serverProperties = serverProperties;
         this.tokenService = context.getBean(SlardarAuthenticateService.class);
         this.context = context;
@@ -80,19 +93,47 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                     handleSsoAuth(request, response);
                     break;
                 case logout:
-                    // TODO
+                    // TODO: sso 登出
                     break;
                 case checkTicket:
+                case checkticket:
                     handleSsoTicketCheck(request, response);
                     break;
                 case userDetails:
+                case userdetails:
                     handleUserDetails(request, response);
+                    break;
+                case validatetoken:
+                case validateToken:
+                    // TODO:
+                    handleValidate(request, response);
                     break;
                 default:
                     break;
             }
         } catch (SsoException e) {
-            sendJson(response, makeErrorResult(e.getLocalizedMessage(), e.getCode() > 0 ? e.getCode() : 4001), HttpStatus.OK);
+            sendJson(response, makeErrorResult(e.getCauseMessage(), e.getCode() > 0 ? e.getCode() : 4001), HttpStatus.OK);
+        }
+    }
+
+    /**
+     * token 验证
+     *
+     * @param request
+     * @param response
+     */
+    private void handleValidate(HttpServletRequest request, HttpServletResponse response) throws SsoException {
+        String tokenValue = tokenService.getTokenValue(request);
+        if (StrUtil.isEmpty(tokenValue)) {
+            throw new SsoException("Token is required").setCode(401);
+        }
+        LoginDeviceType deviceType = getDeviceType(request);
+        boolean expired = tokenService.isExpired(tokenValue, deviceType);
+        if (expired) {
+            throw new SsoException("Token is expired").setCode(401);
+        } else {
+            sendJson(response, makeResult(ImmutableMap.of("isValid", true, "ttl", tokenService.ttl(tokenValue, deviceType)),
+                    HttpStatus.OK.value()), HttpStatus.OK);
         }
     }
 
@@ -115,11 +156,24 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
                 // get user details
                 String username = tokenService.getUsername(tokenValue);
                 SlardarUserDetails details = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
-                // FIXME: 这里返回给客户端需要屏蔽一些信息 如 密码等
-//                if (details.getAccount() != null) {
-//                    details.getAccount().setPassword("");
-//                }
-                sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
+                Collection<SlardarSsoUserDetailsHandler> ssoUserDetailsHandlers = context.getBeans(SlardarSsoUserDetailsHandler.class);
+                if (ssoUserDetailsHandlers.size() > 0) {
+                    List<Serializable> list = ssoUserDetailsHandlers.stream().map(handler -> {
+                        try {
+                            return handler.handle(details);
+                        } catch (SsoException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).collect(Collectors.toList());
+                    if (list.size() > 0) {
+                        sendJson(response, makeResult(list.get(list.size() - 1), HttpStatus.OK.value()), HttpStatus.OK);
+                    } else {
+                        sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
+                    }
+                } else {
+                    sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);
+                }
+
             } catch (UsernameNotFoundException e) {
                 throw new SsoException(e.getLocalizedMessage()).setCode(HttpStatus.SERVICE_UNAVAILABLE.value());
             }
@@ -221,7 +275,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private HashMap<String, Object> makeErrorResult(String msg, int code) {
         HashMap<String, Object> ret = MapUtil.of("code", code);
-        ret.put("data", new Object());
+        ret.put("data", null);
         ret.put("message", msg);
         return ret;
     }
@@ -258,5 +312,22 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer {
         configure.antMatchers(serverProperties.getSsoAntUrlPattern());
         // 忽略 /sso-login
         configure.antMatchers(SSO_LOGIN_VIEW_URL);
+    }
+
+    /**
+     * 处理用户详情，如: 屏蔽密码 或修改返回结构等
+     *
+     * @param details
+     * @return
+     * @throws SlardarException
+     */
+    @Override
+    public Serializable handle(SlardarUserDetails details) throws SsoException {
+        Account account = details.getAccount();
+        UserProfile userProfile = account.setPassword(null).getUserProfile();
+        if (userProfile != null) {
+            userProfile.setAuthorities(Collections.emptyList());
+        }
+        return account;
     }
 }

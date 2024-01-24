@@ -6,7 +6,7 @@
     <parent>
         <groupId>cn.piesat.nj</groupId>
         <artifactId>slardar-sso-parent</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>slardar-sso-client-starter</artifactId>

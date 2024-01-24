@@ -604,6 +604,20 @@ public class SlardarProperties implements Serializable {
          */
         private Long expiration = 24 * 60 * 60L;
 
+        /**
+         * 允许的时间差 秒数 默认 60
+         */
+        private Long allowedClockSkewSeconds = 60L;
+
+        public Long getAllowedClockSkewSeconds() {
+            return allowedClockSkewSeconds;
+        }
+
+        public JwtSettings setAllowedClockSkewSeconds(Long allowedClockSkewSeconds) {
+            this.allowedClockSkewSeconds = allowedClockSkewSeconds;
+            return this;
+        }
+
         public String getSignKey() {
             return signKey;
         }
