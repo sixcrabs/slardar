@@ -212,10 +212,15 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
             content = null;
         }
         // invoke
-        if (StringUtil.isBlank(content)) {
-            ReflectUtil.invoke(authorizedUrl, method);
-        } else {
-            ReflectUtil.invoke(authorizedUrl, method, content.contains(",") ? content.split(",") : content);
+        try {
+            if (StringUtil.isBlank(content)) {
+                ReflectUtil.invoke(authorizedUrl, method);
+            } else {
+                // FIXME: hasAnyRole hasAnyAuthority 需要单独处理
+                ReflectUtil.invoke(authorizedUrl, method, content.contains(",") ? content.split(",") : content);
+            }
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
         }
     }
 
