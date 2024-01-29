@@ -50,9 +50,9 @@ public class CaptchaComponent {
     public CaptchaPayload generate(int width, int height, String sessionId) {
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(width, height);
         // TODO: 这里支持多种验证码选项 留给 SPI 配置参数控制
-//        RandomGenerator randomGenerator = new RandomGenerator(settings.getRandomBase(), settings.getLength());
-        MathGenerator mathGenerator = new MathGenerator(1);
-        lineCaptcha.setGenerator(mathGenerator);
+        RandomGenerator randomGenerator = new RandomGenerator(settings.getRandomBase(), settings.getLength());
+//        MathGenerator mathGenerator = new MathGenerator(1);
+        lineCaptcha.setGenerator(randomGenerator);
         //  验证码值
         String code = lineCaptcha.getCode();
         CaptchaPayload payload = new CaptchaPayload();
