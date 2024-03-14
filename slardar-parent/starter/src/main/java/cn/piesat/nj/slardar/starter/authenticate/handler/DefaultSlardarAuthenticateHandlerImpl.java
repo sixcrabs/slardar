@@ -143,7 +143,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         String accountName = authentication.getAccountName();
         if (maxAttempts != null && maxAttempts > 0L) {
             if (stringCommands.exists(LOCKED_KEY.concat(accountName)) > 0L) {
-                throw new AuthenticationServiceException("account is locked duo to login failed too many times");
+                throw new AuthenticationServiceException("Your account has been locked due to login failed too many times");
             }
         }
         SlardarUserDetails userDetails = null;
