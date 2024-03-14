@@ -1,3 +1,6 @@
+
+参考： https://nync.piesat.cn/wiki/docs/tech_be/slardar
+
 ## Slardar
 
 ### 接入
