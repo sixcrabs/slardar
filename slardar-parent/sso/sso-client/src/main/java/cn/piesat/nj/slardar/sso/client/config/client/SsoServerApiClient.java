@@ -29,10 +29,11 @@ public interface SsoServerApiClient {
     /**
      * 获取用户详情
      * @param token
+     * @param userAgent  用于传递真实请求的 设备头信息（用于判断设备类型是 APP / PC）
      * @return
      */
     @POST("userDetails")
-    RestApiResult<Account> getUserDetails(@Header("Authorization") String token);
+    RestApiResult<Account> getUserDetails(@Header("Authorization") String token, @Header("User-Agent") String userAgent);
 
 
 

@@ -86,7 +86,7 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
         } else {
             // /sso/userdetails 拿到用户信息 进行填充
             try {
-                RestApiResult<Account> apiResult = serverClient.getUserDetails(tokenValue);
+                RestApiResult<Account> apiResult = serverClient.getUserDetails(tokenValue, request.getHeader("User-Agent"));
                 if (apiResult.isSuccessful()) {
                     SlardarSecurityHelper.SecurityContext context = SlardarSecurityHelper.getContext();
                     context.setAccount(apiResult.getData());
