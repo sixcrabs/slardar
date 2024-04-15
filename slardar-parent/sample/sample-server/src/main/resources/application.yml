@@ -5,7 +5,8 @@ server:
 
 skv:
   type: redis
-  uri: redis://localhost/0
+#  uri: redis://localhost/0
+  uri: redis://ENC(9edd86251a930c8172b0cc1d2f590a96788c2f04ebb62a24e456d11fb74a6249)@124.70.42.95:8379/7
 
 
 slardar:
@@ -24,7 +25,7 @@ slardar:
       mode: sm4
     max-attempts-before-locked: 3 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
-  ignores: /login,/sso-login,/mfa-login
+  ignores: /login,/sso-login,/mfa-login,/api/hi/**
   mfa:
     enabled: false
     otp-mode: email

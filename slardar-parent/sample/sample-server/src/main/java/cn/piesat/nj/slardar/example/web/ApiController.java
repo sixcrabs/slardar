@@ -28,7 +28,7 @@ public class ApiController {
     }
 
     @GetMapping("/name")
-    @SlardarIgnore
+//    @SlardarIgnore
     @AccessLog("匿名方法")
     public Resp getName() {
         return Resp.of(RandomUtil.randomString(18));
