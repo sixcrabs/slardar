@@ -8,15 +8,13 @@ import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
 import cn.piesat.nj.slardar.starter.*;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
-import cn.piesat.nj.slardar.starter.filter.SlardarCaptchaFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarMfaLoginFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarTokenRequiredFilter;
-import cn.piesat.nj.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
+import cn.piesat.nj.slardar.starter.filter.*;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import io.lettuce.core.RedisClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -187,6 +185,13 @@ public class SlardarBeanConfiguration {
         return new SlardarAuthenticateService(properties, spiFactory, context, redisClient);
     }
 
+    @Bean
+    @ConditionalOnProperty(name = "slardar.basic.enable")
+    public SlardarBasicAuthFilter basicAuthFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
+        // 需要进行过滤的 url
+        return new SlardarBasicAuthFilter(properties.getBasic().getFilterUrls(), spiContext);
+    }
+
     /**
      * 注入 请求过滤器 用于过滤所有请求进行token验证
      *
@@ -197,6 +202,10 @@ public class SlardarBeanConfiguration {
     public SlardarTokenRequiredFilter requestFilter(SlardarProperties properties) {
         // 忽略的url 包含配置的参数以及静态资源、swagger context
         String[] ignoresFromConfig = properties.getIgnores();
+        // 将 basic 认证的url加入到 ignore 数组中
+        if (properties.getBasic().isEnable() && properties.getBasic().getFilterUrls().length > 0) {
+            ignoresFromConfig = ArrayUtil.append(ignoresFromConfig, properties.getBasic().getFilterUrls());
+        }
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
         ignores = ArrayUtil.append(ignores, "/oauth2/**",

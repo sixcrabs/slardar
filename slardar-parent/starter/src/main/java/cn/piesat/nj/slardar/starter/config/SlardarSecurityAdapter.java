@@ -81,6 +81,8 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final SlardarTokenRequiredFilter tokenRequiredFilter;
 
+    private final SlardarBasicAuthFilter basicAuthFilter;
+
     private final SlardarCaptchaFilter captchaFilter;
 
     private final SlardarAuthenticatedRequestFilter authenticatedRequestFilter;
@@ -94,12 +96,14 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
     private final List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList;
 
     public SlardarSecurityAdapter(SlardarTokenRequiredFilter tokenRequiredFilter,
+                                  ObjectProvider<SlardarBasicAuthFilter> basicAuthFilter,
                                   SlardarCaptchaFilter captchaFilter,
                                   SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
                                   SlardarMfaLoginFilter mfaLoginFilter, SlardarProperties properties,
                                   ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList,
                                   ObjectProvider<List<SlardarUrlRegistryCustomizer>> urlRegistryCustomizerProvider) {
         this.tokenRequiredFilter = tokenRequiredFilter;
+        this.basicAuthFilter = basicAuthFilter.getIfAvailable();
         this.captchaFilter = captchaFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.mfaLoginFilter = mfaLoginFilter;
@@ -162,6 +166,9 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         // 设置filter
         httpSecurity.addFilterBefore(authenticatedRequestFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(tokenRequiredFilter, SlardarAuthenticatedRequestFilter.class);
+        if (basicAuthFilter != null) {
+            httpSecurity.addFilterBefore(basicAuthFilter, SlardarTokenRequiredFilter.class);
+        }
         httpSecurity.addFilterBefore(loginProcessingFilter(properties, getManagerBean(), authenticateFailedHandler, authenticateSucceedHandler, authenticateHandlerFactory),
                 SlardarTokenRequiredFilter.class);
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);

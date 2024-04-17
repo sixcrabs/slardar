@@ -5,14 +5,14 @@ server:
 
 skv:
   type: redis
-#  uri: redis://localhost/0
+  #  uri: redis://localhost/0
   uri: redis://ENC(9edd86251a930c8172b0cc1d2f590a96788c2f04ebb62a24e456d11fb74a6249)@124.70.42.95:8379/7
 
 
 slardar:
-#  ldap:
-#    url: ldap://124.221.177.135:389
-#    base: dc=test,dc=cn
+  #  ldap:
+  #    url: ldap://124.221.177.135:389
+  #    base: dc=test,dc=cn
   sso:
     ctx-path: /sso
   token:
@@ -25,7 +25,11 @@ slardar:
       mode: sm4
     max-attempts-before-locked: 3 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
-  ignores: /login,/sso-login,/mfa-login,/api/hi/**
+  ignores: /login,/sso-login,/mfa-login
+  basic:
+    enable: true
+    # 配置的地址通过 basic auth 方式认证
+    filter-urls: /api/name/**
   mfa:
     enabled: false
     otp-mode: email
@@ -38,8 +42,8 @@ slardar:
 
 
 spring:
-#  main:
-#    allow-bean-definition-overriding: true
+  #  main:
+  #    allow-bean-definition-overriding: true
   application:
     name: slardar-server-demo
 swagger:

@@ -31,6 +31,11 @@ import static org.springframework.boot.web.servlet.server.Encoding.DEFAULT_CHARS
 public class SlardarProperties implements Serializable {
 
     /**
+     * basic auth 配置
+     */
+    private BasicAuthSettings basic = new BasicAuthSettings();
+
+    /**
      * token 类型设置
      */
     private TokenSettings token = new TokenSettings();
@@ -54,6 +59,16 @@ public class SlardarProperties implements Serializable {
      * urls to be ignored
      */
     private String[] ignores = new String[]{"/login", "/captcha"};
+
+
+    public BasicAuthSettings getBasic() {
+        return basic;
+    }
+
+    public SlardarProperties setBasic(BasicAuthSettings basic) {
+        this.basic = basic;
+        return this;
+    }
 
     public MfaSettings getMfa() {
         return mfa;
@@ -98,6 +113,37 @@ public class SlardarProperties implements Serializable {
     public SlardarProperties setIgnores(String[] ignores) {
         this.ignores = ignores;
         return this;
+    }
+
+    public static class BasicAuthSettings {
+
+        /**
+         * 是否开启 basic auth 认证能力 默认关闭
+         */
+        private boolean enable = false;
+
+        /**
+         * 针对哪些 url pattern 采用 basicAuth 过滤
+         */
+        private String[] filterUrls = new String[]{};
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public BasicAuthSettings setEnable(boolean enable) {
+            this.enable = enable;
+            return this;
+        }
+
+        public String[] getFilterUrls() {
+            return filterUrls;
+        }
+
+        public BasicAuthSettings setFilterUrls(String[] filterUrls) {
+            this.filterUrls = filterUrls;
+            return this;
+        }
     }
 
     public static class CaptchaSettings {
