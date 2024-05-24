@@ -2,11 +2,15 @@ package cn.piesat.nj.slardar.starter.authenticate.handler;
 
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.Constants;
+import cn.piesat.nj.slardar.starter.SlardarUserDetails;
+import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * <p>
@@ -20,6 +24,8 @@ import org.springframework.security.core.AuthenticationException;
 public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthenticateHandler {
 
     private static final String NAME = "open-id";
+
+    private String phone;
 
     /**
      * 认证处理类型 用于区分
@@ -35,6 +41,7 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
     @Override
     public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
         String openid = requestWrapper.getRequestParams().get("openid");
+//        phone = requestWrapper
         if (StringUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");
         }
@@ -49,6 +56,12 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
      */
     @Override
     protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
-        return null;
+        String openId = authentication.getAccountName();
+        //
+        SlardarUserDetailsServiceImpl detailsService = (SlardarUserDetailsServiceImpl) context.getBeanIfAvailable(UserDetailsService.class);
+        SlardarUserDetails userDetails = (SlardarUserDetails) detailsService.loadUserByOpenId(openId);
+        // TODO: 判断是否正确
+        authentication.setUserDetails(userDetails).setAuthenticated(true);
+        return authentication;
     }
 }

@@ -75,7 +75,7 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      */
     @Override
     protected boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
-        return requiredPathRequestMatchers.stream().anyMatch(matcher -> !matcher.matcher(request).isMatch());
+        return requiredPathRequestMatchers.stream().noneMatch(matcher -> matcher.matcher(request).isMatch());
     }
 
     /**

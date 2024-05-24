@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.filter;
 
+import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
@@ -81,7 +82,12 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
                 // 1. 找出匹配的认证处理器 根据请求头参数： X-Auth-Type
                 // 2. 调用接口 将请求解析为 authentication 对象
                 // 3. 交给对应的handler去认证
-                SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE));
+                String authType = requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE);
+                if (StringUtil.isBlank(authType)) {
+                    // 兼容请求头小写情况
+                    authType = requestHeaders.get(HEADER_KEY_OF_AUTH_TYPE.toLowerCase());
+                }
+                SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(authType);
                 SlardarAuthentication authenticationToken = authenticateHandler.handleRequest(new RequestWrapper()
                         .setRequestParams(requestParam)
                         .setLoginDeviceType(getDeviceType(request))
