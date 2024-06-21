@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.config;
 
-import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultHandler;
+import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
@@ -228,7 +228,7 @@ public class SlardarProperties implements Serializable {
         /**
          * 认证结果处理类型 可自定义 SPI 实现返回结果的定制
          */
-        private String resultHandlerType = SlardarDefaultAuthenticateResultHandler.NAME;
+        private String resultHandlerType = SlardarDefaultAuthenticateResultAdapter.NAME;
 
         /**
          * 登录的 url

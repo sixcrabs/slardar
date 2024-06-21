@@ -80,7 +80,7 @@ public class AuditLog extends BaseRealmEntity<String> {
 
     @Override
     public String toString() {
-        return "AuditLog{" +
+        return "AuditLogger{" +
                 "accountId='" + accountId + '\'' +
                 ", userProfileId='" + userProfileId + '\'' +
                 ", accountName='" + accountName + '\'' +

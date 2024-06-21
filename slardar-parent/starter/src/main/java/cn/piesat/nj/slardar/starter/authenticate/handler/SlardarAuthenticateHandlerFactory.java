@@ -44,7 +44,7 @@ public class SlardarAuthenticateHandlerFactory implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // FIXME: 获取所有的 token 实现 并存入 缓存
+        // FIXME: 获取所有的认证实现 并存入 缓存
         ServiceLoader<SlardarAuthenticateHandler> impls = ServiceLoader.load(SlardarAuthenticateHandler.class);
         for (SlardarAuthenticateHandler impl : impls) {
             impl.setSlardarContext(this.slardarContext);

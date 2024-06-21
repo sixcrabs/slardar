@@ -1,7 +1,6 @@
-package cn.piesat.nj.slardar.spi.authentication;
+package cn.piesat.nj.slardar.spi.authenticate;
 
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
-import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.spi.SlardarSpi;
 
 import java.util.Map;
@@ -9,12 +8,13 @@ import java.util.Map;
 /**
  * <p>
  * 自定义扩展认证成功和失败的返回信息
+ * 应用方可以实现此接口 用于定制认证成功/失败/拒绝等的信息
  * </p>
  *
  * @author Alex
  * @version v1.0 2023/12/21
  */
-public interface SlardarAuthenticateResultHandler extends SlardarSpi {
+public interface SlardarAuthenticateResultAdapter extends SlardarSpi {
 
 
     /**

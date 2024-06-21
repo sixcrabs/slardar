@@ -5,6 +5,10 @@ import cn.piesat.nj.slardar.core.SlardarException;
 /**
  * <p>
  * 身份认证前置处理，应用可实现该接口用于处理特殊逻辑
+ * 如
+ * - 阻止某些账号登录，
+ * - ip 黑白名单，
+ * - 判断登录端来源等
  * </p>
  *
  * @author Alex

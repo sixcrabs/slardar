@@ -4,12 +4,12 @@ import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
-import cn.piesat.nj.slardar.spi.authentication.SlardarAuthenticateResultHandler;
+import cn.piesat.nj.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.spi.captcha.SlardarCaptchaGenerator;
 import cn.piesat.nj.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.nj.slardar.spi.mfa.SlardarOtpDispatcher;
 import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
-import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultHandler;
+import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.nj.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
 
     private static final Map<String, SlardarTokenProvider> TOKEN_REPO = new HashMap<>(1);
 
-    private static final Map<String, SlardarAuthenticateResultHandler> RESULT_HANDLER_REPO = new HashMap<>(1);
+    private static final Map<String, SlardarAuthenticateResultAdapter> RESULT_HANDLER_REPO = new HashMap<>(1);
 
     public SpringSlardarSpiFactory(SlardarSpiContext spiContext) {
         this.spiContext = spiContext;
@@ -99,9 +99,9 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
     }
 
     @Override
-    public SlardarAuthenticateResultHandler findAuthenticateResultHandler(String name) throws SlardarException {
+    public SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name) throws SlardarException {
         if (StringUtil.isBlank(name)) {
-            return RESULT_HANDLER_REPO.get(SlardarDefaultAuthenticateResultHandler.NAME);
+            return RESULT_HANDLER_REPO.get(SlardarDefaultAuthenticateResultAdapter.NAME);
         }
         if (RESULT_HANDLER_REPO.containsKey(name.toUpperCase())) {
             return RESULT_HANDLER_REPO.get(name.toUpperCase());
@@ -137,8 +137,8 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         }
         logger.info("[slardar] 已加载 [{}] 个token实现组件", TOKEN_REPO.size());
 
-        ServiceLoader<SlardarAuthenticateResultHandler> authenticateResultHandlers = ServiceLoader.load(SlardarAuthenticateResultHandler.class);
-        for (SlardarAuthenticateResultHandler resultHandler : authenticateResultHandlers) {
+        ServiceLoader<SlardarAuthenticateResultAdapter> authenticateResultHandlers = ServiceLoader.load(SlardarAuthenticateResultAdapter.class);
+        for (SlardarAuthenticateResultAdapter resultHandler : authenticateResultHandlers) {
             resultHandler.initialize(this.spiContext);
             RESULT_HANDLER_REPO.put(resultHandler.name().toUpperCase(), resultHandler);
         }

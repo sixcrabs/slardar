@@ -4,10 +4,10 @@ import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
-import cn.piesat.nj.slardar.spi.authentication.SlardarAuthenticateResultHandler;
+import cn.piesat.nj.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultHandler;
+import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
@@ -336,9 +336,9 @@ public class SlardarAuthenticateService {
      *
      * @return
      */
-    public SlardarAuthenticateResultHandler getAuthResultHandler() {
+    public SlardarAuthenticateResultAdapter getAuthResultHandler() {
         String resultHandlerType = slardarProperties.getLogin().getResultHandlerType();
-        return getAuthResultHandler(StringUtil.isBlank(resultHandlerType) ? SlardarDefaultAuthenticateResultHandler.NAME : resultHandlerType);
+        return getAuthResultHandler(StringUtil.isBlank(resultHandlerType) ? SlardarDefaultAuthenticateResultAdapter.NAME : resultHandlerType);
     }
 
     /**
@@ -347,7 +347,7 @@ public class SlardarAuthenticateService {
      * @param name
      * @return
      */
-    public SlardarAuthenticateResultHandler getAuthResultHandler(String name) {
+    public SlardarAuthenticateResultAdapter getAuthResultHandler(String name) {
         try {
             return spiFactory.findAuthenticateResultHandler(name);
         } catch (SlardarException e) {

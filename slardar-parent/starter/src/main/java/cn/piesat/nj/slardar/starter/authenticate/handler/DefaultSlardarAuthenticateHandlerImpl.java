@@ -169,7 +169,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         if (!Objects.isNull(userDetails)) {
             if (passwordEncoder.matches(password, userDetails.getPassword())) {
                 try {
-                    // 双因素认证
+                    //TBD: 双因素认证
                     if (properties.getMfa().isEnabled()) {
                         SlardarMfaAuthService mfaAuthService = context.getBeanIfAvailable(SlardarMfaAuthService.class);
                         String key = mfaAuthService.generateAndDispatch(userDetails);

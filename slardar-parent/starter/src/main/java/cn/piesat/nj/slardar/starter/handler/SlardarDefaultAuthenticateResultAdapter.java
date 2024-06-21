@@ -1,14 +1,11 @@
 package cn.piesat.nj.slardar.starter.handler;
 
-import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
-import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
-import cn.piesat.nj.slardar.spi.authentication.SlardarAuthenticateResultHandler;
+import cn.piesat.nj.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,20 +19,20 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.makeErrorResu
 
 /**
  * <p>
- * 默认的 认证结果处理 handler
+ * 默认的 认证结果处理 适配器
  * 应用集成可以参考此实现进行认证成功、失败、拒绝的返回结果的定制
  * </p>
  *
  * @author Alex
  * @version v1.0 2023/12/21
  */
-@AutoService(SlardarAuthenticateResultHandler.class)
-public class SlardarDefaultAuthenticateResultHandler implements SlardarAuthenticateResultHandler {
+@AutoService(SlardarAuthenticateResultAdapter.class)
+public class SlardarDefaultAuthenticateResultAdapter implements SlardarAuthenticateResultAdapter {
     public static final String NAME = "default";
 
     protected SlardarProperties slardarProperties;
 
-    public static final Logger logger = LoggerFactory.getLogger(SlardarDefaultAuthenticateResultHandler.class);
+    public static final Logger logger = LoggerFactory.getLogger(SlardarDefaultAuthenticateResultAdapter.class);
 
     /**
      * 实现名称, 区分不同的 SPI 实现，必须
