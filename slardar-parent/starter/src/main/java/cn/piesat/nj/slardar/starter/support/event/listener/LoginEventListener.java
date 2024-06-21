@@ -71,6 +71,7 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
                     auditLog.setAccountId(id)
                             .setLogType("login")
                             .setLogTime(LocalDateTime.now())
+                            .setDetail("Login success")
                             .setClientType(getDeviceType(payload.getRequest()).name())
                             .setAccountName(account.getName())
                             .setRealm(account.getRealm());
