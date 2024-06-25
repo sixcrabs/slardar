@@ -89,6 +89,7 @@ public class AccountProviderImpl implements AccountProvider {
      */
     @Override
     public Account findByOpenId(String openId) {
+        System.out.println("openid: ".concat(openId));
         return null;
     }
 

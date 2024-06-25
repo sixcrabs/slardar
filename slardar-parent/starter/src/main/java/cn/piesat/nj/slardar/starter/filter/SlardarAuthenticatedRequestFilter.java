@@ -89,6 +89,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     sendJson(response, makeErrorResult("当前未登录", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
                 }
                 String currentUsername = SecUtil.getCurrentUsername();
+                Account account = SecUtil.getAccount();
                 boolean b = tokenService.removeTokens(currentUsername, isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC);
                 response.setCharacterEncoding(StandardCharsets.UTF_8.name());
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -96,13 +97,13 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
                     sendJsonOk(response, makeSuccessResult(""));
                     try {
-                        context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(currentUsername,request));
+                        context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(account, request));
                     } catch (SlardarException e) {
                         throw new RuntimeException(e);
                     }
 
                 } else {
-                    sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED,  request.getHeader("Origin"));
+                    sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED, request.getHeader("Origin"));
                 }
             }
         }

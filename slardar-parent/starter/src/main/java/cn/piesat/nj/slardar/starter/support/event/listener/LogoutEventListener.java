@@ -38,7 +38,7 @@ public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
             LogoutEvent.Payload payload = event.payload();
             AuditLog auditLog = new AuditLog();
             HttpServletRequest request = payload.getRequest();
-            auditLog.setAccountName(payload.getAccountName())
+            auditLog.setAccountName(payload.getAccount().getName())
                     .setLogType("logout")
                     .setLogTime(LocalDateTime.now())
                     .setClientType(getDeviceType(request).name());
