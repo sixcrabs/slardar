@@ -27,6 +27,8 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType;
+
 /**
  * <p>
  * .
@@ -77,6 +79,7 @@ public class AuditLoggerAspect {
                     .setLogTime(LocalDateTime.now())
                     .setClientIp(ipAddress)
                     .setLogType(getAspectLogType(joinPoint))
+                    .setClientType(getDeviceType(request).name())
                     .setDetail(Joiner.on("---").join(getAspectLogDetail(joinPoint), url, ipAddress, methodName))
                     .setAccountName(accountName)
                     .setAccountId(accountId)

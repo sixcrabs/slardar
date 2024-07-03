@@ -3,6 +3,7 @@ package cn.piesat.nj.slardar.starter.filter;
 import cn.hutool.core.thread.NamedThreadFactory;
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
@@ -128,11 +129,16 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     // 加载详细信息
                     SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
-                    // 判断当前登陆人的账户是否可用
                     if (userDetails.isEnabled()) {
                         SlardarAuthentication authenticationToken = new SlardarAuthentication(username, "", userDetails);
                         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         authenticationToken.setAuthenticated(true);
+                        if (userDetails.getAccount() != null) {
+                            SlardarSecurityHelper.getContext()
+                                    .setAccount(userDetails.getAccount())
+                                    .setUserProfile(userDetails.getAccount().getUserProfile())
+                                    .setAuthenticated(true);
+                        }
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
                         // TODO: 修改为事件
@@ -144,7 +150,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
                     } else {
                         // 账户过期
-                        tokenValidateEx = new SlardarException("account has expired");
+                        tokenValidateEx = new SlardarException("account has been expired or forbidden");
                     }
                 }
             } else {
