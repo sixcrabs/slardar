@@ -83,6 +83,7 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
         String tokenValue = getTokenValue(request);
         if (StringUtils.isEmpty(tokenValue)) {
             sendJson(response, makeErrorResult("token is required", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+            return;
         } else {
             // /sso/userdetails 拿到用户信息 进行填充
             try {
@@ -94,10 +95,12 @@ public class SsoClientTokenFilter extends OncePerRequestFilter {
                     context.setUserProfile(apiResult.getData().getUserProfile());
                 } else {
                     sendJson(response, makeErrorResult(apiResult.getMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+                    return;
                 }
             } catch (Exception e) {
                 log.error(e.getLocalizedMessage());
                 sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED);
+                return;
             }
         }
         chain.doFilter(request, response);
