@@ -1,11 +1,11 @@
 package cn.piesat.nj.slardar.starter.support.event;
 
-import cn.piesat.nj.slardar.core.SlardarEvent;
 import cn.piesat.nj.slardar.core.entity.Account;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * <p>
@@ -26,14 +26,22 @@ public class LoginEvent extends BaseSlardarEvent<LoginEvent.LoginEventPayload> {
         super(new LoginEventPayload().setAccount(account).setState(succeed ? 0 : -1).setCreateAt(LocalDateTime.now()));
     }
 
-    public LoginEvent(Account account, boolean succeed, HttpServletRequest request) {
-        super(new LoginEventPayload().setAccount(account).setState(succeed ? 0 : -1).setCreateAt(LocalDateTime.now())
-                .setRequest(request));
+    public LoginEvent(Account account, boolean succeed, final Map headers, final SlardarAuthentication authentication) {
+        super(new LoginEventPayload()
+                .setAccount(account)
+                .setState(succeed ? 0 : -1)
+                .setCreateAt(LocalDateTime.now())
+                .setRequestHeaders(headers)
+                .setAuthentication(authentication));
     }
 
-    public LoginEvent(HttpServletRequest request, Exception ex) {
-        super(new LoginEventPayload().setAccount(null).setState(-1).setCreateAt(LocalDateTime.now())
-                .setRequest(request).setExMessage(ex.getLocalizedMessage()));
+    public LoginEvent(SlardarAuthentication authentication, Map headers, Exception ex) {
+        super(new LoginEventPayload()
+                .setAccount(null)
+                .setState(-1)
+                .setRequestHeaders(headers)
+                .setCreateAt(LocalDateTime.now())
+                .setAuthentication(authentication).setExMessage(ex.getLocalizedMessage()));
     }
 
 
@@ -54,9 +62,29 @@ public class LoginEvent extends BaseSlardarEvent<LoginEvent.LoginEventPayload> {
          */
         private LocalDateTime createAt;
 
-        private HttpServletRequest request;
+        private SlardarAuthentication authentication;
 
         private String exMessage;
+
+        private Map requestHeaders;
+
+        public Map getRequestHeaders() {
+            return requestHeaders;
+        }
+
+        public LoginEventPayload setRequestHeaders(Map requestHeaders) {
+            this.requestHeaders = requestHeaders;
+            return this;
+        }
+
+        public SlardarAuthentication getAuthentication() {
+            return authentication;
+        }
+
+        public LoginEventPayload setAuthentication(SlardarAuthentication authentication) {
+            this.authentication = authentication;
+            return this;
+        }
 
         public String getExMessage() {
             return exMessage;
@@ -64,15 +92,6 @@ public class LoginEvent extends BaseSlardarEvent<LoginEvent.LoginEventPayload> {
 
         public LoginEventPayload setExMessage(String exMessage) {
             this.exMessage = exMessage;
-            return this;
-        }
-
-        public HttpServletRequest getRequest() {
-            return request;
-        }
-
-        public LoginEventPayload setRequest(HttpServletRequest request) {
-            this.request = request;
             return this;
         }
 

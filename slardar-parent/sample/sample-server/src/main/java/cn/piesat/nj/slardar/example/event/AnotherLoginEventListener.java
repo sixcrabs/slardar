@@ -2,10 +2,13 @@ package cn.piesat.nj.slardar.example.event;
 
 import cn.piesat.nj.slardar.core.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -38,9 +41,9 @@ public class AnotherLoginEventListener implements SlardarEventListener<LoginEven
     public void onEvent(LoginEvent event) throws SlardarException {
         LoginEvent.LoginEventPayload payload = event.payload();
         // 登录成功后续操作
-        HttpServletRequest request = payload.getRequest();
+        Map headers = payload.getRequestHeaders();
 
-        String openId = request.getHeader("open-id");
+        Object openId = headers.get("open-id");
         // 绑定 openid
         System.out.printf("openID: %s \r\n", openId);
     }

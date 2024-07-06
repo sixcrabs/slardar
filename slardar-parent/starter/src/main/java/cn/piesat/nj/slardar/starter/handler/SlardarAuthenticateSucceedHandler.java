@@ -43,6 +43,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
+import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getHeadersAsMap;
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.isFromMobile;
 import static cn.piesat.nj.slardar.starter.support.SecUtil.getAccount;
 
@@ -130,12 +131,12 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.writeValue(response.getWriter(), authenticateService.getAuthResultHandler().authSucceedResult(accountInfoDTO));
         clearAuthenticationAttributes(request);
         try {
-            context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(getAccount(), true, request));
+            context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(getAccount(), true, getHeadersAsMap(request),
+                    authenticationToken));
         } catch (SlardarException e) {
             e.printStackTrace();
         }
     }
-
 
 
     private static void clearAuthenticationAttributes(HttpServletRequest request) {

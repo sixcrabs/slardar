@@ -7,7 +7,6 @@ import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
-import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getDeviceType;
 
 /**
  * <p>
@@ -50,13 +47,15 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
         try {
             LoginEvent.LoginEventPayload payload = event.payload();
             Account account = payload.getAccount();
-            String remoteAddr = HttpServletUtil.geRequestIpAddress(payload.getRequest());
-            AuditLog auditLog = new AuditLog();
+            AuditLog auditLog = new AuditLog()
+                    .setClientIp(payload.getAuthentication().getReqClientIp())
+                    .setClientType(payload.getAuthentication().getLoginDeviceType().name())
+                    .setLogType("登录")
+                    .setLogTime(LocalDateTime.now());
+
             if (Objects.isNull(account)) {
                 if (auditLogIngest != null) {
-                    auditLogIngest.ingest(auditLog
-                            .setClientIp(remoteAddr)
-                            .setDetail(payload.getExMessage()));
+                    auditLogIngest.ingest(auditLog.setDetail(payload.getExMessage()));
                 } else {
                     log.error("`AuditLogIngest` is null");
                 }
@@ -69,14 +68,10 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
                                 .setUserProfileName(userProfile.getName());
                     }
                     auditLog.setAccountId(id)
-                            .setLogType("login")
-                            .setLogTime(LocalDateTime.now())
-                            .setDetail("Login success")
-                            .setClientType(getDeviceType(payload.getRequest()).name())
+                            .setDetail("登录成功")
                             .setAccountName(account.getName())
                             .setRealm(account.getRealm());
-                    auditLog.setClientIp(remoteAddr)
-                            .setAccountName(account.getName());
+                    auditLog.setAccountName(account.getName());
                     auditLogIngest.ingest(auditLog);
                 } else {
                     log.error("`AuditLogIngest` is null");

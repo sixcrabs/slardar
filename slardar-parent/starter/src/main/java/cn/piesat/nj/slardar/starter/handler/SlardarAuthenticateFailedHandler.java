@@ -1,10 +1,13 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
+import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
+import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +64,10 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         } else {
             resp = (HashMap<String, Object>) authenticateService.getAuthResultHandler().authFailedResult(e);
             try {
-                slardarContext.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(request, e));
+                slardarContext.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(
+                        new SlardarAuthentication(null, Constants.AUTH_TYPE_NORMAL, null)
+                                .setLoginDeviceType(getDeviceType(request))
+                                .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
             } catch (SlardarException ex) {
                 log.error(ex.getLocalizedMessage());
             }

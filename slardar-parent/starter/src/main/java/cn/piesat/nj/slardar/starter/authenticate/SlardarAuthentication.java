@@ -58,8 +58,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
     private String reqClientIp;
 
     /**
-     *
-     * @param principal  用户名
+     * @param principal 用户名
      * @param authType
      * @param details
      */
@@ -70,7 +69,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
         this.authType = authType;
     }
 
-    public SlardarAuthentication( SlardarUserDetails details) {
+    public SlardarAuthentication(SlardarUserDetails details) {
         super(Objects.isNull(details) ? null : details.getAuthorities());
         this.userDetails = details;
         this.accountName = details.getUsername();
@@ -146,6 +145,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
 
     /**
      * 账户密码等凭证
+     *
      * @return
      */
     @Override
@@ -156,6 +156,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
     /**
      * 账户名 或 openid 等
      * TODO: principal 需要封装
+     *
      * @return
      */
     @Override
