@@ -6,8 +6,8 @@ import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
 
 import java.util.Collection;
 
@@ -45,7 +45,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      * @throws AuthenticationServiceException
      */
     @Override
-    public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws AuthenticationException {
+    public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws SlardarAuthenticationException {
         // TBD: 多个 prehandler 都需要处理
         Collection<SlardarAuthenticatePreHandler> preHandlers = context.getBeans(SlardarAuthenticatePreHandler.class);
         if (preHandlers != null && preHandlers.size() > 0) {

@@ -6,10 +6,9 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -39,9 +38,8 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
 
 
     @Override
-    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws SlardarAuthenticationException {
         String openid = requestWrapper.getRequestParams().get("openid");
-//        phone = requestWrapper
         if (StringUtil.isBlank(openid)) {
             throw new AuthenticationServiceException("需要提供openid！");
         }

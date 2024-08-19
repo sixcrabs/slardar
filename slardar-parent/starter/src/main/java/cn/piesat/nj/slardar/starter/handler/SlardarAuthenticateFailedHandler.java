@@ -7,7 +7,7 @@ import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarEventManager;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
-import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
 
@@ -64,10 +63,16 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         } else {
             resp = (HashMap<String, Object>) authenticateService.getAuthResultHandler().authFailedResult(e);
             try {
-                slardarContext.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(
-                        new SlardarAuthentication(null, Constants.AUTH_TYPE_NORMAL, null)
-                                .setLoginDeviceType(getDeviceType(request))
-                                .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
+                String accountName = "";
+                if (e instanceof SlardarAuthenticationException) {
+                    // 获取到认证异常的账号名
+                    accountName = ((SlardarAuthenticationException) e).getAccountName();
+                }
+                slardarContext.getBeanIfAvailable(SlardarEventManager.class)
+                        .dispatch(new LoginEvent(
+                                new SlardarAuthentication(accountName, Constants.AUTH_TYPE_NORMAL, null)
+                                        .setLoginDeviceType(getDeviceType(request))
+                                        .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
             } catch (SlardarException ex) {
                 log.error(ex.getLocalizedMessage());
             }

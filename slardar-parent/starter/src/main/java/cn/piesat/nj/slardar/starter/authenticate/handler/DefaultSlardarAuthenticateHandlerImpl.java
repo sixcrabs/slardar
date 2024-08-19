@@ -13,6 +13,7 @@ import cn.piesat.nj.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import cn.piesat.v.shared.timer.TimerManager;
 import cn.piesat.v.shared.timer.job.TimerJobs;
@@ -101,7 +102,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
      * @throws AuthenticationException
      */
     @Override
-    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws AuthenticationException {
+    public SlardarAuthentication handleRequest(RequestWrapper requestWrapper) throws SlardarAuthenticationException {
         // 根据设置来确定是否需要启用验证码流程
         SlardarProperties properties = getProperties();
         CaptchaComponent captchaComponent = context.getBeanIfAvailable(CaptchaComponent.class);
@@ -143,7 +144,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         String accountName = authentication.getAccountName();
         if (maxAttempts != null && maxAttempts > 0L) {
             if (stringCommands.exists(LOCKED_KEY.concat(accountName)) > 0L) {
-                throw new AuthenticationServiceException("Your account has been locked due to login failed too many times");
+                throw new SlardarAuthenticationException("Your account has been locked due to login failed too many times", accountName);
             }
         }
         SlardarUserDetails userDetails = null;
@@ -151,7 +152,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
             userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
         } catch (UsernameNotFoundException e) {
             triggerFailedLock(accountName);
-            throw new AuthenticationServiceException(e.getLocalizedMessage());
+            throw new SlardarAuthenticationException(e.getLocalizedMessage(), accountName);
         }
         String password = authentication.getPassword();
         if (properties.getLogin().getEncrypt().isEnabled()) {
@@ -161,8 +162,8 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                 SlardarCrypto crypto = spiFactory.findCrypto(properties.getLogin().getEncrypt().getMode());
                 password = crypto.decrypt(password);
             } catch (SlardarException e) {
-                throw new AuthenticationServiceException(StringUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),
-                        e.getLocalizedMessage()));
+                throw new SlardarAuthenticationException(StringUtil.format("解密[{}]失败:{}", properties.getLogin().getEncrypt().getMode(),
+                        e.getLocalizedMessage()), accountName);
             }
         }
         // 验证密码是否正确
@@ -175,7 +176,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                         String key = mfaAuthService.generateAndDispatch(userDetails);
                         if (StringUtil.isBlank(key)) {
                             triggerFailedLock(accountName);
-                            throw new AuthenticationServiceException("`MFA` key error");
+                            throw new SlardarAuthenticationException("`MFA` key error", accountName);
                         }
                         throw new MfaVerifyRequiredException("MFA Authentication required!", key);
                     }
@@ -186,16 +187,16 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                     if (e instanceof MfaVerifyRequiredException) {
                         throw (MfaVerifyRequiredException) e;
                     } else {
-                        throw new AuthenticationServiceException(e.getLocalizedMessage());
+                        throw new SlardarAuthenticationException(e.getLocalizedMessage(), accountName);
                     }
                 }
             } else {
                 triggerFailedLock(accountName);
-                throw new AuthenticationServiceException(String.format("账户 [%s] 密码不匹配", userDetails.getUsername()));
+                throw new SlardarAuthenticationException(String.format("账户 [%s] 密码不匹配", userDetails.getUsername()), accountName);
             }
         } else {
             triggerFailedLock(accountName);
-            throw new UsernameNotFoundException("account not found");
+            throw new UsernameNotFoundException(StringUtil.format("account [{}] not found", accountName));
         }
     }
 
