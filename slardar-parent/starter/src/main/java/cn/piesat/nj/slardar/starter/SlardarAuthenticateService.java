@@ -53,9 +53,9 @@ public class SlardarAuthenticateService {
 
     private final SlardarSpiFactory spiFactory;
 
-    private static final String TOKEN_KEY_PREFIX = "account_token";
+    private static final String TOKEN_KEY_PREFIX = "slardar_account_token";
 
-    private static final Joiner UNDERLINE_JOINER = Joiner.on("_");
+    private final Joiner keyJoiner;
 
     private final RedisClient redisClient;
 
@@ -76,6 +76,7 @@ public class SlardarAuthenticateService {
         this.redisClient = redisClient;
         this.stringCommands = redisClient.connect().sync();
         this.setCommands = redisClient.connect().sync();
+        this.keyJoiner = Joiner.on(slardarProperties.getToken().getSeparator());
     }
 
 
@@ -203,10 +204,10 @@ public class SlardarAuthenticateService {
         }
         String id = simpleUUID();
         // xxx_id
-        String usernameKey = UNDERLINE_JOINER.join(username, id);
+        String usernameKey = keyJoiner.join(username, id);
         SlardarTokenProvider.Payload payload = getTokenImpl().generate(usernameKey);
         // TODO: into store
-        // 有效期也需要返回给客户端 用户缓存等
+        // 有效期也返回给客户端 用户缓存等
         setCommands.sadd(username, id);
         stringCommands.setex(key(usernameKey, deviceType), Duration.between(LocalDateTime.now(), payload.getExpiresAt()).getSeconds(),
                 payload.getTokenValue());
@@ -291,7 +292,7 @@ public class SlardarAuthenticateService {
         Set<String> ids = setCommands.smembers(username);
         String redisKey = "";
         if (ids != null && ids.size() > 0) {
-            redisKey = key(UNDERLINE_JOINER.join(username, ids.iterator().next()), deviceType);
+            redisKey = key(keyJoiner.join(username, ids.iterator().next()), deviceType);
         } else {
             redisKey = key(username, deviceType);
         }
@@ -310,7 +311,7 @@ public class SlardarAuthenticateService {
      * @return
      */
     private String key(String username, LoginDeviceType deviceType) {
-        return UNDERLINE_JOINER.join(TOKEN_KEY_PREFIX, deviceType.name(), username);
+        return keyJoiner.join(TOKEN_KEY_PREFIX, deviceType.name(), username);
     }
 
 

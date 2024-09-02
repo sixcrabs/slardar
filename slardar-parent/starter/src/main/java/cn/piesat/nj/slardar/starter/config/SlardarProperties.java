@@ -609,6 +609,21 @@ public class SlardarProperties implements Serializable {
          */
         private JwtSettings jwt = new JwtSettings();
 
+        /**
+         * token key 分隔符 默认 _
+         */
+        private String separator = "_";
+
+
+        public String getSeparator() {
+            return separator;
+        }
+
+        public TokenSettings setSeparator(String separator) {
+            this.separator = separator;
+            return this;
+        }
+
         public String getType() {
             return type;
         }
