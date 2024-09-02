@@ -148,6 +148,7 @@ public class SlardarAuthenticateService {
 
     /**
      * token 剩余有效时间
+     *
      * @param tokenValue
      * @param deviceType
      * @return
@@ -159,7 +160,6 @@ public class SlardarAuthenticateService {
         }
         return stringCommands.ttl(key(username, deviceType));
     }
-
 
 
     public boolean isExpired(String tokenValue) {
@@ -175,7 +175,7 @@ public class SlardarAuthenticateService {
      */
     public String getUsername(String tokenValue) {
         String usernameWithId = getTokenImpl().getSubject(tokenValue);
-        return usernameWithId.split("_")[0];
+        return usernameWithId.split(slardarProperties.getToken().getSeparator())[0];
     }
 
     /**
@@ -229,7 +229,7 @@ public class SlardarAuthenticateService {
         if (ids.size() == 0) {
             return true;
         }
-        return ids.stream().allMatch(id -> stringCommands.del(key(username + "_" + id, deviceType)) != null &&
+        return ids.stream().allMatch(id -> stringCommands.del(key(username + slardarProperties.getToken().getSeparator() + id, deviceType)) != null &&
                 setCommands.srem(username, id) != null);
     }
 
