@@ -1,5 +1,6 @@
 package cn.piesat.nj.slardar.starter.handler;
 
+import cn.hutool.core.map.MapUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
@@ -62,19 +63,23 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
             resp = makeResult(((MfaVerifyRequiredException) e).getKey(), 1008, "MFA authentication required!");
         } else {
             resp = (HashMap<String, Object>) authenticateService.getAuthResultHandler().authFailedResult(e);
-            try {
-                String accountName = "";
-                if (e instanceof SlardarAuthenticationException) {
-                    // 获取到认证异常的账号名
-                    accountName = ((SlardarAuthenticationException) e).getAccountName();
+            Integer code = MapUtil.getInt(resp, "code");
+            if (code != null && code == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
+                // 无 token 情况不记录登录日志
+                try {
+                    String accountName = "";
+                    if (e instanceof SlardarAuthenticationException) {
+                        // 获取到认证异常的账号名
+                        accountName = ((SlardarAuthenticationException) e).getAccountName();
+                    }
+                    slardarContext.getBeanIfAvailable(SlardarEventManager.class)
+                            .dispatch(new LoginEvent(
+                                    new SlardarAuthentication(accountName, Constants.AUTH_TYPE_NORMAL, null)
+                                            .setLoginDeviceType(getDeviceType(request))
+                                            .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
+                } catch (SlardarException ex) {
+                    log.error(ex.getLocalizedMessage());
                 }
-                slardarContext.getBeanIfAvailable(SlardarEventManager.class)
-                        .dispatch(new LoginEvent(
-                                new SlardarAuthentication(accountName, Constants.AUTH_TYPE_NORMAL, null)
-                                        .setLoginDeviceType(getDeviceType(request))
-                                        .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
-            } catch (SlardarException ex) {
-                log.error(ex.getLocalizedMessage());
             }
         }
         sendJson(response, resp, status, request.getHeader("Origin"));

@@ -5,11 +5,13 @@ import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
+import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Map;
@@ -75,7 +77,9 @@ public class SlardarDefaultAuthenticateResultAdapter implements SlardarAuthentic
     public Map<String, Object> authFailedResult(RuntimeException exception) {
         String errMsg = exception.getLocalizedMessage();
         logger.error("Authentication failed：{}", errMsg);
-        HttpStatus status = (exception instanceof AuthenticationServiceException || exception instanceof UsernameNotFoundException) ?
+        HttpStatus status = (exception instanceof SlardarAuthenticationException ||
+                exception instanceof UsernameNotFoundException ||
+                exception instanceof AuthenticationServiceException) ?
                 HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
         return makeErrorResult(Objects.isNull(errMsg) ? "Null" : errMsg, status.value());
     }
