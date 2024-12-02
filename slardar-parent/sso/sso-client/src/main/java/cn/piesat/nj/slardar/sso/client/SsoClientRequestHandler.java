@@ -82,6 +82,7 @@ public class SsoClientRequestHandler {
     private void getSsoAuthUrl(HttpServletRequest request, HttpServletResponse response) {
         String ssoServer = clientProperties.getServerUrl();
         String redirectUrl = getParam(request, "url");
+
         sendJsonOk(response, makeSuccessResult(ssoServer.concat("/auth?url=" + redirectUrl)));
     }
 

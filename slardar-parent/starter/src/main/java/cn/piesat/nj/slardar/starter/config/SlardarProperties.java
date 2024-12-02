@@ -558,7 +558,7 @@ public class SlardarProperties implements Serializable {
         private String mode = "AES";
 
         /**
-         * 密钥
+         * 密钥 RSA 时是公钥
          */
         private String secretKey;
 

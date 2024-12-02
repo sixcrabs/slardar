@@ -11,9 +11,7 @@
         <module>starter</module>
         <module>sample</module>
         <module>sso</module>
-        <module>gateway-helper</module>
         <module>extension</module>
-        <module>oauth2</module>
         <module>common</module>
     </modules>
     <packaging>pom</packaging>
@@ -25,7 +23,7 @@
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <java.version>1.8</java.version>
         <docker.hub.repository>registry.cn-hangzhou.aliyuncs.com/piesat-public/${project.artifactId}</docker.hub.repository>
-        <project.scm.host>http://124.70.42.95:8081/repository</project.scm.host>
+        <project.scm.host>http://124.221.177.135:8081/repository</project.scm.host>
         <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
         <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
         <spring.cloud.alibaba.version>2.2.7.RELEASE</spring.cloud.alibaba.version>

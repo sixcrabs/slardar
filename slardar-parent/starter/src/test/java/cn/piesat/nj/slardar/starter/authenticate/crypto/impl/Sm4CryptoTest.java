@@ -27,6 +27,8 @@ class Sm4CryptoTest {
      */
     private String key = "0a1b2c3d4e5f6f7e8d9cba9876543210";
 
+    public static final String text = "{\"1\":\"landtype='N0101'\",\"2\":\"landtype='N0101'\",\"3\":\"landtype='N0101'\",\"4\":\"landtype='N0101'\",\"5\":\"landtype='N0101'\",\"6\":\"landtype='N0101'\",\"7\":\"landtype='N0101'\",\"8\":\"landtype='N0101'\",\"9\":\"landtype='N0101'\"}";
+
 
     @Test
     void encrypt() {

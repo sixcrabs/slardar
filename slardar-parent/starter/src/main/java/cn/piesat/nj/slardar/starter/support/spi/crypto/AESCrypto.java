@@ -45,7 +45,6 @@ public class AESCrypto implements SlardarCrypto {
      */
     @Override
     public void initialize(SlardarSpiContext context) {
-
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         String secretKey = properties.getLogin().getEncrypt().getSecretKey();
         if (StringUtil.isBlank(secretKey)) {
