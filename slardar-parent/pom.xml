@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.piesat.nj</groupId>
+    <groupId>cn.piesat.v</groupId>
     <artifactId>slardar-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <modules>
@@ -24,9 +24,14 @@
         <java.version>1.8</java.version>
         <docker.hub.repository>registry.cn-hangzhou.aliyuncs.com/piesat-public/${project.artifactId}</docker.hub.repository>
         <project.scm.host>http://124.221.177.135:8081/repository</project.scm.host>
-        <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
-        <spring.cloud.version>Hoxton.SR12</spring.cloud.version>
-        <spring.cloud.alibaba.version>2.2.7.RELEASE</spring.cloud.alibaba.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
+        <spring.cloud.version>2021.0.4</spring.cloud.version>
+        <spring.cloud.alibaba.version>2021.0.4.0</spring.cloud.alibaba.version>
+        <slardar.version>1.5.0-SNAPSHOT</slardar.version>
+        <sso.version>1.1.1-SNAPSHOT</sso.version>
+<!--        <spring.boot.version>2.3.12.RELEASE</spring.boot.version>-->
+<!--        <spring.cloud.version>Hoxton.SR12</spring.cloud.version>-->
+<!--        <spring.cloud.alibaba.version>2.2.7.RELEASE</spring.cloud.alibaba.version>-->
     </properties>
 
     <distributionManagement>
@@ -65,6 +70,28 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>cn.piesat.v</groupId>
+                <artifactId>app-starter</artifactId>
+                <version>1.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.piesat.v</groupId>
+                <artifactId>ring-timer</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.piesat.v</groupId>
+                <artifactId>skv-spring-boot-starter</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.piesat.v</groupId>
+                <artifactId>hutool-mini</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -384,40 +411,6 @@
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>dockerfile-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>sonar-exec</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.0.0</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <arguments>
-                                <!--                                <argument>-X</argument>-->
-                                <argument>org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar</argument>
-                                <argument>-Dsonar.host.url=http://10.254.240.226:9000</argument>
-                                <argument>-Dsonar.login=26723677749108f52e08cb8e3744c525798b5925</argument>
-                                <argument>-DskipTests=true</argument>
-                                <argument>-Dfile.encoding=UTF-8</argument>
-                                <argument>-P nexus-hws</argument>
-                            </arguments>
-                            <environmentVariables>
-                                <JAVA_HOME>D://0_env/jdk-11.0.15</JAVA_HOME>
-                            </environmentVariables>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

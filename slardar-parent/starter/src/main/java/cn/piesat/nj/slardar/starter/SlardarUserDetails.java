@@ -7,7 +7,6 @@ import cn.piesat.nj.slardar.core.entity.Role;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;

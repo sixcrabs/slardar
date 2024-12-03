@@ -1,17 +1,19 @@
 package cn.piesat.nj.slardar.starter.config;
 
 import cn.hutool.core.util.ArrayUtil;
-import cn.piesat.nj.skv.core.KvStore;
-import cn.piesat.nj.skv.starter.config.KvAutoConfiguration;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
 import cn.piesat.nj.slardar.starter.*;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.nj.slardar.starter.filter.*;
+import cn.piesat.nj.slardar.starter.filter.request.SlardarBasicAuthFilter;
+import cn.piesat.nj.slardar.starter.filter.request.SlardarTokenRequiredFilter;
 import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
+import cn.piesat.v.skv.core.KvStore;
+import cn.piesat.v.skv.starter.config.KvAutoConfiguration;
 import io.lettuce.core.RedisClient;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -141,15 +143,15 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarMfaLoginFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
-                                                       AuthenticationFailureHandler failureHandler,
-                                                       AuthenticationSuccessHandler successHandler) {
-        return new SlardarMfaLoginFilter(mfaAuthService, failureHandler, successHandler);
+    public SlardarMfaFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
+                                                  AuthenticationFailureHandler failureHandler,
+                                                  AuthenticationSuccessHandler successHandler) {
+        return new SlardarMfaFilter(mfaAuthService, failureHandler, successHandler);
     }
 
     @Bean
     public SlardarSpiContext slardarSpiContext() {
-        return new SpringSlardarContextImpl();
+        return new SpringSlardarSpiContextImpl();
     }
 
 

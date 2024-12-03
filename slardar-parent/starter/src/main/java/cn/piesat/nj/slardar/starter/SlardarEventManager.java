@@ -1,13 +1,7 @@
-/*
- * @Author: alex
- * @Date: 2023-04-19 23:26:48
- * @LastEditTime: 2023-11-17 17:59:15
- * @LastEditors: alex
- */
 package cn.piesat.nj.slardar.starter;
 
-import cn.piesat.nj.slardar.core.SlardarEvent;
-import cn.piesat.nj.slardar.core.SlardarEventListener;
+import cn.piesat.nj.slardar.core.event.SlardarEvent;
+import cn.piesat.nj.slardar.core.event.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.springframework.beans.BeansException;
@@ -31,7 +25,7 @@ import java.util.stream.Collectors;
  * @author alex
  * @version v1.0 2023/3/31
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class SlardarEventManager implements ApplicationContextAware {
 
     private ApplicationContext context;

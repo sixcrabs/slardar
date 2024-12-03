@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.core;
+package cn.piesat.nj.slardar.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -2,10 +2,10 @@ package cn.piesat.nj.slardar.starter.support.captcha.generator;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.piesat.nj.misc.hutool.mini.CharUtil;
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.CharUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 
-import static cn.piesat.nj.misc.hutool.mini.StringUtil.sub;
+import static cn.piesat.v.misc.hutool.mini.StringUtil.sub;
 
 /**
  * 数字计算验证码生成器

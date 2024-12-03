@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>slardar-common-parent</artifactId>
-        <groupId>cn.piesat.nj</groupId>
-        <version>1.4.1-SNAPSHOT</version>
+        <groupId>cn.piesat.v</groupId>
+        <version>1.5.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

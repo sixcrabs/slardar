@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter.handler;
 
-import cn.piesat.nj.skv.util.MapUtil;
 import cn.piesat.nj.slardar.core.AccountInfoDTO;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
@@ -40,7 +39,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.Map;
 
 import static cn.piesat.nj.slardar.core.Constants.DATE_TIME_PATTERN;
 import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.getHeadersAsMap;
@@ -50,9 +48,11 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.getAccount;
 /**
  * <p>
  * 认证成功 handler
- * - 写入 jwt value
- * - 更新用户审计信息（如：记录用户登录时刻等）
- * - 其他
+ * <ul>
+ *     <li> 写入 jwt value</li>
+ *     <li>更新用户审计信息（如：记录用户登录时刻等）</li>
+ *     <li>其他</li>
+ * </ul>
  * </p>
  *
  * @author alex
@@ -60,7 +60,7 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.getAccount;
  */
 public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessHandler {
 
-    private static ObjectMapper globalObjectMapper = new ObjectMapper();
+    private static final ObjectMapper globalObjectMapper = new ObjectMapper();
 
     private final SlardarProperties securityProperties;
 

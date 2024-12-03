@@ -1,12 +1,11 @@
 package cn.piesat.nj.slardar.starter.filter;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
-import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.gson.Gson;
@@ -41,7 +40,7 @@ import static cn.piesat.nj.slardar.starter.support.HttpServletUtil.*;
  * @author alex
  * @version v1.0 2022/9/26
  */
-public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private final SlardarAuthenticateHandlerFactory authenticateHandlerFactory;
 
@@ -49,11 +48,11 @@ public class SlardarLoginProcessingFilter extends AbstractAuthenticationProcessi
 
     public static final Gson GSON = new GsonBuilder().create();
 
-    public SlardarLoginProcessingFilter(SlardarProperties securityProperties,
-                                        AuthenticationManager authenticationManager,
-                                        AuthenticationFailureHandler authenticationFailureHandler,
-                                        AuthenticationSuccessHandler authenticationSuccessHandler,
-                                        SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
+    public SlardarLoginFilter(SlardarProperties securityProperties,
+                              AuthenticationManager authenticationManager,
+                              AuthenticationFailureHandler authenticationFailureHandler,
+                              AuthenticationSuccessHandler authenticationSuccessHandler,
+                              SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
         super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl()));
         this.postOnly = securityProperties.getLogin().isPostOnly();
         this.authenticateHandlerFactory = authenticateHandlerFactory;

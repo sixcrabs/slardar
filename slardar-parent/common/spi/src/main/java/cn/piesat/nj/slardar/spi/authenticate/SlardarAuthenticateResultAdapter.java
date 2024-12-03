@@ -19,21 +19,21 @@ public interface SlardarAuthenticateResultAdapter extends SlardarSpi {
 
     /**
      * 认证成功结果
-     * @param accountInfoDTO
+     * @param accountInfoDTO  账户信息
      * @return
      */
     Map<String, Object> authSucceedResult(AccountInfoDTO accountInfoDTO);
 
     /**
      * 认证失败结果
-     * @param exception
+     * @param exception  认证异常
      * @return
      */
     Map<String, Object> authFailedResult(RuntimeException exception);
 
     /**
      * 无权限访问结果
-     * @param exception
+     * @param exception 认证异常
      * @return
      */
     Map<String, Object> authDeniedResult(RuntimeException exception);

@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.SlardarSpiFactory;
@@ -11,6 +10,7 @@ import cn.piesat.nj.slardar.starter.handler.SlardarDefaultAuthenticateResultAdap
 import cn.piesat.nj.slardar.starter.support.HttpServletUtil;
 import cn.piesat.nj.slardar.starter.support.LoginConcurrentPolicy;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import com.google.common.base.Joiner;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.sync.RedisCommands;

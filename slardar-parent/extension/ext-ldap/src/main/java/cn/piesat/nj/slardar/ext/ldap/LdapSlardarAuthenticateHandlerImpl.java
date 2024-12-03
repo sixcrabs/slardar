@@ -7,7 +7,6 @@ import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
-import cn.piesat.nj.slardar.starter.filter.SlardarLoginProcessingFilter;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.slf4j.Logger;

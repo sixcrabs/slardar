@@ -1,11 +1,10 @@
 package cn.piesat.nj.slardar.starter.support.captcha;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
-import cn.piesat.nj.skv.core.KvStore;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.nj.slardar.starter.support.captcha.generator.MathGenerator;
 import cn.piesat.nj.slardar.starter.support.captcha.generator.RandomGenerator;
 import cn.piesat.nj.slardar.starter.support.captcha.impl.LineCaptcha;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.skv.core.KvStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class CaptchaComponent {
 
     private final KvStore store;
 
-    private final SlardarProperties.CaptchaSettings settings;
+    private final SlardarProperties.CaptchaSetting settings;
 
     public static final String CAPTCHA_KEY_PREFIX = "CaptchaCode_";
 

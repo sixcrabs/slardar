@@ -59,7 +59,7 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
 
     /**
      * @param principal 用户名
-     * @param authType
+     * @param authType  basic: BasicAuth
      * @param details
      */
     public SlardarAuthentication(String principal, String authType, SlardarUserDetails details) {

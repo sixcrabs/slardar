@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;

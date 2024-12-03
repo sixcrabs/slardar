@@ -3,7 +3,7 @@ package cn.piesat.nj.slardar.starter.support.spi.token;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.nj.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.shared.timer.cron.DateTimeUtil;
+import cn.piesat.v.timer.cron.DateTimeUtil;
 import com.google.auto.service.AutoService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;

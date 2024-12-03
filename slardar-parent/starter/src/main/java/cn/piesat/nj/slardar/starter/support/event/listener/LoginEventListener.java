@@ -1,7 +1,7 @@
 package cn.piesat.nj.slardar.starter.support.event.listener;
 
 import cn.piesat.nj.slardar.core.AuditLogIngest;
-import cn.piesat.nj.slardar.core.SlardarEventListener;
+import cn.piesat.nj.slardar.core.event.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.AuditLog;

@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.support.spi;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.UserProfile;
@@ -62,7 +62,7 @@ public class EmailOtpDispatcher implements SlardarOtpDispatcher {
     public void initialize(SlardarSpiContext context) {
         // 这里读取email 配置
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
-        SlardarProperties.MfaSettings mfa = properties.getMfa();
+        SlardarProperties.MfaSetting mfa = properties.getMfa();
         SlardarProperties.EmailSetting emailSetting = mfa.getEmail();
         if (emailSetting != null) {
             mailSender = new JavaMailSenderImpl();

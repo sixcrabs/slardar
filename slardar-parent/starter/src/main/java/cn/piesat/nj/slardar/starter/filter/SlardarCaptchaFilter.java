@@ -1,6 +1,5 @@
 package cn.piesat.nj.slardar.starter.filter;
 
-import cn.piesat.nj.slardar.starter.support.SecUtil;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;

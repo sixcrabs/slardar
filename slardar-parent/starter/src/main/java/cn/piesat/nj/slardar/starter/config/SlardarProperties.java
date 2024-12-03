@@ -33,27 +33,27 @@ public class SlardarProperties implements Serializable {
     /**
      * basic auth 配置
      */
-    private BasicAuthSettings basic = new BasicAuthSettings();
+    private BasicAuthSetting basic = new BasicAuthSetting();
 
     /**
      * token 类型设置
      */
-    private TokenSettings token = new TokenSettings();
+    private TokenSetting token = new TokenSetting();
 
     /**
      * 登录相关参数设置
      */
-    private LoginSettings login = new LoginSettings();
+    private LoginSetting login = new LoginSetting();
 
     /**
      * 多因子认证
      */
-    private MfaSettings mfa = new MfaSettings();
+    private MfaSetting mfa = new MfaSetting();
 
     /**
      * 验证码参数设置
      */
-    private CaptchaSettings captcha = new CaptchaSettings();
+    private CaptchaSetting captcha = new CaptchaSetting();
 
     /**
      * urls to be ignored
@@ -61,47 +61,47 @@ public class SlardarProperties implements Serializable {
     private String[] ignores = new String[]{"/login", "/captcha"};
 
 
-    public BasicAuthSettings getBasic() {
+    public BasicAuthSetting getBasic() {
         return basic;
     }
 
-    public SlardarProperties setBasic(BasicAuthSettings basic) {
+    public SlardarProperties setBasic(BasicAuthSetting basic) {
         this.basic = basic;
         return this;
     }
 
-    public MfaSettings getMfa() {
+    public MfaSetting getMfa() {
         return mfa;
     }
 
-    public SlardarProperties setMfa(MfaSettings mfa) {
+    public SlardarProperties setMfa(MfaSetting mfa) {
         this.mfa = mfa;
         return this;
     }
 
-    public TokenSettings getToken() {
+    public TokenSetting getToken() {
         return token;
     }
 
-    public SlardarProperties setToken(TokenSettings token) {
+    public SlardarProperties setToken(TokenSetting token) {
         this.token = token;
         return this;
     }
 
-    public LoginSettings getLogin() {
+    public LoginSetting getLogin() {
         return login;
     }
 
-    public SlardarProperties setLogin(LoginSettings login) {
+    public SlardarProperties setLogin(LoginSetting login) {
         this.login = login;
         return this;
     }
 
-    public CaptchaSettings getCaptcha() {
+    public CaptchaSetting getCaptcha() {
         return captcha;
     }
 
-    public SlardarProperties setCaptcha(CaptchaSettings captcha) {
+    public SlardarProperties setCaptcha(CaptchaSetting captcha) {
         this.captcha = captcha;
         return this;
     }
@@ -115,7 +115,58 @@ public class SlardarProperties implements Serializable {
         return this;
     }
 
-    public static class BasicAuthSettings {
+    /**
+     * api 签名认证参数设置
+     */
+    public static  class ApiSignatureSetting {
+        /**
+         * 是否开启 api 签名认证 默认关闭
+         */
+        private boolean enable = false;
+
+        /**
+         * 请求头 key 的前缀 可以避免和其他重复 默认 X-
+         */
+        private String headerKeyPrefix = "X-";
+
+        /**
+         * 针对哪些 url pattern 采用 Api 签名验证
+         */
+        private String[] filterUrls = new String[]{};
+
+
+        public String getHeaderKeyPrefix() {
+            return headerKeyPrefix;
+        }
+
+        public ApiSignatureSetting setHeaderKeyPrefix(String headerKeyPrefix) {
+            this.headerKeyPrefix = headerKeyPrefix;
+            return this;
+        }
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public ApiSignatureSetting setEnable(boolean enable) {
+            this.enable = enable;
+            return this;
+        }
+
+        public String[] getFilterUrls() {
+            return filterUrls;
+        }
+
+        public ApiSignatureSetting setFilterUrls(String[] filterUrls) {
+            this.filterUrls = filterUrls;
+            return this;
+        }
+    }
+
+    /**
+     * BasicAuth 认证参数
+     */
+    public static class BasicAuthSetting {
 
         /**
          * 是否开启 basic auth 认证能力 默认关闭
@@ -131,7 +182,7 @@ public class SlardarProperties implements Serializable {
             return enable;
         }
 
-        public BasicAuthSettings setEnable(boolean enable) {
+        public BasicAuthSetting setEnable(boolean enable) {
             this.enable = enable;
             return this;
         }
@@ -140,13 +191,16 @@ public class SlardarProperties implements Serializable {
             return filterUrls;
         }
 
-        public BasicAuthSettings setFilterUrls(String[] filterUrls) {
+        public BasicAuthSetting setFilterUrls(String[] filterUrls) {
             this.filterUrls = filterUrls;
             return this;
         }
     }
 
-    public static class CaptchaSettings {
+    /**
+     * 验证码设置参数
+     */
+    public static class CaptchaSetting {
 
         /**
          * 验证码过期时间 单位 秒,默认 5分钟过期
@@ -177,7 +231,7 @@ public class SlardarProperties implements Serializable {
             return expiration;
         }
 
-        public CaptchaSettings setExpiration(long expiration) {
+        public CaptchaSetting setExpiration(long expiration) {
             this.expiration = expiration;
             return this;
         }
@@ -186,7 +240,7 @@ public class SlardarProperties implements Serializable {
             return length;
         }
 
-        public CaptchaSettings setLength(int length) {
+        public CaptchaSetting setLength(int length) {
             this.length = length;
             return this;
         }
@@ -195,7 +249,7 @@ public class SlardarProperties implements Serializable {
             return randomBase;
         }
 
-        public CaptchaSettings setRandomBase(String randomBase) {
+        public CaptchaSetting setRandomBase(String randomBase) {
             this.randomBase = randomBase;
             return this;
         }
@@ -204,7 +258,7 @@ public class SlardarProperties implements Serializable {
             return width;
         }
 
-        public CaptchaSettings setWidth(int width) {
+        public CaptchaSetting setWidth(int width) {
             this.width = width;
             return this;
         }
@@ -213,17 +267,16 @@ public class SlardarProperties implements Serializable {
             return height;
         }
 
-        public CaptchaSettings setHeight(int height) {
+        public CaptchaSetting setHeight(int height) {
             this.height = height;
             return this;
         }
     }
 
-
     /**
      * 登录参数设置
      */
-    public static class LoginSettings {
+    public static class LoginSetting {
 
         /**
          * 认证结果处理类型 可自定义 SPI 实现返回结果的定制
@@ -275,7 +328,7 @@ public class SlardarProperties implements Serializable {
             return resultHandlerType;
         }
 
-        public LoginSettings setResultHandlerType(String resultHandlerType) {
+        public LoginSetting setResultHandlerType(String resultHandlerType) {
             this.resultHandlerType = resultHandlerType;
             return this;
         }
@@ -284,7 +337,7 @@ public class SlardarProperties implements Serializable {
             return maxAttemptsBeforeLocked;
         }
 
-        public LoginSettings setMaxAttemptsBeforeLocked(Integer maxAttemptsBeforeLocked) {
+        public LoginSetting setMaxAttemptsBeforeLocked(Integer maxAttemptsBeforeLocked) {
             this.maxAttemptsBeforeLocked = maxAttemptsBeforeLocked;
             return this;
         }
@@ -293,7 +346,7 @@ public class SlardarProperties implements Serializable {
             return failedLockDuration;
         }
 
-        public LoginSettings setFailedLockDuration(Duration failedLockDuration) {
+        public LoginSetting setFailedLockDuration(Duration failedLockDuration) {
             this.failedLockDuration = failedLockDuration;
             return this;
         }
@@ -306,7 +359,7 @@ public class SlardarProperties implements Serializable {
             return postOnly;
         }
 
-        public LoginSettings setPostOnly(boolean postOnly) {
+        public LoginSetting setPostOnly(boolean postOnly) {
             this.postOnly = postOnly;
             return this;
         }
@@ -315,7 +368,7 @@ public class SlardarProperties implements Serializable {
             return url;
         }
 
-        public LoginSettings setUrl(String url) {
+        public LoginSetting setUrl(String url) {
             this.url = url;
             return this;
         }
@@ -324,7 +377,7 @@ public class SlardarProperties implements Serializable {
             return loginSuccessCode;
         }
 
-        public LoginSettings setLoginSuccessCode(int loginSuccessCode) {
+        public LoginSetting setLoginSuccessCode(int loginSuccessCode) {
             this.loginSuccessCode = loginSuccessCode;
             return this;
         }
@@ -333,7 +386,7 @@ public class SlardarProperties implements Serializable {
             return captchaEnabled;
         }
 
-        public LoginSettings setCaptchaEnabled(Boolean captchaEnabled) {
+        public LoginSetting setCaptchaEnabled(Boolean captchaEnabled) {
             this.captchaEnabled = captchaEnabled;
             return this;
         }
@@ -342,7 +395,7 @@ public class SlardarProperties implements Serializable {
             return encrypt.isEnabled();
         }
 
-        public LoginSettings setEncrypt(EncryptSetting encrypt) {
+        public LoginSetting setEncrypt(EncryptSetting encrypt) {
             this.encrypt = encrypt;
             return this;
         }
@@ -351,7 +404,7 @@ public class SlardarProperties implements Serializable {
             return concurrentPolicy;
         }
 
-        public LoginSettings setConcurrentPolicy(LoginConcurrentPolicy concurrentPolicy) {
+        public LoginSetting setConcurrentPolicy(LoginConcurrentPolicy concurrentPolicy) {
             this.concurrentPolicy = concurrentPolicy;
             return this;
         }
@@ -361,7 +414,7 @@ public class SlardarProperties implements Serializable {
     /**
      * 多因素认证配置 (OTP)
      */
-    public static class MfaSettings {
+    public static class MfaSetting {
 
         /**
          * 默认关闭，一旦开启 会改变登录过程
@@ -386,7 +439,7 @@ public class SlardarProperties implements Serializable {
             return enabled;
         }
 
-        public MfaSettings setEnabled(boolean enabled) {
+        public MfaSetting setEnabled(boolean enabled) {
             this.enabled = enabled;
             return this;
         }
@@ -395,7 +448,7 @@ public class SlardarProperties implements Serializable {
             return otpMode;
         }
 
-        public MfaSettings setOtpMode(String otpMode) {
+        public MfaSetting setOtpMode(String otpMode) {
             this.otpMode = otpMode;
             return this;
         }
@@ -404,7 +457,7 @@ public class SlardarProperties implements Serializable {
             return email;
         }
 
-        public MfaSettings setEmail(EmailSetting email) {
+        public MfaSetting setEmail(EmailSetting email) {
             this.email = email;
             return this;
         }
@@ -591,11 +644,10 @@ public class SlardarProperties implements Serializable {
         }
     }
 
-
     /**
      * token 参数设置
      */
-    public static class TokenSettings {
+    public static class TokenSetting {
 
         private String type = SlardarTokenProviderJwtImpl.NAME;
 
@@ -607,7 +659,7 @@ public class SlardarProperties implements Serializable {
         /**
          * jwt 参数
          */
-        private JwtSettings jwt = new JwtSettings();
+        private JwtSetting jwt = new JwtSetting();
 
         /**
          * token key 分隔符 默认 _
@@ -619,7 +671,7 @@ public class SlardarProperties implements Serializable {
             return separator;
         }
 
-        public TokenSettings setSeparator(String separator) {
+        public TokenSetting setSeparator(String separator) {
             this.separator = separator;
             return this;
         }
@@ -628,7 +680,7 @@ public class SlardarProperties implements Serializable {
             return type;
         }
 
-        public TokenSettings setType(String type) {
+        public TokenSetting setType(String type) {
             this.type = type;
             return this;
         }
@@ -637,22 +689,25 @@ public class SlardarProperties implements Serializable {
             return key;
         }
 
-        public TokenSettings setKey(String key) {
+        public TokenSetting setKey(String key) {
             this.key = key;
             return this;
         }
 
-        public JwtSettings getJwt() {
+        public JwtSetting getJwt() {
             return jwt;
         }
 
-        public TokenSettings setJwt(JwtSettings jwt) {
+        public TokenSetting setJwt(JwtSetting jwt) {
             this.jwt = jwt;
             return this;
         }
     }
 
-    public static class JwtSettings {
+    /**
+     * jwt 参数设置
+     */
+    public static class JwtSetting {
 
         /**
          * jwt 签名 key
@@ -674,7 +729,7 @@ public class SlardarProperties implements Serializable {
             return allowedClockSkewSeconds;
         }
 
-        public JwtSettings setAllowedClockSkewSeconds(Long allowedClockSkewSeconds) {
+        public JwtSetting setAllowedClockSkewSeconds(Long allowedClockSkewSeconds) {
             this.allowedClockSkewSeconds = allowedClockSkewSeconds;
             return this;
         }
@@ -683,7 +738,7 @@ public class SlardarProperties implements Serializable {
             return signKey;
         }
 
-        public JwtSettings setSignKey(String signKey) {
+        public JwtSetting setSignKey(String signKey) {
             this.signKey = signKey;
             return this;
         }
@@ -692,7 +747,7 @@ public class SlardarProperties implements Serializable {
             return expiration;
         }
 
-        public JwtSettings setExpiration(Long expiration) {
+        public JwtSetting setExpiration(Long expiration) {
             this.expiration = expiration;
             return this;
         }

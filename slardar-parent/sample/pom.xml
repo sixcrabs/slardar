@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>cn.piesat.nj</groupId>
+        <groupId>cn.piesat.v</groupId>
         <artifactId>slardar-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -14,41 +14,28 @@
         <module>sample-server</module>
         <module>sample-client</module>
     </modules>
-
-
     <artifactId>slardar-sample-parent</artifactId>
     <packaging>pom</packaging>
-
-    <properties>
-        <slardar.version>1.4.1-SNAPSHOT</slardar.version>
-        <sso.version>1.1.0-SNAPSHOT</sso.version>
-    </properties>
 
     <dependencyManagement>
 
         <dependencies>
             <dependency>
-                <groupId>cn.piesat.nj</groupId>
+                <groupId>cn.piesat.v</groupId>
                 <artifactId>slardar-sso-server-starter</artifactId>
                 <version>${sso.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>cn.piesat.nj</groupId>
+                <groupId>cn.piesat.v</groupId>
                 <artifactId>slardar-sso-client-starter</artifactId>
                 <version>${sso.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>cn.piesat.nj</groupId>
+                <groupId>cn.piesat.v</groupId>
                 <artifactId>slardar-starter</artifactId>
                 <version>${slardar.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.piesat.v</groupId>
-                <artifactId>shared-app-starter</artifactId>
-                <version>1.3.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

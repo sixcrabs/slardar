@@ -4,33 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>slardar-parent</artifactId>
-        <groupId>cn.piesat.nj</groupId>
+        <groupId>cn.piesat.v</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>slardar-extension-parent</artifactId>
     <packaging>pom</packaging>
-
-    <properties>
-        <slardar.version>1.4.1-SNAPSHOT</slardar.version>
-    </properties>
+    <version>1.0.0-SNAPSHOT</version>
 
     <modules>
         <module>ext-ldap</module>
-        <module>ext-activedirectory</module>
-        <module>ext-license</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>cn.piesat.nj</groupId>
+                <groupId>cn.piesat.v</groupId>
                 <artifactId>slardar-core</artifactId>
                 <version>${slardar.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.piesat.nj</groupId>
+                <groupId>cn.piesat.v</groupId>
                 <artifactId>slardar-starter</artifactId>
                 <version>${slardar.version}</version>
             </dependency>

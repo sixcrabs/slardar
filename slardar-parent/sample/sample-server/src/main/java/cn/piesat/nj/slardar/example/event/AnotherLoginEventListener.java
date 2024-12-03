@@ -1,14 +1,11 @@
 package cn.piesat.nj.slardar.example.event;
 
-import cn.piesat.nj.slardar.core.SlardarEventListener;
+import cn.piesat.nj.slardar.core.event.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * <p>

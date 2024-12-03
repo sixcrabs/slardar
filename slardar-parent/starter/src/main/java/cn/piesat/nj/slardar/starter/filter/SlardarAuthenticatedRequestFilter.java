@@ -38,10 +38,11 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.objectMapper;
 /**
  * <p>
  * 处理登录后的请求
- * 前提是必须登录
- * - /userdetails 用户详细信息
- * - /logout   登出
- * - ...
+ * <strong>前提是必须登录</strong>
+ * <ul>
+ *     <li>/userdetails 用户详细信息</li>
+ *     <li>/logout   登出</li>
+ * </ul>
  * </p>
  *
  * @author alex

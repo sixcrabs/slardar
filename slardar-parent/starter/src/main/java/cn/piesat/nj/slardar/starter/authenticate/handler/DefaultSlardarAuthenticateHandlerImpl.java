@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.starter.authenticate.handler;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.Constants;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
@@ -15,8 +15,8 @@ import cn.piesat.nj.slardar.starter.config.SlardarProperties;
 import cn.piesat.nj.slardar.starter.support.RequestWrapper;
 import cn.piesat.nj.slardar.starter.support.SlardarAuthenticationException;
 import cn.piesat.nj.slardar.starter.support.captcha.CaptchaComponent;
-import cn.piesat.v.shared.timer.TimerManager;
-import cn.piesat.v.shared.timer.job.TimerJobs;
+import cn.piesat.v.timer.TimerManager;
+import cn.piesat.v.timer.job.TimerJobs;
 import com.google.auto.service.AutoService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.lettuce.core.RedisClient;
@@ -80,9 +80,10 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         stringCommands = redisClient.connect().sync();
         maxAttempts = getProperties().getLogin().getMaxAttemptsBeforeLocked();
         // 定时器
-        TimerManager timerManager = new TimerManager(TimerManager.TimerConfig.DEFAULT);
+        TimerManager timerManager = new TimerManager();
         timerManager.addTimerJob(TimerJobs.newFixedRateJob("failed-timer",
                 getProperties().getLogin().getFailedLockDuration(), timeout -> FAILED_ATTEMPTS_REPO.clear()));
+        timerManager.start();
     }
 
     /**

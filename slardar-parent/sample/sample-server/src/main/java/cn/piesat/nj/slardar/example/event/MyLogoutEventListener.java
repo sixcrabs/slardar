@@ -1,10 +1,8 @@
 package cn.piesat.nj.slardar.example.event;
 
-import cn.piesat.nj.slardar.core.SlardarEventListener;
+import cn.piesat.nj.slardar.core.event.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.example.impl.AccountProviderImpl;
-import cn.piesat.nj.slardar.starter.support.event.LoginEvent;
 import cn.piesat.nj.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 

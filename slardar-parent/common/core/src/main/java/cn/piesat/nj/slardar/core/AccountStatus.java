@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.core;
 
 /**
  * <p>
- * .
+ * 账户状态
  * </p>
  *
  * @author Alex
@@ -10,11 +10,22 @@ package cn.piesat.nj.slardar.core;
  */
 public enum AccountStatus {
 
-    //
-    accessible("可访问的"),
-    forbidden("禁止访问的"),
-    expired("访问已到期的"),
-    locked("已被锁定的");
+    /**
+     * 可访问的
+     */
+    accessible("可访问"),
+    /**
+     * 禁止访问的
+     */
+    forbidden("禁止访问"),
+    /**
+     * 账户已到期
+     */
+    expired("账户已到期"),
+    /**
+     * 账户已锁定
+     */
+    locked("账户已锁定");
 
     private String desc;
 

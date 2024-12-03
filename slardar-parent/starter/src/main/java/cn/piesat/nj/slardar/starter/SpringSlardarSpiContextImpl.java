@@ -9,9 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * <p>
@@ -21,7 +19,7 @@ import java.util.Objects;
  * @author alex
  * @version v1.0 2023/11/20
  */
-public class SpringSlardarContextImpl implements SlardarSpiContext, ApplicationContextAware {
+public class SpringSlardarSpiContextImpl implements SlardarSpiContext, ApplicationContextAware {
 
     private ApplicationContext context;
 

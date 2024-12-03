@@ -17,7 +17,6 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
 /**
  * 拒绝访问
  * @author JiajieZhang
- * @date 2022/9/23
  * @description 当接口没有访问权限时，自定义返回结果
 */
 public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
@@ -37,7 +36,7 @@ public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
         response.setHeader("Access-Control-Allow-Credentials","true");
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH");
 
         response.setCharacterEncoding("UTF-8");
         response.getWriter().println(GSON.toJson(authenticateService.getAuthResultHandler().authDeniedResult(e)));

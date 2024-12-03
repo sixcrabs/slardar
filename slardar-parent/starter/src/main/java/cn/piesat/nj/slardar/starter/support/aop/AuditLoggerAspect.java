@@ -1,8 +1,7 @@
 package cn.piesat.nj.slardar.starter.support.aop;
 
-import cn.piesat.nj.slardar.core.AuditLogger;
+import cn.piesat.nj.slardar.core.annotation.AuditLogger;
 import cn.piesat.nj.slardar.core.Constants;
-import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
 import cn.piesat.nj.slardar.core.entity.Account;
 import cn.piesat.nj.slardar.core.entity.AuditLog;
@@ -46,7 +45,7 @@ public class AuditLoggerAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(AuditLoggerAspect.class);
 
-    @Pointcut("@annotation(cn.piesat.nj.slardar.core.AuditLogger)") // 指定切入点为所有标记了注解的地方
+    @Pointcut("@annotation(cn.piesat.nj.slardar.core.annotation.AuditLogger)") // 指定切入点为所有标记了注解的地方
     public void logPointCut(){};
 
     /**

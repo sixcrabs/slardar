@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * token provider
+ * token provider spi，应用方可以通过实现此接口， 重写认证token 逻辑
  * </p>
  *
  * @author alex

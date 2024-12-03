@@ -3,7 +3,7 @@ package cn.piesat.nj.slardar.spi.mfa;
 
 /**
  * <p>
- * .
+ * otp 发送结果
  * </p>
  *
  * @author Alex

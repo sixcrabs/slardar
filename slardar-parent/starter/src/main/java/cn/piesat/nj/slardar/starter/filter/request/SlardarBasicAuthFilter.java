@@ -1,12 +1,13 @@
-package cn.piesat.nj.slardar.starter.filter;
+package cn.piesat.nj.slardar.starter.filter.request;
 
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
+import cn.piesat.nj.slardar.core.annotation.SlardarIgnore;
 import cn.piesat.nj.slardar.spi.SlardarSpiContext;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.support.Base64;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +84,7 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      *
      * @param antPattern
      * @param method
-     * @see cn.piesat.nj.slardar.core.SlardarIgnore
+     * @see SlardarIgnore
      */
     public void addUrlPattern(String antPattern, String method) {
         requiredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));

@@ -1,7 +1,7 @@
 package cn.piesat.nj.slardar.example.event;
 
 import cn.piesat.nj.slardar.core.AuditLogIngest;
-import cn.piesat.nj.slardar.core.SlardarEventListener;
+import cn.piesat.nj.slardar.core.event.SlardarEventListener;
 import cn.piesat.nj.slardar.core.SlardarException;
 import org.springframework.stereotype.Component;
 

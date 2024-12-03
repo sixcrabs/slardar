@@ -4,7 +4,6 @@ import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.nj.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -31,14 +30,14 @@ import static cn.piesat.nj.slardar.starter.support.SecUtil.GSON;
  * @author Alex
  * @version v1.0 2023/8/29
  */
-public class SlardarMfaLoginFilter extends AbstractAuthenticationProcessingFilter {
+public class SlardarMfaFilter extends AbstractAuthenticationProcessingFilter {
 
 
     private final SlardarMfaAuthService mfaAuthService;
 
-    public SlardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
-                                 AuthenticationFailureHandler authenticationFailureHandler,
-                                 AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public SlardarMfaFilter(SlardarMfaAuthService mfaAuthService,
+                            AuthenticationFailureHandler authenticationFailureHandler,
+                            AuthenticationSuccessHandler authenticationSuccessHandler) {
         super(new AntPathRequestMatcher("/mfa-login"));
         this.mfaAuthService = mfaAuthService;
         setAuthenticationManager(authentication -> null);

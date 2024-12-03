@@ -2,7 +2,9 @@ package cn.piesat.nj.slardar.starter.config;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.nj.slardar.starter.filter.request.SlardarBasicAuthFilter;
+import cn.piesat.nj.slardar.starter.filter.request.SlardarTokenRequiredFilter;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import cn.piesat.nj.slardar.starter.filter.*;
@@ -10,8 +12,8 @@ import cn.piesat.nj.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.nj.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import cn.piesat.nj.slardar.starter.support.SecUtil;
-import cn.piesat.nj.slardar.core.SlardarAuthority;
-import cn.piesat.nj.slardar.core.SlardarIgnore;
+import cn.piesat.nj.slardar.core.annotation.SlardarAuthority;
+import cn.piesat.nj.slardar.core.annotation.SlardarIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -87,7 +89,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
 
     private final SlardarAuthenticatedRequestFilter authenticatedRequestFilter;
 
-    private final SlardarMfaLoginFilter mfaLoginFilter;
+    private final SlardarMfaFilter mfaLoginFilter;
 
     private final SlardarProperties properties;
 
@@ -99,7 +101,7 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
                                   ObjectProvider<SlardarBasicAuthFilter> basicAuthFilter,
                                   SlardarCaptchaFilter captchaFilter,
                                   SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
-                                  SlardarMfaLoginFilter mfaLoginFilter, SlardarProperties properties,
+                                  SlardarMfaFilter mfaLoginFilter, SlardarProperties properties,
                                   ObjectProvider<List<SlardarIgnoringCustomizer>> ignoringCustomizerList,
                                   ObjectProvider<List<SlardarUrlRegistryCustomizer>> urlRegistryCustomizerProvider) {
         this.tokenRequiredFilter = tokenRequiredFilter;
@@ -171,8 +173,8 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
         }
         httpSecurity.addFilterBefore(loginProcessingFilter(properties, getManagerBean(), authenticateFailedHandler, authenticateSucceedHandler, authenticateHandlerFactory),
                 SlardarTokenRequiredFilter.class);
-        httpSecurity.addFilterBefore(captchaFilter, SlardarLoginProcessingFilter.class);
-        httpSecurity.addFilterAfter(mfaLoginFilter, SlardarLoginProcessingFilter.class);
+        httpSecurity.addFilterBefore(captchaFilter, SlardarLoginFilter.class);
+        httpSecurity.addFilterAfter(mfaLoginFilter, SlardarLoginFilter.class);
     }
 
     /**
@@ -313,12 +315,12 @@ public class SlardarSecurityAdapter extends WebSecurityConfigurerAdapter {
      * @return
      */
     @Bean
-    public SlardarLoginProcessingFilter loginProcessingFilter(SlardarProperties properties,
-                                                              AuthenticationManager authenticationManager,
-                                                              AuthenticationFailureHandler failureHandler,
-                                                              AuthenticationSuccessHandler successHandler,
-                                                              SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
-        return new SlardarLoginProcessingFilter(properties, authenticationManager, failureHandler, successHandler, authenticateHandlerFactory);
+    public SlardarLoginFilter loginProcessingFilter(SlardarProperties properties,
+                                                    AuthenticationManager authenticationManager,
+                                                    AuthenticationFailureHandler failureHandler,
+                                                    AuthenticationSuccessHandler successHandler,
+                                                    SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
+        return new SlardarLoginFilter(properties, authenticationManager, failureHandler, successHandler, authenticateHandlerFactory);
     }
 
 }

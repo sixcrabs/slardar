@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>slardar-sample-parent</artifactId>
-        <groupId>cn.piesat.nj</groupId>
+        <groupId>cn.piesat.v</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -16,38 +16,21 @@
     <dependencies>
 
         <dependency>
-            <groupId>cn.piesat.nj</groupId>
+            <groupId>cn.piesat.v</groupId>
             <artifactId>slardar-sso-server-starter</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>${sso.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>cn.piesat.nj</groupId>
+            <groupId>cn.piesat.v</groupId>
             <artifactId>slardar-ext-ldap</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>cn.piesat.nj</groupId>
+            <groupId>cn.piesat.v</groupId>
             <artifactId>slardar-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>cn.piesat.nj</groupId>
-                    <artifactId>skv-spring-boot-starter</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.piesat.nj</groupId>
-            <artifactId>skv-spring-boot-starter</artifactId>
-            <version>1.1.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>${slardar.version}</version>
         </dependency>
 
         <dependency>
@@ -57,7 +40,7 @@
 
         <dependency>
             <groupId>cn.piesat.v</groupId>
-            <artifactId>shared-app-starter</artifactId>
+            <artifactId>app-starter</artifactId>
         </dependency>
 
     </dependencies>

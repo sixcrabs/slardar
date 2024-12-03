@@ -1,8 +1,8 @@
 package cn.piesat.nj.slardar.starter.support.captcha;
 
 import cn.hutool.core.io.FileTypeUtil;
-import cn.piesat.nj.misc.hutool.mini.ArrayUtil;
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.ArrayUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

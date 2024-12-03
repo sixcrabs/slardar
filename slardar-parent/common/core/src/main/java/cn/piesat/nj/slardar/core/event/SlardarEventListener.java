@@ -1,4 +1,6 @@
-package cn.piesat.nj.slardar.core;
+package cn.piesat.nj.slardar.core.event;
+
+import cn.piesat.nj.slardar.core.SlardarException;
 
 /**
  * <p>

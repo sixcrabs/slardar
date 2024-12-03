@@ -16,8 +16,8 @@ public interface SlardarOtpDispatcher extends SlardarSpi {
 
     /**
      *  发布 code
-     * @param otpCode
-     * @param account
+     * @param otpCode  otp 验证码
+     * @param account  账户信息
      * @return
      * @throws SlardarException
      */

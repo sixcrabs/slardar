@@ -2,7 +2,7 @@ package cn.piesat.nj.slardar.starter.support.captcha.generator;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 
 /**
  * 随机字符验证码生成器<br>

@@ -1,4 +1,4 @@
-package cn.piesat.nj.slardar.core;
+package cn.piesat.nj.slardar.core.event;
 
 import java.io.Serializable;
 

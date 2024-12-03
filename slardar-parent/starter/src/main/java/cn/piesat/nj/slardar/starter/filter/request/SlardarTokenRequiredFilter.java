@@ -1,13 +1,14 @@
-package cn.piesat.nj.slardar.starter.filter;
+package cn.piesat.nj.slardar.starter.filter.request;
 
 import cn.hutool.core.thread.NamedThreadFactory;
-import cn.piesat.nj.misc.hutool.mini.StringUtil;
 import cn.piesat.nj.slardar.core.SlardarException;
 import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
+import cn.piesat.nj.slardar.core.annotation.SlardarIgnore;
 import cn.piesat.nj.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.nj.slardar.starter.SlardarUserDetails;
 import cn.piesat.nj.slardar.starter.support.LoginDeviceType;
 import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,6 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService;
-
 
     private static final ExecutorService POOL = new ThreadPoolExecutor(4, Runtime.getRuntime().availableProcessors() * 2,
             3000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(512), new NamedThreadFactory("auth-token-%d", true));
@@ -97,7 +97,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      *
      * @param antPattern
      * @param method
-     * @see cn.piesat.nj.slardar.core.SlardarIgnore
+     * @see SlardarIgnore
      */
     public void addIgnoreUrlPattern(String antPattern, String method) {
         ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));
