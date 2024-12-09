@@ -73,8 +73,8 @@
 
             <dependency>
                 <groupId>cn.piesat.v</groupId>
-                <artifactId>app-starter</artifactId>
-                <version>1.4.0-SNAPSHOT</version>
+                <artifactId>app-spring-boot-starter</artifactId>
+                <version>1.1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.piesat.v</groupId>

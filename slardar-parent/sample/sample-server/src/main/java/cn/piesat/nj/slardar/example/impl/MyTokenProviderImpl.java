@@ -7,8 +7,8 @@
 package cn.piesat.nj.slardar.example.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.nj.slardar.spi.SlardarSpiContext;
-import cn.piesat.nj.slardar.spi.token.SlardarTokenProvider;
+import cn.piesat.v.slardar.spi.SlardarSpiContext;
+import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 import org.springframework.security.core.userdetails.UserDetails;
 

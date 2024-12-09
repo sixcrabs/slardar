@@ -1,8 +1,8 @@
 package cn.piesat.nj.slardar.example.config;
 
-import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
-import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
+import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 

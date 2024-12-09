@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.example;
 
-import cn.piesat.nj.slardar.starter.support.Base64;
+import cn.piesat.v.slardar.starter.support.Base64;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

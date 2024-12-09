@@ -1,13 +1,13 @@
 package cn.piesat.nj.slardar.example.impl;
 
 import cn.piesat.nj.misc.hutool.mini.StringUtil;
-import cn.piesat.nj.slardar.core.Constants;
-import cn.piesat.nj.slardar.starter.SlardarUserDetails;
-import cn.piesat.nj.slardar.starter.SlardarUserDetailsServiceImpl;
-import cn.piesat.nj.slardar.starter.authenticate.SlardarAuthentication;
-import cn.piesat.nj.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
-import cn.piesat.nj.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
-import cn.piesat.nj.slardar.starter.support.RequestWrapper;
+import cn.piesat.v.slardar.core.Constants;
+import cn.piesat.v.slardar.starter.SlardarUserDetails;
+import cn.piesat.v.slardar.starter.SlardarUserDetailsServiceImpl;
+import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.v.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
+import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
+import cn.piesat.v.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;

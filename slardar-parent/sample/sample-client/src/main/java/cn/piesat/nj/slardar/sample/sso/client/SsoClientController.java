@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.sample.sso.client;
 
-import cn.piesat.nj.slardar.core.SlardarSecurityHelper;
+import cn.piesat.v.slardar.core.SlardarSecurityHelper;
 import cn.piesat.v.shared.as.response.Resp;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

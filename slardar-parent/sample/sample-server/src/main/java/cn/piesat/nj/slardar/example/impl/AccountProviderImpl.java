@@ -1,12 +1,12 @@
 package cn.piesat.nj.slardar.example.impl;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.nj.slardar.core.AccountProvider;
-import cn.piesat.nj.slardar.core.AccountStatus;
-import cn.piesat.nj.slardar.core.entity.Account;
-import cn.piesat.nj.slardar.core.entity.Authority;
-import cn.piesat.nj.slardar.core.entity.Role;
-import cn.piesat.nj.slardar.core.entity.UserProfile;
+import cn.piesat.v.slardar.core.provider.AccountProvider;
+import cn.piesat.v.slardar.core.AccountStatus;
+import cn.piesat.v.slardar.core.entity.Account;
+import cn.piesat.v.slardar.core.entity.Authority;
+import cn.piesat.v.slardar.core.entity.Role;
+import cn.piesat.v.slardar.core.entity.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

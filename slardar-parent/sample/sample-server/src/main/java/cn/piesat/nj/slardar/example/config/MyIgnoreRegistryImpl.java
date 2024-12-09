@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.example.config;
 
-import cn.piesat.nj.slardar.starter.config.SlardarIgnoringCustomizer;
+import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.stereotype.Component;
 

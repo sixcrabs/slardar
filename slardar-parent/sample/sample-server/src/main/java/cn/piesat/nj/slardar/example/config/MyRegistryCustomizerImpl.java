@@ -1,6 +1,6 @@
 package cn.piesat.nj.slardar.example.config;
 
-import cn.piesat.nj.slardar.starter.config.SlardarUrlRegistryCustomizer;
+import cn.piesat.v.slardar.starter.config.SlardarUrlRegistryCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;

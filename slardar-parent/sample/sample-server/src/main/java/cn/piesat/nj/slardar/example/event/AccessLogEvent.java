@@ -1,7 +1,7 @@
 package cn.piesat.nj.slardar.example.event;
 
-import cn.piesat.nj.slardar.core.event.SlardarEvent;
-import cn.piesat.nj.slardar.core.entity.AuditLog;
+import cn.piesat.v.slardar.core.event.SlardarEvent;
+import cn.piesat.v.slardar.core.entity.AuditLog;
 
 /**
  * <p>

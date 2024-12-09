@@ -1,10 +1,8 @@
 package cn.piesat.nj.slardar.example.impl;
 
-import cn.piesat.nj.slardar.core.AuditLogIngest;
-import cn.piesat.nj.slardar.core.entity.AuditLog;
+import cn.piesat.v.slardar.core.AuditLogIngest;
+import cn.piesat.v.slardar.core.entity.AuditLog;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * <p>

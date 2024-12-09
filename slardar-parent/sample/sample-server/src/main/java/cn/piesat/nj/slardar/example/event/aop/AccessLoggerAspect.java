@@ -1,12 +1,10 @@
 package cn.piesat.nj.slardar.example.event.aop;
 
-import cn.piesat.nj.slardar.core.AuditLogIngest;
-import cn.piesat.nj.slardar.core.SlardarException;
-import cn.piesat.nj.slardar.core.entity.AuditLog;
+import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.slardar.core.entity.AuditLog;
 import cn.piesat.nj.slardar.example.event.AccessLogEvent;
-import cn.piesat.nj.slardar.starter.SlardarEventManager;
+import cn.piesat.v.slardar.starter.SlardarEventManager;
 import com.google.common.base.Joiner;
-import com.google.common.base.Strings;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
