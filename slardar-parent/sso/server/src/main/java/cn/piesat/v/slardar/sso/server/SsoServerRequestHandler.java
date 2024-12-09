@@ -13,6 +13,7 @@ import cn.piesat.v.slardar.sso.server.support.SsoHandlerMapping;
 import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
+import cn.piesat.v.slardar.starter.support.HttpServletUtil;
 import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static cn.piesat.v.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
 import static cn.piesat.v.slardar.sso.server.support.SsoConstants.*;
+import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
 /**
  * <p>

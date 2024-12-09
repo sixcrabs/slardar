@@ -8,6 +8,8 @@ import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import com.google.auto.service.AutoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
@@ -22,6 +24,8 @@ import java.nio.charset.StandardCharsets;
  */
 @AutoService(SlardarCrypto.class)
 public class RSACrypto implements SlardarCrypto {
+
+    private static final Logger logger = LoggerFactory.getLogger(RSACrypto.class);
 
     public static final String MODE = "RSA";
 
@@ -51,7 +55,11 @@ public class RSACrypto implements SlardarCrypto {
         if (StringUtil.isBlank(publicKey)) {
             publicKey = "ab0c1de2fg3hi4jk5l1n9";
         }
-        rsa = new RSA(rsaPrivateKey, publicKey);
+        try {
+            rsa = new RSA(rsaPrivateKey, publicKey);
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+        }
     }
 
     /**

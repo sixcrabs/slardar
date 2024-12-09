@@ -27,5 +27,4 @@ public interface SlardarSpiFactory {
 
     SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name) throws SlardarException;
 
-
 }

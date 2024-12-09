@@ -28,7 +28,7 @@ slardar:
     failed-lock-duration: 2m   # 失败锁定时间
   ignores: /login,/sso-login,/mfa-login
   basic:
-    enable: true
+    enable: false
     # 配置的地址通过 basic auth 方式认证
     filter-urls: /api/name/**
   mfa:

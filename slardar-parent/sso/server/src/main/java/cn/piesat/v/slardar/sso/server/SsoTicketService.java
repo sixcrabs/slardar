@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.sso.server;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.nj.skv.core.KvStore;
+import cn.piesat.v.skv.core.KvStore;
 import cn.piesat.v.slardar.sso.server.config.SsoServerProperties;
 
 import javax.annotation.Resource;

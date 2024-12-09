@@ -36,6 +36,11 @@ public class SlardarProperties implements Serializable {
     private BasicAuthSetting basic = new BasicAuthSetting();
 
     /**
+     * api 签名验签 设置
+     */
+    private ApiSignatureSetting signature = new ApiSignatureSetting();
+
+    /**
      * token 类型设置
      */
     private TokenSetting token = new TokenSetting();
@@ -67,6 +72,15 @@ public class SlardarProperties implements Serializable {
 
     public SlardarProperties setBasic(BasicAuthSetting basic) {
         this.basic = basic;
+        return this;
+    }
+
+    public ApiSignatureSetting getSignature() {
+        return signature;
+    }
+
+    public SlardarProperties setSignature(ApiSignatureSetting signature) {
+        this.signature = signature;
         return this;
     }
 
@@ -118,7 +132,7 @@ public class SlardarProperties implements Serializable {
     /**
      * api 签名认证参数设置
      */
-    public static  class ApiSignatureSetting {
+    public static class ApiSignatureSetting {
         /**
          * 是否开启 api 签名认证 默认关闭
          */

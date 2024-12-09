@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.sso.client.config;
 
-import cn.piesat.nj.cloud.mrc.EnableMrClients;
+import cn.piesat.v.remote.mrc.EnableMrClients;
 import cn.piesat.v.slardar.sso.client.SsoClientRequestFilter;
 import cn.piesat.v.slardar.sso.client.SsoClientRequestHandler;
 import cn.piesat.v.slardar.sso.client.config.client.SsoServerApiClient;
