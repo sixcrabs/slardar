@@ -226,7 +226,7 @@ public class SlardarAuthenticateService {
         if (ids == null) {
             return true;
         }
-        if (ids.size() == 0) {
+        if (ids.isEmpty()) {
             return true;
         }
         return ids.stream().allMatch(id -> stringCommands.del(key(username + slardarProperties.getToken().getSeparator() + id, deviceType)) != null &&
@@ -291,7 +291,7 @@ public class SlardarAuthenticateService {
         // 取第一个以 username_xx 为key的值
         Set<String> ids = setCommands.smembers(username);
         String redisKey = "";
-        if (ids != null && ids.size() > 0) {
+        if (ids != null && !ids.isEmpty()) {
             redisKey = key(keyJoiner.join(username, ids.iterator().next()), deviceType);
         } else {
             redisKey = key(username, deviceType);

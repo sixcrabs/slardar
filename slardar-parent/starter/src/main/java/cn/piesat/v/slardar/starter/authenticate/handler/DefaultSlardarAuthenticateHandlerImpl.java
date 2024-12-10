@@ -120,7 +120,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         String password = requestWrapper.getRequestParams().get("password");
         // 租户信息 默认为 master
         String realm = getRealm(requestWrapper);
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+        if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
             throw new AuthenticationServiceException("`username` and `password` should not be null");
         }
         return new SlardarAuthentication(username, Constants.AUTH_TYPE_NORMAL, null)
