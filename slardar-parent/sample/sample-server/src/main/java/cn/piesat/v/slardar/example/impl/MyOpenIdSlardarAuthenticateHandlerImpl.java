@@ -33,7 +33,6 @@ public class MyOpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthe
     @Override
     protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         String openId = authentication.getAccountName();
-        //
         SlardarUserDetailsServiceImpl detailsService = (SlardarUserDetailsServiceImpl) context.getBeanIfAvailable(UserDetailsService.class);
         SlardarUserDetails userDetails = (SlardarUserDetails) detailsService.loadUserByOpenId(openId);
         // 判断是否正确

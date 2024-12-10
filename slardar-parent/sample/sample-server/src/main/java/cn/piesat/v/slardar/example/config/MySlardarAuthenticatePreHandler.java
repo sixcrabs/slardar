@@ -4,6 +4,7 @@ import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -14,7 +15,7 @@ import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
  * @author Alex
  * @version v1.0 2023/4/14
  */
-//@Component
+@Component
 public class MySlardarAuthenticatePreHandler implements SlardarAuthenticatePreHandler {
 
     /**
