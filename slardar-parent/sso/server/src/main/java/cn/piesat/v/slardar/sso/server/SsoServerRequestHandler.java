@@ -13,7 +13,6 @@ import cn.piesat.v.slardar.sso.server.support.SsoHandlerMapping;
 import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
-import cn.piesat.v.slardar.starter.support.HttpServletUtil;
 import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -219,7 +218,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
         }
         // 在SSO认证中心已经登录，需要重定向回 Client 端 /sso/auth?url=http://client.com/xxxx
         String redirectUrl = getParam(request, SSO_PARAM_REDIRECT);
-        validateRedirectUrl(redirectUrl);
+        redirectUrl = resolveRedirectUrl(redirectUrl);
         // 生成 ticket, 带着ticket参数重定向回Client端
         // FIXME: 这里需要根据 token 生成  而不是：getSessionId(request)
         String ticket = ticketService.createTicket(tokenValue);
@@ -289,20 +288,20 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      *
      * @param url redirect to
      */
-    public void validateRedirectUrl(String url) throws SsoException {
-        if (StringUtils.isEmpty(url)) {
-            throw new SsoException("重定向地址为空").setCode(CODE_20002);
+    public String resolveRedirectUrl(String url) throws SsoException {
+        if (!StringUtils.hasText(url)) {
+            throw new SsoException("重定向地址[url]为空").setCode(CODE_20002);
         }
         if (!url.toLowerCase().matches(URL_REGEX)) {
-            throw new SsoException("无效redirect：" + url).setCode(CODE_20002);
+            throw new SsoException("重定向地址无效：" + url).setCode(CODE_20002);
         }
         // 截取掉?后面的部分
         int idx = url.indexOf("?");
         if (idx != -1) {
-            url = url.substring(0, idx);
+            return url.substring(0, idx);
         }
         // TODO: 地址限制等
-        return;
+        return url;
     }
 
     @Override

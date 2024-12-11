@@ -14,18 +14,22 @@
     <div class="bg-2"></div>
     <div class="content-box">
         <div class="login-box">
-            <div class="from-box">
-                <h2 class="from-title">SSO统一认证中心</h2>
-                <div class="from-item">
+            <div class="form-box">
+                <h2 class="form-title">SSO统一认证中心</h2>
+                <div class="form-item">
                     <input class="s-input" name="name" placeholder="请输入账号"/>
                 </div>
-                <div class="from-item">
+                <div class="form-item">
                     <input class="s-input" name="pwd" type="password" placeholder="请输入密码"/>
                 </div>
-                <div class="from-item">
+                <div class="form-item code-div" id="captchaDiv" style="display: none;">
+                    <input class="s-input" name="authCode"  placeholder="请输入验证码"/>
+                    <img id="captchaImg" src="/captcha" alt="验证码" style="height: 48px;cursor: pointer" />
+                </div>
+                <div class="form-item">
                     <button class="s-input s-btn login-btn">登录</button>
                 </div>
-<!--                <div class="from-item reset-box">-->
+<!--                <div class="form-item reset-box">-->
 <!--                    <a href="javascript: location.reload();">刷新</a>-->
 <!--                </div>-->
             </div>
@@ -33,14 +37,17 @@
     </div>
     <!-- 底部 版权 -->
     <div style="position: absolute; bottom: 40px; width: 100%; text-align: center; color: #666;">
-        This page is provided by SSO
+        This page is provided by Slardar-SSO
     </div>
 </div>
 
 <!-- scripts -->
 <script type="text/javascript" th:inline="javascript">
     // rest login url
-    var loginUrl = '[(${loginUrl})]';
+    const loginUrl = '[(${loginUrl})]';
+    const captchaEnabled = '[(${captchaEnabled})]';
+    console.info(loginUrl, captchaEnabled)
+    console.info(captchaEnabled==='true')
 </script>
 <script src="./sso-res/jquery.min.js"></script>
 <script src="./sso-res/layer/layer.js"></script>

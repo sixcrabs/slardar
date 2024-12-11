@@ -34,15 +34,23 @@ body{font-family: Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-serif;}
 .login-box{display: flex; align-items: center; text-align: center;}
 
 /* 表单 */
-.from-box{flex: 1; padding: 20px 50px; background-color: #FFF;}
-.from-box{border-radius: 1px; box-shadow: 1px 1px 20px #666;}
-.from-title{margin-top: 20px; margin-bottom: 30px; text-align: center;}
+.form-box{flex: 1; padding: 20px 50px; background-color: #FFF;}
+.form-box{border-radius: 4px; box-shadow: 1px 1px 20px #666;}
+.form-title{margin-top: 20px; margin-bottom: 30px; text-align: center; color: #2E2D3C}
 
 /* 输入框 */
-.from-item{border: 0px #000 solid; margin-bottom: 15px;}
+.form-item{border: 0px #000 solid; margin-bottom: 16px;}
 .s-input{width: 100%; line-height: 32px; height: 32px; text-indent: 1em; outline: 0; border: 1px #ccc solid; border-radius: 3px; transition: all 0.2s;}
 .s-input{font-size: 12px;}
 .s-input:focus{border-color: #409eff}
+
+/*验证码部分*/
+.code-div {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+}
 
 /* 登录按钮 */
 .s-btn{ text-indent: 0; cursor: pointer; background-color: #409EFF; border-color: #409EFF; color: #FFF;}

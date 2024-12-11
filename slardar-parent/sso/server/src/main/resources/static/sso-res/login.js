@@ -1,5 +1,5 @@
 // sa 
-var sa = {};
+const sa = {};
 
 // 打开loading
 sa.loading = function (msg) {
@@ -12,6 +12,16 @@ sa.hideLoading = function () {
     layer.closeAll();
 };
 
+if (captchaEnabled === 'true') {
+    // 获取 验证码div并显示
+    const div = document.getElementById('captchaDiv');
+    div.style.display = 'flex';
+    const img = document.getElementById('captchaImg');
+    img.onclick = () => {
+        img.src = '/captcha?t=' + new Date().getTime();
+    }
+}
+
 
 // ----------------------------------- 登录事件 -----------------------------------
 
@@ -22,7 +32,11 @@ $('.login-btn').click(function () {
         $.ajax({
             url: loginUrl,
             type: "post",
-            data: {
+            data: captchaEnabled === 'true' ? {
+                username: $('[name=name]').val(),
+                password: $('[name=pwd]').val(),
+                authCode: $('[name=authCode]').val()
+            } : {
                 username: $('[name=name]').val(),
                 password: $('[name=pwd]').val()
             },
@@ -48,8 +62,8 @@ $('.login-btn').click(function () {
                 if (xhr.status === 0) {
                     return layer.alert('无法连接到服务器，请检查网络');
                 }
-                var resText = xhr.responseText;
-                var res = JSON.parse(resText);
+                const resText = xhr.responseText;
+                const res = JSON.parse(resText);
                 return layer.alert(res.message, {icon: 0});
             }
         });
