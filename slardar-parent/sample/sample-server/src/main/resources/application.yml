@@ -19,15 +19,13 @@ slardar:
     type: jwt
     separator: _MY_
   login:
-    url: /auth/login
     post-only: false
-    captcha-enabled: false
+    captcha-enabled: true
     encrypt:
       enabled: false
       mode: mystical #使用自定义的加解密实现
     max-attempts-before-locked: 3 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
-    result-handler-type: custom
   ignores: /login,/sso-login,/mfa-login
   basic:
     enable: false
