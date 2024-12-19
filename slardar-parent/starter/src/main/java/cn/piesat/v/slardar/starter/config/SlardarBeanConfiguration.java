@@ -9,6 +9,7 @@ import cn.piesat.v.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.v.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import cn.piesat.v.slardar.starter.filter.SlardarCaptchaFilter;
 import cn.piesat.v.slardar.starter.filter.SlardarMfaFilter;
+import cn.piesat.v.slardar.starter.filter.request.SlardarApiSignatureFilter;
 import cn.piesat.v.slardar.starter.filter.request.SlardarBasicAuthFilter;
 import cn.piesat.v.slardar.starter.filter.request.SlardarTokenRequiredFilter;
 import cn.piesat.v.slardar.starter.handler.SlardarAccessDeniedHandler;
@@ -192,13 +193,17 @@ public class SlardarBeanConfiguration {
     @Bean
     @ConditionalOnProperty(name = "slardar.basic.enable")
     public SlardarBasicAuthFilter basicAuthFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
-        // 需要进行过滤的 url
         return new SlardarBasicAuthFilter(properties.getBasic().getFilterUrls(), spiContext);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "slardar.signature.enable")
+    public SlardarApiSignatureFilter apiSignatureFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
+        return new SlardarApiSignatureFilter(spiContext, properties.getSignature());
     }
 
     /**
      * 注入 请求过滤器 用于过滤所有请求进行token验证
-     *
      * @param properties
      * @return
      */
@@ -212,8 +217,7 @@ public class SlardarBeanConfiguration {
         }
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
-        ignores = ArrayUtil.append(ignores, "/oauth2/**",
-                properties.getLogin().getUrl(), "/error", "/mfa-login");
+        ignores = ArrayUtil.append(ignores, "/oauth2/**", properties.getLogin().getUrl(), "/error", "/mfa-login");
         return new SlardarTokenRequiredFilter(ignores);
     }
 

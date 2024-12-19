@@ -156,6 +156,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
             } else {
                 tokenValidateEx = new SlardarException("token is not valid");
             }
+        } else {
+            tokenValidateEx = new SlardarException("token is required");
         }
         if (tokenValidateEx != null) {
             forwardRequest(request, response, tokenValidateEx, "remoteLoginException", "/remoteLoginException");

@@ -31,6 +31,10 @@ slardar:
     enable: false
     # 配置的地址通过 basic auth 方式认证
     filter-urls: /api/name/**
+  signature:
+    enable: true
+    filter-urls: /api/open/**
+    header-key-prefix: 'Xk-'
   mfa:
     enabled: false
     otp-mode: email

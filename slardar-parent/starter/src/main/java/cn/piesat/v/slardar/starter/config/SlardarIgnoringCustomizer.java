@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.config;
 
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import java.util.List;
 
 /**
  * <p>
@@ -14,8 +14,8 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 public interface SlardarIgnoringCustomizer {
 
     /**
-     * 自定义过滤需要忽略的url等
-     * @param configurer
+     * 自定义过滤需要忽略的url
+     * @param antPatterns
      */
-    void customize(WebSecurity.IgnoredRequestConfigurer configurer);
+    void customize(List<String> antPatterns);
 }

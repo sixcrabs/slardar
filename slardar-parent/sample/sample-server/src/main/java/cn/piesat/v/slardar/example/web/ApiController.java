@@ -29,7 +29,7 @@ public class ApiController {
 
     @GetMapping("/name")
     @AuditLogger(detail = "被忽略的方法")
-    @SlardarIgnore
+//    @SlardarIgnore
     public Resp getName() {
         return Resp.of(RandomUtil.randomString(18));
     }

@@ -188,7 +188,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
         String ticketValue = getParam(request, SSO_PARAM_TICKET);
         try {
             String token = ticketService.checkTicket(ticketValue);
-            if (StringUtils.isEmpty(token)) {
+            if (!StringUtils.hasText(token)) {
                 throw new SsoException("Ticket 验证失败: 已过期").setCode(CODE_TICKET_ERROR);
             }
             sendJson(response, makeResult(token, 0), HttpStatus.OK);
@@ -304,14 +304,6 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
         return url;
     }
 
-    @Override
-    public void customize(WebSecurity.IgnoredRequestConfigurer configure) {
-        // 忽略 `/sso` 相关的 url pattern
-        configure.antMatchers(serverProperties.getSsoAntUrlPattern());
-        // 忽略 /sso-login
-        configure.antMatchers(SSO_LOGIN_VIEW_URL);
-    }
-
     /**
      * 处理用户详情，如: 屏蔽密码 或修改返回结构等
      *
@@ -327,5 +319,18 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
             userProfile.setAuthorities(Collections.emptyList());
         }
         return account;
+    }
+
+    /**
+     * 自定义过滤需要忽略的url
+     *
+     * @param antPatterns
+     */
+    @Override
+    public void customize(List<String> antPatterns) {
+        // 忽略 `/sso` 相关的 url pattern
+        antPatterns.add(serverProperties.getSsoAntUrlPattern());
+        // 忽略 /sso-login
+        antPatterns.add(SSO_LOGIN_VIEW_URL);
     }
 }

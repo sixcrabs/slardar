@@ -59,9 +59,9 @@ public class SlardarAuthenticateService {
 
     private final RedisClient redisClient;
 
-    private final RedisCommands<String, String> stringCommands;
+    private RedisCommands<String, String> stringCommands;
 
-    private final RedisSetCommands<String, String> setCommands;
+    private RedisSetCommands<String, String> setCommands;
 
     private final SlardarSpiContext slardarContext;
 
@@ -74,8 +74,12 @@ public class SlardarAuthenticateService {
         this.spiFactory = spiFactory;
         this.slardarContext = context;
         this.redisClient = redisClient;
-        this.stringCommands = redisClient.connect().sync();
-        this.setCommands = redisClient.connect().sync();
+        try {
+            this.stringCommands = redisClient.connect().sync();
+            this.setCommands = redisClient.connect().sync();
+        } catch (Exception e) {
+            log.error("redis error: {}", e.getLocalizedMessage());
+        }
         this.keyJoiner = Joiner.on(slardarProperties.getToken().getSeparator());
     }
 

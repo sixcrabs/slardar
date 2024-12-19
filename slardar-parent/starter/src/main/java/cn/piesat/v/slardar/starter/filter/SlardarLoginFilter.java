@@ -11,7 +11,6 @@ import cn.piesat.v.slardar.starter.support.RequestWrapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -49,14 +48,13 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
     public static final Gson GSON = new GsonBuilder().create();
 
     public SlardarLoginFilter(SlardarProperties securityProperties,
-                              AuthenticationManager authenticationManager,
                               AuthenticationFailureHandler authenticationFailureHandler,
                               AuthenticationSuccessHandler authenticationSuccessHandler,
                               SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
         super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl()));
         this.postOnly = securityProperties.getLogin().isPostOnly();
         this.authenticateHandlerFactory = authenticateHandlerFactory;
-        setAuthenticationManager(authenticationManager);
+        setAuthenticationManager(authentication -> null);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
         setAuthenticationFailureHandler(authenticationFailureHandler);
     }

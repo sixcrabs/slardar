@@ -1,8 +1,9 @@
 package cn.piesat.v.slardar.example.config;
 
 import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,8 +15,14 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
+
+    /**
+     * 自定义过滤需要忽略的url
+     *
+     * @param antPatterns
+     */
     @Override
-    public void customize(WebSecurity.IgnoredRequestConfigurer configurer) {
-        configurer.antMatchers("/api/greeting/**");
+    public void customize(List<String> antPatterns) {
+        antPatterns.add("/api/greeting");
     }
 }

@@ -2,6 +2,7 @@ package cn.piesat.v.slardar.example.config;
 
 import cn.piesat.v.slardar.starter.config.SlardarUrlRegistryCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class MyUrlRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer
      * @param registry
      */
     @Override
-    public void customize(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry) {
+    public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         // /admin 的url只能被 admin 角色访问
         registry.antMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYS_ADMIN");
     }
