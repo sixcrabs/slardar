@@ -1,5 +1,4 @@
-
-参考： https://nync.piesat.cn/wiki/docs/tech_be/slardar
+参考： https://nync.piesat.cn/vjpress/guide/slardar/intro.html
 
 ## Slardar
 
@@ -9,9 +8,9 @@
 
 ```xml
  <dependency>
-     <groupId>cn.piesat.nj</groupId>
+     <groupId>cn.piesat.v</groupId>
      <artifactId>slardar-starter</artifactId>
-     <version>1.3.4-SNAPSHOT</version>
+     <version>1.5.0-SNAPSHOT</version>
 </dependency>
 ```
 
