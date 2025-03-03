@@ -1,6 +1,7 @@
 package cn.piesat.v.slardar.starter.filter;
 
 import cn.piesat.v.slardar.starter.support.captcha.CaptchaComponent;
+import com.google.common.util.concurrent.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -34,6 +35,8 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     @Autowired
     private CaptchaComponent captchaComponent;
 
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // 每秒10次
+
     public SlardarCaptchaFilter() {
         this.requestMatcher = new AntPathRequestMatcher("/captcha", HttpMethod.GET.name());
     }
@@ -46,21 +49,27 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
         if (!this.requestMatcher.matches(request)) {
             chain.doFilter(request, response);
         } else {
+            if (!RATE_LIMITER.tryAcquire()) {
+                response.sendError(429, "Too many requests");
+                return;
+            }
             // TODO: 支持多种可定制化方式 生成验证码
             CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(getSessionId(request));
             try (OutputStream os = response.getOutputStream()) {
                 response.setHeader("Pragma", "no-cache");
-                response.setHeader("Cache-Control", "no-cache");
-                response.setDateHeader("Expires", 0);
+                response.setHeader("Cache-Control", "no-store, max-age=0");
+                response.setHeader("X-Content-Type-Options", "nosniff");
+                response.setHeader("Content-Security-Policy", "default-src 'none'");
+                response.setHeader("X-Captcha-ID", payload.getSessionId());
+
                 response.setContentType(MediaType.IMAGE_PNG_VALUE);
+                response.setStatus(HttpServletResponse.SC_OK);
                 os.write(payload.getImgBytes());
                 os.flush();
             } catch (IOException e) {
-                try {
-                    response.sendError(500, "server error");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                response.sendError(500, "Failed to generate captcha");
+                // 同时记录完整日志
+                logger.error("Captcha generation failed", e);
             }
         }
     }
