@@ -1,4 +1,4 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.starter.support;
 
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.captcha.generator.RandomGenerator;
