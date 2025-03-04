@@ -6,6 +6,7 @@ import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 import cn.piesat.v.slardar.starter.support.captcha.generator.CodeGenerator;
 import cn.piesat.v.slardar.starter.support.captcha.generator.RandomGenerator;
+import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;

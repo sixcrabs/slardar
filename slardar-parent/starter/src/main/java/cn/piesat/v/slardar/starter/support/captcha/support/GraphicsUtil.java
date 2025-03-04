@@ -1,6 +1,7 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.starter.support.captcha.support;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

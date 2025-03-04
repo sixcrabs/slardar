@@ -1,8 +1,9 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.starter.support.captcha.support;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.piesat.v.misc.hutool.mini.ArrayUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -3,8 +3,8 @@ package cn.piesat.v.slardar.starter.support.captcha.impl;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.v.slardar.starter.support.captcha.AbstractCaptcha;
-import cn.piesat.v.slardar.starter.support.captcha.GraphicsUtil;
-import cn.piesat.v.slardar.starter.support.captcha.ImgUtil;
+import cn.piesat.v.slardar.starter.support.captcha.support.GraphicsUtil;
+import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

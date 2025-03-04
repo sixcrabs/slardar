@@ -1,4 +1,4 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.starter.support.captcha.support;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;

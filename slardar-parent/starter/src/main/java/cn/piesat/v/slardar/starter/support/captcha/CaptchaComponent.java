@@ -5,6 +5,7 @@ import cn.piesat.v.slardar.starter.support.captcha.generator.RandomGenerator;
 import cn.piesat.v.slardar.starter.support.captcha.impl.LineCaptcha;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.skv.core.KvStore;
+import cn.piesat.v.slardar.starter.support.captcha.support.CaptchaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
