@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.filter;
 
-import cn.piesat.v.slardar.starter.support.captcha.CaptchaComponent;
+import cn.piesat.v.slardar.starter.support.CaptchaComponent;
 import com.google.common.util.concurrent.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;

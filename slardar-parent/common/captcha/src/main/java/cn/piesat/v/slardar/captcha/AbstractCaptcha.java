@@ -1,12 +1,12 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.captcha;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
-import cn.piesat.v.slardar.starter.support.captcha.generator.CodeGenerator;
-import cn.piesat.v.slardar.starter.support.captcha.generator.RandomGenerator;
-import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
+import cn.piesat.v.slardar.captcha.generator.CodeGenerator;
+import cn.piesat.v.slardar.captcha.generator.RandomGenerator;
+import cn.piesat.v.slardar.captcha.support.ImgUtil;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;

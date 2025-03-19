@@ -1,4 +1,4 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.captcha.support;
 
 import cn.piesat.v.slardar.starter.support.captcha.impl.CircleCaptcha;
 import cn.piesat.v.slardar.starter.support.captcha.impl.LineCaptcha;

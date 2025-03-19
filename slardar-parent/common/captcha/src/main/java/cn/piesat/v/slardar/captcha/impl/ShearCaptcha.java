@@ -1,10 +1,10 @@
-package cn.piesat.v.slardar.starter.support.captcha.impl;
+package cn.piesat.v.slardar.captcha.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.v.slardar.starter.support.captcha.AbstractCaptcha;
-import cn.piesat.v.slardar.starter.support.captcha.support.GraphicsUtil;
-import cn.piesat.v.slardar.starter.support.captcha.support.ImgUtil;
+import cn.piesat.v.slardar.captcha.AbstractCaptcha;
+import cn.piesat.v.slardar.captcha.support.GraphicsUtil;
+import cn.piesat.v.slardar.captcha.support.ImgUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

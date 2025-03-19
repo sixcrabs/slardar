@@ -14,7 +14,7 @@ import cn.piesat.v.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.RequestWrapper;
 import cn.piesat.v.slardar.starter.support.SlardarAuthenticationException;
-import cn.piesat.v.slardar.starter.support.captcha.CaptchaComponent;
+import cn.piesat.v.slardar.starter.support.CaptchaComponent;
 import cn.piesat.v.timer.TimerManager;
 import cn.piesat.v.timer.job.TimerJobs;
 import com.google.auto.service.AutoService;

@@ -1,4 +1,4 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.starter.support.captcha.support;
 
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.io.IORuntimeException;

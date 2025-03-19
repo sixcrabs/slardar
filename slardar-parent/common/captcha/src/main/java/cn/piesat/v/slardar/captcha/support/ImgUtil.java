@@ -1,4 +1,4 @@
-package cn.piesat.v.slardar.starter.support.captcha;
+package cn.piesat.v.slardar.captcha.support;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;
@@ -1899,7 +1899,7 @@ public class ImgUtil {
 				final Integer r = Convert.toInt(rgb.get(0));
 				final Integer g = Convert.toInt(rgb.get(1));
 				final Integer b = Convert.toInt(rgb.get(2));
-				if (false == ArrayUtil.hasNull(r, g, b)) {
+				if (!ArrayUtil.hasNull(r, g, b)) {
 					return new Color(r, g, b);
 				}
 			} else {

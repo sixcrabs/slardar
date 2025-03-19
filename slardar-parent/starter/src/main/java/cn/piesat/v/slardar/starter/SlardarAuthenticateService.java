@@ -123,7 +123,7 @@ public class SlardarAuthenticateService {
      * @param tokenValue
      */
     public void setTokenValue(String tokenValue, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response) {
-        if (StringUtils.isEmpty(tokenValue)) {
+        if (StringUtil.isBlank(tokenValue)) {
             return;
         }
         String tokenKey = slardarProperties.getToken().getKey();
