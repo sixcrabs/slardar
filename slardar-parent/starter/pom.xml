@@ -37,6 +37,11 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>cn.piesat.v</groupId>
             <artifactId>hutool-mini</artifactId>
         </dependency>

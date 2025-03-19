@@ -114,9 +114,10 @@ public final class HttpServletUtil {
      * @param domain
      * @param path
      * @param sameSite    第三方限制级别（Strict=完全禁止，Lax=部分允许，None=不限制）
+     * @param httpOnly
      */
     public static void setCookie(final HttpServletResponse response, String cookieName, String cookieValue,
-                                 Integer maxAge, String domain, String path, String sameSite) {
+                                 Integer maxAge, String domain, String path, String sameSite, boolean httpOnly) {
         StringBuilder sb = new StringBuilder();
         sb.append(cookieName).append("=").append(cookieValue);
         if (maxAge >= 0) {
@@ -135,12 +136,13 @@ public final class HttpServletUtil {
         if (StringUtils.hasText(path)) {
             sb.append("; Path=").append(path);
         }
-        boolean secure = true;
-        if (secure) {
-            sb.append("; Secure");
-        }
+        sb.append("; Secure");
         if (StringUtils.hasText(sameSite)) {
             sb.append("; SameSite=").append(sameSite);
+        }
+        // 加上 httpOnly
+        if (httpOnly) {
+            sb.append("; HttpOnly");
         }
         response.addHeader("Set-Cookie", sb.toString());
     }

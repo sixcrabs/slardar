@@ -117,6 +117,7 @@ public class SlardarAuthenticateService {
     }
 
     /**
+     * FIXME:
      * 注入 token value 到 request/response header/cookie/ ...
      *
      * @param tokenValue
@@ -128,8 +129,8 @@ public class SlardarAuthenticateService {
         String tokenKey = slardarProperties.getToken().getKey();
         // 1. 将 Token 保存到 [存储器] 里
         request.setAttribute(tokenKey, tokenValue);
-        // 2. 将 Token 保存到 [Cookie] 里
-        HttpServletUtil.setCookie(response, tokenKey, tokenValue, 3600 * 24, "", "", "Strict");
+        // 2. 将 Token 保存到 [Cookie] 里 TODO: 这里的有效期 需要和 配置里的一致
+        HttpServletUtil.setCookie(response, tokenKey, tokenValue, 3600 * 24, "", "", "Strict", true);
         // 3. 将 Token 写入到响应头里
         response.setHeader(tokenKey, tokenValue);
         response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, tokenKey);
