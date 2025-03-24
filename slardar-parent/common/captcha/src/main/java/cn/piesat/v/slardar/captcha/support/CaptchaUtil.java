@@ -1,8 +1,9 @@
 package cn.piesat.v.slardar.captcha.support;
 
-import cn.piesat.v.slardar.starter.support.captcha.impl.CircleCaptcha;
-import cn.piesat.v.slardar.starter.support.captcha.impl.LineCaptcha;
-import cn.piesat.v.slardar.starter.support.captcha.impl.ShearCaptcha;
+
+import cn.piesat.v.slardar.captcha.impl.CircleCaptcha;
+import cn.piesat.v.slardar.captcha.impl.LineCaptcha;
+import cn.piesat.v.slardar.captcha.impl.ShearCaptcha;
 
 /**
  * 图形验证码工具
