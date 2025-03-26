@@ -313,6 +313,12 @@ public class SlardarProperties implements Serializable {
         private int loginSuccessCode = 0;
 
         /**
+         * 登录失败返回 http status 值 默认500（失败优先）
+         *
+         */
+        private int loginFailedHttpStatus = 500;
+
+        /**
          * 是否必须验证码 默认需要
          */
         private Boolean captchaEnabled = true;
@@ -337,6 +343,16 @@ public class SlardarProperties implements Serializable {
          * 登录失败最大次数后锁定时间 默认 1分钟
          */
         private Duration failedLockDuration = Duration.ofMinutes(1L);
+
+
+        public int getLoginFailedHttpStatus() {
+            return loginFailedHttpStatus;
+        }
+
+        public LoginSetting setLoginFailedHttpStatus(int loginFailedHttpStatus) {
+            this.loginFailedHttpStatus = loginFailedHttpStatus;
+            return this;
+        }
 
         public String getResultHandlerType() {
             return resultHandlerType;

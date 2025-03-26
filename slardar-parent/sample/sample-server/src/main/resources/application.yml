@@ -20,12 +20,13 @@ slardar:
     separator: _MY_
   login:
     post-only: false
-    captcha-enabled: true
+    captcha-enabled: false
     encrypt:
       enabled: false
       mode: mystical #使用自定义的加解密实现
     max-attempts-before-locked: 3 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
+    login-failed-http-status: 200 # 登录失败返回的状态码200 默认是 500
   ignores: /login,/sso-login,/mfa-login
   basic:
     enable: false

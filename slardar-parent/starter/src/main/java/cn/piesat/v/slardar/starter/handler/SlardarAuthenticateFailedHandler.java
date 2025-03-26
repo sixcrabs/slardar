@@ -8,8 +8,10 @@ import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.SlardarEventManager;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.v.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
+import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.SlardarAuthenticationException;
 import cn.piesat.v.slardar.starter.support.event.LoginEvent;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,11 +42,14 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     private final SlardarAuthenticateService authenticateService;
 
+    private final SlardarProperties properties;
+
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateFailedHandler.class);
 
     public SlardarAuthenticateFailedHandler(SlardarSpiContext slardarContext, SlardarAuthenticateService authenticateService) {
         this.slardarContext = slardarContext;
         this.authenticateService = authenticateService;
+        this.properties = slardarContext.getBean(SlardarProperties.class);
     }
 
 
@@ -56,8 +61,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         HashMap<String, Object> resp;
-        HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException) ?
-                HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
+        HttpStatus status = getHttpStatus(e);
         if (e instanceof MfaVerifyRequiredException) {
             // 单独处理MFA 异常
             resp = makeResult(((MfaVerifyRequiredException) e).getKey(), 1008, "MFA authentication required!");
@@ -83,5 +87,17 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
             }
         }
         sendJson(response, resp, status, request.getHeader("Origin"));
+    }
+
+    @NotNull
+    private HttpStatus getHttpStatus(AuthenticationException e) {
+        HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException
+                || e instanceof SlardarAuthenticationException) ?
+                HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.UNAUTHORIZED;
+        int loginFailedHttpStatus = properties.getLogin().getLoginFailedHttpStatus();
+        if (status.equals(HttpStatus.INTERNAL_SERVER_ERROR) && loginFailedHttpStatus < 500) {
+            status = HttpStatus.valueOf(loginFailedHttpStatus);
+        }
+        return status;
     }
 }
