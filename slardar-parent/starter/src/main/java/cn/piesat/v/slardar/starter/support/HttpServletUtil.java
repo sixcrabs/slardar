@@ -279,7 +279,7 @@ public final class HttpServletUtil {
 
     @SuppressWarnings("unchecked")
     public static Map<String, String> getHeaders(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getHeaderNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();

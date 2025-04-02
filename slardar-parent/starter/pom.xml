@@ -31,10 +31,26 @@
             <artifactId>ring-timer</artifactId>
         </dependency>
 
+        <!--key store start-->
+
         <dependency>
-            <groupId>cn.piesat.v</groupId>
-            <artifactId>skv-spring-boot-starter</artifactId>
+            <groupId>org.lmdbjava</groupId>
+            <artifactId>lmdbjava</artifactId>
+            <version>0.9.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.2.1.RELEASE</version>
+        </dependency>
+
+        <!--key store end-->
+
+        <!--        <dependency>-->
+        <!--            <groupId>cn.piesat.v</groupId>-->
+        <!--            <artifactId>skv-spring-boot-starter</artifactId>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>

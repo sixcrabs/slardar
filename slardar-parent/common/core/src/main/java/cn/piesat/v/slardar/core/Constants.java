@@ -1,5 +1,10 @@
 package cn.piesat.v.slardar.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * <p>
  * .
@@ -44,6 +49,10 @@ public final class Constants {
      * wxapp / password
      */
     public static final String HEADER_KEY_OF_AUTH_TYPE = "X-Auth-Type";
+
+    public static final List<String> HEADER_KEYS_OF_AUTH_TYPE = Collections.unmodifiableList(Arrays.asList(HEADER_KEY_OF_AUTH_TYPE,
+            HEADER_KEY_OF_AUTH_TYPE.toLowerCase(), HEADER_KEY_OF_AUTH_TYPE.toUpperCase(),
+            "x-Auth-Type", "X-auth-type", "X-Auth-type", "X-auth-Type"));
 
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 

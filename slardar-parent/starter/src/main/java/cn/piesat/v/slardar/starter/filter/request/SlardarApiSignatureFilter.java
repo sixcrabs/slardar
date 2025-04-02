@@ -8,12 +8,12 @@ import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.SignatureUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Nonnull;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +74,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
      * @throws ServletException in case of errors
      */
     @Override
-    protected boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(@Nonnull HttpServletRequest request) throws ServletException {
         return requestMatchers.stream().noneMatch(matcher -> matcher.matcher(request).isMatch());
     }
 

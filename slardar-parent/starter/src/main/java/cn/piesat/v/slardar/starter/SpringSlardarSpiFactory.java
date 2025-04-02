@@ -12,10 +12,12 @@ import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.v.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.v.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
+import cn.piesat.v.slardar.starter.support.store.KeyStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -45,6 +47,8 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
     private static final Map<String, SlardarTokenProvider> TOKEN_REPO = new HashMap<>(1);
 
     private static final Map<String, SlardarAuthenticateResultAdapter> RESULT_HANDLER_REPO = new HashMap<>(1);
+
+    private static final Map<String, KeyStore> KEY_STORE_REPO = new HashMap<>(1);
 
     public SpringSlardarSpiFactory(SlardarSpiContext spiContext) {
         this.spiContext = spiContext;
@@ -86,18 +90,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         }
     }
 
-    /**
-     * TODO:
-     *
-     * @param name
-     * @return
-     * @throws SlardarException
-     */
-    @Override
-    public SlardarCaptchaGenerator findCaptchaGenerator(String name) throws SlardarException {
-        return null;
-    }
-
     @Override
     public SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name) throws SlardarException {
         if (StringUtil.isBlank(name)) {
@@ -108,6 +100,29 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         } else {
             throw new SlardarException("未找到[{}]对应实现类", name);
         }
+    }
+
+    /**
+     * TODO
+     * @param name
+     * @return
+     * @throws SlardarException
+     */
+    @Override
+    public KeyStroke findKeyStore(String name) throws SlardarException {
+        return null;
+    }
+
+    /**
+     * TODO:
+     *
+     * @param name
+     * @return
+     * @throws SlardarException
+     */
+    @Override
+    public SlardarCaptchaGenerator findCaptchaGenerator(String name) throws SlardarException {
+        return null;
     }
 
     @Override

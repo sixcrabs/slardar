@@ -8,7 +8,6 @@ import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.v.slardar.starter.support.Base64;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -75,7 +75,7 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      * @throws ServletException in case of errors
      */
     @Override
-    protected boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(@Nonnull HttpServletRequest request) throws ServletException {
         return requiredPathRequestMatchers.stream().noneMatch(matcher -> matcher.matcher(request).isMatch());
     }
 

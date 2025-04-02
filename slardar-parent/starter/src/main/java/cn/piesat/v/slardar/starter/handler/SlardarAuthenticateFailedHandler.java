@@ -11,7 +11,6 @@ import cn.piesat.v.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.SlardarAuthenticationException;
 import cn.piesat.v.slardar.starter.support.event.LoginEvent;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,7 +89,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         sendJson(response, resp, status, request.getHeader("Origin"));
     }
 
-    @NotNull
+    @Nonnull
     private HttpStatus getHttpStatus(AuthenticationException e) {
         HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException
                 || e instanceof SlardarAuthenticationException) ?

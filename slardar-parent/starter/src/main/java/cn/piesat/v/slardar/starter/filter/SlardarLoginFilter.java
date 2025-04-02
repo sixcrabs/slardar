@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
+import static cn.piesat.v.slardar.core.Constants.HEADER_KEYS_OF_AUTH_TYPE;
 import static cn.piesat.v.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
@@ -109,9 +110,14 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
         }
     }
 
+    /**
+     * 兼容 X-Auth-Type 大小写等多种情况
+     *
+     * @param request
+     * @return
+     */
     private String getAuthType(final HttpServletRequest request) {
-        String val = request.getHeader(HEADER_KEY_OF_AUTH_TYPE);
-        return StringUtil.isBlank(val) ? request.getHeader(HEADER_KEY_OF_AUTH_TYPE.toLowerCase()) : val;
+        return HEADER_KEYS_OF_AUTH_TYPE.stream().filter(headerKey -> request.getHeader(headerKey) != null).findFirst().orElse(null);
     }
 
 }
