@@ -1,4 +1,4 @@
-参考： https://nync.piesat.cn/vjpress/guide/slardar/intro.html
+参考： https://cat-eat-bat.github.io/vjpress/guide/slardar/intro.html
 
 ## Slardar
 
