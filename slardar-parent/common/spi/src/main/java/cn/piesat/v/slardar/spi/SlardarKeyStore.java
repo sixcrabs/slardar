@@ -1,6 +1,4 @@
-package cn.piesat.v.slardar.starter.support.store;
-
-import cn.piesat.v.slardar.spi.SlardarSpi;
+package cn.piesat.v.slardar.spi;
 
 /**
  * <p>
@@ -13,5 +11,5 @@ import cn.piesat.v.slardar.spi.SlardarSpi;
  * @author Alex
  * @since 2025/3/28
  */
-public interface KeyStore extends SlardarSpi {
+public interface SlardarKeyStore extends SlardarSpi {
 }

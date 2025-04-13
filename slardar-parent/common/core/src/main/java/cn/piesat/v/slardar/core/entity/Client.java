@@ -47,6 +47,18 @@ public class Client extends BaseRealmEntity<String> {
     private String description;
 
     /**
+     * 所有允许授权的 url
+     * `*` 表示允许所有
+     */
+    private String redirectUrisAllowed;
+
+    /**
+     * 所有允许的授权模式
+     * authorization_code\password\client_credentials\refresh_token
+     */
+    private String grantTypesAllowed;
+
+    /**
      * 是否禁用
      */
     private int disabled;
@@ -62,6 +74,24 @@ public class Client extends BaseRealmEntity<String> {
      */
     private Map<String, Object> attributes;
 
+
+    public String getRedirectUrisAllowed() {
+        return redirectUrisAllowed;
+    }
+
+    public Client setRedirectUrisAllowed(String redirectUrisAllowed) {
+        this.redirectUrisAllowed = redirectUrisAllowed;
+        return this;
+    }
+
+    public String getGrantTypesAllowed() {
+        return grantTypesAllowed;
+    }
+
+    public Client setGrantTypesAllowed(String grantTypesAllowed) {
+        this.grantTypesAllowed = grantTypesAllowed;
+        return this;
+    }
 
     public String getClientId() {
         return clientId;

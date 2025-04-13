@@ -3,6 +3,7 @@ package cn.piesat.v.slardar.sso.server;
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.v.skv.core.KvStore;
 import cn.piesat.v.slardar.sso.server.config.SsoServerProperties;
+import cn.piesat.v.slardar.spi.SlardarKeyStore;
 
 import javax.annotation.Resource;
 
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
 public class SsoTicketService {
 
     @Resource
-    private KvStore kvStore;
+    private SlardarKeyStore kvStore;
 
     private final SsoServerProperties serverProperties;
 

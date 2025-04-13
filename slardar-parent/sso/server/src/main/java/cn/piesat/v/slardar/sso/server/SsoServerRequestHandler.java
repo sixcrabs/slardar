@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cn.piesat.v.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
 import static cn.piesat.v.slardar.sso.server.support.SsoConstants.*;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
@@ -155,7 +153,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
                 String username = tokenService.getUsername(tokenValue);
                 SlardarUserDetails details = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                 Collection<SlardarSsoUserDetailsHandler> ssoUserDetailsHandlers = context.getBeans(SlardarSsoUserDetailsHandler.class);
-                if (ssoUserDetailsHandlers.size() > 0) {
+                if (!ssoUserDetailsHandlers.isEmpty()) {
                     List<Serializable> list = ssoUserDetailsHandlers.stream().map(handler -> {
                         try {
                             return handler.handle(details);
@@ -163,7 +161,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
                             throw new RuntimeException(e);
                         }
                     }).collect(Collectors.toList());
-                    if (list.size() > 0) {
+                    if (!list.isEmpty()) {
                         sendJson(response, makeResult(list.get(list.size() - 1), HttpStatus.OK.value()), HttpStatus.OK);
                     } else {
                         sendJson(response, makeResult(details.getAccount(), HttpStatus.OK.value()), HttpStatus.OK);

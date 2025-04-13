@@ -56,7 +56,7 @@ public interface SlardarSpiFactory {
      * @return
      * @throws SlardarException
      */
-    KeyStroke findKeyStore(String name) throws SlardarException;
+    SlardarKeyStore findKeyStore(String name) throws SlardarException;
 
     /**
      * TODO: 备用

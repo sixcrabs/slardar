@@ -12,7 +12,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static cn.piesat.v.slardar.sso.server.SsoConstants.SSO_LOGIN_VIEW_URL;
+import static cn.piesat.v.slardar.sso.server.support.SsoConstants.SSO_LOGIN_VIEW_URL;
+
 
 /**
  * <p>

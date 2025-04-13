@@ -1,6 +1,6 @@
-package cn.piesat.v.slardar.sso.server;
+package cn.piesat.v.slardar.oauth.server;
 
-import cn.piesat.v.slardar.sso.server.config.SsoServerProperties;
+import cn.piesat.v.slardar.oauth.server.config.OauthServerProperties;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
@@ -15,30 +15,29 @@ import java.io.IOException;
 
 /**
  * <p>
- * 处理 /sso 请求的 filter
+ * TODO:
+ * 处理 /oauth/... 请求
  * </p>
  *
  * @author Alex
- * @version v1.0 2023/3/22
+ * @since 2025/4/11
  */
-public class SsoServerRequestFilter extends GenericFilterBean {
+public class OauthServerRequestFilter extends GenericFilterBean {
 
     private final RequestMatcher requestMatcher;
 
-    private final SsoServerRequestHandler requestHandler;
+    private final OauthServerRequestHandler requestHandler;
 
-    public SsoServerRequestFilter(SsoServerProperties properties, SsoServerRequestHandler requestHandler) {
-        this.requestMatcher = new AntPathRequestMatcher(properties.getSsoAntUrlPattern());
+    public OauthServerRequestFilter(OauthServerProperties properties, OauthServerRequestHandler requestHandler) {
+        this.requestMatcher = new AntPathRequestMatcher(properties.getOauthAntUrlPattern());
         this.requestHandler = requestHandler;
     }
-
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
         if (requestMatches(request)) {
-            // 交给 handler 去处理
             requestHandler.handle(request, response);
         } else {
             chain.doFilter(request, response);

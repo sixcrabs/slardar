@@ -42,4 +42,10 @@ public final class SsoConstants {
      * ticket 验证失败
      */
     public static final int CODE_TICKET_ERROR = 20003;
+
+
+    /**
+     * sso-login 登录页面地址
+     */
+    public static final String SSO_LOGIN_VIEW_URL = "/sso-login";
 }

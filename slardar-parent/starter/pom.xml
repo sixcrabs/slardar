@@ -32,7 +32,6 @@
         </dependency>
 
         <!--key store start-->
-
         <dependency>
             <groupId>org.lmdbjava</groupId>
             <artifactId>lmdbjava</artifactId>
@@ -44,7 +43,6 @@
             <artifactId>lettuce-core</artifactId>
             <version>6.2.1.RELEASE</version>
         </dependency>
-
         <!--key store end-->
 
         <!--        <dependency>-->

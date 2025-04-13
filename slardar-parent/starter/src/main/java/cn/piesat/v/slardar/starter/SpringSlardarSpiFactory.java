@@ -12,12 +12,11 @@ import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.v.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.v.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
-import cn.piesat.v.slardar.starter.support.store.KeyStore;
+import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -42,13 +41,14 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      * crypto repo
      */
     private static final Map<String, SlardarCrypto> CRYPTO_REPO = new HashMap<>(1);
+
     private static final Map<String, SlardarOtpDispatcher> OTP_REPO = new HashMap<>(1);
 
     private static final Map<String, SlardarTokenProvider> TOKEN_REPO = new HashMap<>(1);
 
     private static final Map<String, SlardarAuthenticateResultAdapter> RESULT_HANDLER_REPO = new HashMap<>(1);
 
-    private static final Map<String, KeyStore> KEY_STORE_REPO = new HashMap<>(1);
+    private static final Map<String, SlardarKeyStore> KEY_STORE_REPO = new HashMap<>(1);
 
     public SpringSlardarSpiFactory(SlardarSpiContext spiContext) {
         this.spiContext = spiContext;
@@ -109,7 +109,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      * @throws SlardarException
      */
     @Override
-    public KeyStroke findKeyStore(String name) throws SlardarException {
+    public SlardarKeyStore findKeyStore(String name) throws SlardarException {
         return null;
     }
 
@@ -125,9 +125,12 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         return null;
     }
 
+    /**
+     *  加载所有需要的 SPI 实现并存入缓存
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        // 加载所有需要的 SPI 实现
         // 获取所有的 otp 发送实现 并存入 缓存
         ServiceLoader<SlardarOtpDispatcher> impls = ServiceLoader.load(SlardarOtpDispatcher.class);
         for (SlardarOtpDispatcher impl : impls) {
@@ -159,6 +162,12 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         }
         logger.info("[slardar] 已加载 [{}] 个认证结果处理组件", RESULT_HANDLER_REPO.size());
 
+        ServiceLoader<SlardarKeyStore> keyStores = ServiceLoader.load(SlardarKeyStore.class);
+        for (SlardarKeyStore keyStore : keyStores) {
+            keyStore.initialize(this.spiContext);
+            KEY_STORE_REPO.put(keyStore.name().toUpperCase(), keyStore);
+        }
+        logger.info("[slardar] 已加载 [{}] 个 kv 存储组件", KEY_STORE_REPO.size());
 
     }
 }
