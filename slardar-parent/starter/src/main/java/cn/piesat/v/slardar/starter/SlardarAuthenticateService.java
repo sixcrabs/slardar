@@ -42,6 +42,7 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
  * `- succeed
  * - fail
  * - deny
+ * TODO: 使用 keystore
  * </p>
  *
  * @author alex

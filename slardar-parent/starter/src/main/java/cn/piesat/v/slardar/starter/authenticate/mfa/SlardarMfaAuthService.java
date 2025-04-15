@@ -2,11 +2,12 @@ package cn.piesat.v.slardar.starter.authenticate.mfa;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.spi.mfa.SlardarOtpDispatcher;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.skv.core.KvStore;
+//import cn.piesat.v.skv.core.KvStore;
 import com.bastiaanjansen.otp.HMACAlgorithm;
 import com.bastiaanjansen.otp.SecretGenerator;
 import com.bastiaanjansen.otp.TOTPGenerator;
@@ -30,7 +31,7 @@ public class SlardarMfaAuthService {
 
     private final SlardarProperties slardarProperties;
 
-    private final KvStore keyStore;
+    private final SlardarKeyStore keyStore;
 
     /**
      * 有效期 秒 默认 5分钟
@@ -39,7 +40,7 @@ public class SlardarMfaAuthService {
 
     private SlardarOtpDispatcher dispatcher;
 
-    public SlardarMfaAuthService(SlardarSpiFactory dispatcherFactory, SlardarProperties slardarProperties, KvStore keyStore) {
+    public SlardarMfaAuthService(SlardarSpiFactory dispatcherFactory, SlardarProperties slardarProperties, SlardarKeyStore keyStore) {
         this.dispatcherFactory = dispatcherFactory;
         this.slardarProperties = slardarProperties;
         this.keyStore = keyStore;

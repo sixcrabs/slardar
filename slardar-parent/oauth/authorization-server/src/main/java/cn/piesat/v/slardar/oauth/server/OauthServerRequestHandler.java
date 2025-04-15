@@ -31,7 +31,15 @@ public class OauthServerRequestHandler implements SlardarIgnoringCustomizer {
         this.spiContext = spiContext;
     }
 
+    /**
+     * 处理/oauth/ 的各请求
+     * @param request
+     * @param response
+     */
     public void handle(HttpServletRequest request, HttpServletResponse response) {
+        String uri = request.getRequestURI();
+        // 根据不同 path 分发处理
+        String mapping = uri.replace(serverProperties.getCtxPath(), "").replaceFirst("/", "");
 
     }
 

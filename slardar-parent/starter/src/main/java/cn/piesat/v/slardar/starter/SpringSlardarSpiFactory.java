@@ -103,14 +103,21 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
     }
 
     /**
-     * TODO
+     * 根据配置寻找合适的 keystore 实现
      * @param name
      * @return
      * @throws SlardarException
      */
     @Override
     public SlardarKeyStore findKeyStore(String name) throws SlardarException {
-        return null;
+        if (StringUtil.isBlank(name)) {
+            return KEY_STORE_REPO.get(SlardarDefaultAuthenticateResultAdapter.NAME);
+        }
+        if (RESULT_HANDLER_REPO.containsKey(name.toUpperCase())) {
+            return KEY_STORE_REPO.get(name.toUpperCase());
+        } else {
+            throw new SlardarException("未找到[{}]对应实现类", name);
+        }
     }
 
     /**
