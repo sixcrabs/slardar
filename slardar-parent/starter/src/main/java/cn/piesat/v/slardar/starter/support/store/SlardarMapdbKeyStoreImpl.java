@@ -11,14 +11,15 @@ import java.util.Map;
 
 /**
  * <p>
- * redis 实现
+ * mapdb 实现
  * </p>
  *
  * @author Alex
  * @since 2025/4/15
  */
 @AutoService(SlardarKeyStore.class)
-public class SlardarRedisKeyStoreImpl implements SlardarKeyStore {
+public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
+
     /**
      * set key
      *
@@ -89,18 +90,6 @@ public class SlardarRedisKeyStoreImpl implements SlardarKeyStore {
     }
 
     /**
-     * add listener
-     *
-     * @param key      data key
-     * @param listener listener
-     * @throws SlardarException
-     */
-    @Override
-    public void addListener(String key, KeyEventListener listener) throws SlardarException {
-
-    }
-
-    /**
      * get all keys
      *
      * @return
@@ -127,7 +116,7 @@ public class SlardarRedisKeyStoreImpl implements SlardarKeyStore {
      */
     @Override
     public String name() {
-        return "redis";
+        return "mapdb";
     }
 
     /**
@@ -137,7 +126,7 @@ public class SlardarRedisKeyStoreImpl implements SlardarKeyStore {
      */
     @Override
     public void initialize(SlardarSpiContext context) {
-        // TODO: 根据keyStore 配置 连接 redis
+        // TODO 根据 keystore配置 设置 mapdb
 
     }
 }

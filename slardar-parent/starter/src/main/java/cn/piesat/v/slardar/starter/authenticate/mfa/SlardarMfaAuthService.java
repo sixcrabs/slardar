@@ -27,7 +27,7 @@ import static cn.piesat.v.slardar.starter.support.SecUtil.GSON;
  */
 public class SlardarMfaAuthService {
 
-    private final SlardarSpiFactory dispatcherFactory;
+    private final SlardarSpiFactory spiFactory;
 
     private final SlardarProperties slardarProperties;
 
@@ -40,20 +40,15 @@ public class SlardarMfaAuthService {
 
     private SlardarOtpDispatcher dispatcher;
 
-    public SlardarMfaAuthService(SlardarSpiFactory dispatcherFactory, SlardarProperties slardarProperties, SlardarKeyStore keyStore) {
-        this.dispatcherFactory = dispatcherFactory;
+    public SlardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
+        this.spiFactory = spiFactory;
         this.slardarProperties = slardarProperties;
-        this.keyStore = keyStore;
+        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
         init();
     }
 
     private void init() {
-        String otpMode = slardarProperties.getMfa().getOtpMode();
-        try {
-            dispatcher = dispatcherFactory.findOtpDispatcher(otpMode);
-        } catch (SlardarException e) {
-            e.printStackTrace();
-        }
+        dispatcher = spiFactory.findOtpDispatcher(slardarProperties.getMfa().getOtpMode());
     }
 
 

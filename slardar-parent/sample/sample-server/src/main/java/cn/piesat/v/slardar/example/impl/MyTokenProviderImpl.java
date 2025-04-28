@@ -46,29 +46,17 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
     public void initialize(SlardarSpiContext context) {
     }
 
-    /**
-     * 生成 token
-     *
-     * @param userDetails
-     * @return
-     */
-    @Override
-    public Payload generate(Object userDetails) {
-        UserDetails data = (UserDetails) userDetails;
-        return new Payload().setTokenValue(RandomUtil.randomString(5)).setExpiresAt(LocalDateTime.now().plusHours(1L));
-    }
-
 
 
     /**
      * 生成 token
      *
-     * @param username
+     * @param userKey
      * @return
      */
     @Override
-    public Payload generate(String username) {
-        return new Payload().setTokenValue(RandomUtil.randomString(5)).setExpiresAt(LocalDateTime.now().plusHours(1L));
+    public SlardarToken provide(String userKey) {
+        return new SlardarToken().setTokenValue(RandomUtil.randomString(5)).setExpiresAt(LocalDateTime.now().plusHours(1L));
     }
 
     /**
@@ -78,19 +66,8 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public String getSubject(String tokenValue) {
+    public String geUserKey(String tokenValue) {
         return "";
-    }
-
-    /**
-     * 时间上是否已过期
-     *
-     * @param tokenValue
-     * @return
-     */
-    @Override
-    public Boolean isExpired(String tokenValue) {
-        return true;
     }
 
     /**
@@ -99,7 +76,7 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public long getExpiration() {
+    public long getTokenTTL() {
         return 120000;
     }
 

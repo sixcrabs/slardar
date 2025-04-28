@@ -15,10 +15,6 @@ import cn.piesat.v.slardar.starter.filter.request.SlardarTokenRequiredFilter;
 import cn.piesat.v.slardar.starter.handler.SlardarAccessDeniedHandler;
 import cn.piesat.v.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.v.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
-import cn.piesat.v.skv.core.KvStore;
-import cn.piesat.v.skv.starter.config.KvAutoConfiguration;
-import io.lettuce.core.RedisClient;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +38,6 @@ import java.util.Arrays;
 @Configuration
 @EnableConfigurationProperties(SlardarProperties.class)
 @ComponentScan(basePackages = {"cn.piesat"})
-@AutoConfigureAfter(KvAutoConfiguration.class)
 public class SlardarBeanConfiguration {
 
 
@@ -121,13 +116,11 @@ public class SlardarBeanConfiguration {
      *
      * @param spiFactory
      * @param slardarProperties
-     * @param kvStore
      * @return
      */
     @Bean
-    public SlardarMfaAuthService slardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties,
-                                                       KvStore kvStore) {
-        return new SlardarMfaAuthService(spiFactory, slardarProperties, kvStore);
+    public SlardarMfaAuthService slardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
+        return new SlardarMfaAuthService(spiFactory, slardarProperties);
     }
 
     /**
@@ -177,17 +170,14 @@ public class SlardarBeanConfiguration {
     /**
      * 注入认证处理 service
      *
-     * @param context
+     * @param spiFactory
      * @param properties
-     * @param redisClient
      * @return
      */
     @Bean
-    public SlardarAuthenticateService authenticateService(SlardarSpiContext context,
-                                                          SlardarSpiFactory spiFactory,
-                                                          SlardarProperties properties,
-                                                          RedisClient redisClient) {
-        return new SlardarAuthenticateService(properties, spiFactory, context, redisClient);
+    public SlardarAuthenticateService authenticateService(SlardarSpiFactory spiFactory,
+                                                          SlardarProperties properties) {
+        return new SlardarAuthenticateService(properties, spiFactory);
     }
 
     @Bean
@@ -204,6 +194,7 @@ public class SlardarBeanConfiguration {
 
     /**
      * 注入 请求过滤器 用于过滤所有请求进行token验证
+     *
      * @param properties
      * @return
      */

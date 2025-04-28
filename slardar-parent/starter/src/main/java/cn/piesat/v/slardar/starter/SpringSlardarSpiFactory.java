@@ -1,6 +1,5 @@
 package cn.piesat.v.slardar.starter;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;
@@ -11,8 +10,10 @@ import cn.piesat.v.slardar.spi.mfa.SlardarOtpDispatcher;
 import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
 import cn.piesat.v.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.v.slardar.starter.support.spi.EmailOtpDispatcher;
-import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
+import cn.piesat.v.slardar.starter.support.spi.crypto.AESCrypto;
+import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenJwtProvider;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
+import cn.piesat.v.slardar.starter.support.store.SlardarMemoryKeyStoreImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,8 +21,6 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
-
-import static cn.piesat.v.slardar.starter.support.spi.crypto.AESCrypto.MODE;
 
 /**
  * <p>
@@ -55,69 +54,50 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
     }
 
     @Override
-    public SlardarCrypto findCrypto(String name) throws SlardarException {
-        if (StringUtil.isBlank(name)) {
-            return CRYPTO_REPO.get(MODE);
-        }
-        if (CRYPTO_REPO.containsKey(name.toUpperCase())) {
-            return CRYPTO_REPO.get(name.toUpperCase());
-        } else {
-            throw new SlardarException("未找到[{}]加密对应实现类", name);
-        }
+    public SlardarCrypto findCrypto(String name) {
+        return CRYPTO_REPO.computeIfAbsent(name.toUpperCase(), k -> {
+            logger.warn("未找到 [{}] 对应的Crypto实现类, 采用默认实现", name);
+            return CRYPTO_REPO.get(AESCrypto.MODE);
+        });
     }
 
     @Override
-    public SlardarOtpDispatcher findOtpDispatcher(String name) throws SlardarException {
-        if (StringUtil.isBlank(name)) {
+    public SlardarOtpDispatcher findOtpDispatcher(String name) {
+        return OTP_REPO.computeIfAbsent(name.toUpperCase(), k -> {
+            logger.warn("未找到 [{}] 对应的OtpDispatcher实现类, 采用默认的实现", name);
             return OTP_REPO.get(EmailOtpDispatcher.MODE);
-        }
-        if (OTP_REPO.containsKey(name.toUpperCase())) {
-            return OTP_REPO.get(name.toUpperCase());
-        } else {
-            throw new SlardarException("未找到[{}]对应实现类", name);
-        }
+        });
     }
 
     @Override
-    public SlardarTokenProvider findTokenProvider(String name) throws SlardarException {
-        if (StringUtil.isBlank(name)) {
-            return new SlardarTokenProviderJwtImpl();
-        }
-        if (TOKEN_REPO.containsKey(name.toUpperCase())) {
-            return TOKEN_REPO.get(name.toUpperCase());
-        } else {
-            throw new SlardarException("未找到[{}]对应实现类", name);
-        }
+    public SlardarTokenProvider findTokenProvider(String name) {
+        return TOKEN_REPO.computeIfAbsent(name.toUpperCase(), k -> {
+            logger.warn("未找到 [{}] 对应的TokenProvider实现类, 采用默认的实现", name);
+            return TOKEN_REPO.get(SlardarTokenJwtProvider.NAME);
+        });
     }
 
     @Override
-    public SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name) throws SlardarException {
-        if (StringUtil.isBlank(name)) {
+    public SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name) {
+        return RESULT_HANDLER_REPO.computeIfAbsent(name.toUpperCase(), k -> {
+            logger.warn("未找到 [{}] 对应的AuthenticateResultHandler实现类, 采用默认的实现", name);
             return RESULT_HANDLER_REPO.get(SlardarDefaultAuthenticateResultAdapter.NAME);
-        }
-        if (RESULT_HANDLER_REPO.containsKey(name.toUpperCase())) {
-            return RESULT_HANDLER_REPO.get(name.toUpperCase());
-        } else {
-            throw new SlardarException("未找到[{}]对应实现类", name);
-        }
+        });
     }
 
     /**
      * 根据配置寻找合适的 keystore 实现
+     *
      * @param name
      * @return
      * @throws SlardarException
      */
     @Override
-    public SlardarKeyStore findKeyStore(String name) throws SlardarException {
-        if (StringUtil.isBlank(name)) {
-            return KEY_STORE_REPO.get(SlardarDefaultAuthenticateResultAdapter.NAME);
-        }
-        if (RESULT_HANDLER_REPO.containsKey(name.toUpperCase())) {
-            return KEY_STORE_REPO.get(name.toUpperCase());
-        } else {
-            throw new SlardarException("未找到[{}]对应实现类", name);
-        }
+    public SlardarKeyStore findKeyStore(String name) {
+        return KEY_STORE_REPO.computeIfAbsent(name.toUpperCase(), k -> {
+            logger.warn("未找到 [{}] 对应的KeyStore实现类, 采用默认的实现", name);
+            return KEY_STORE_REPO.get(SlardarMemoryKeyStoreImpl.NAME);
+        });
     }
 
     /**
@@ -128,12 +108,13 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      * @throws SlardarException
      */
     @Override
-    public SlardarCaptchaGenerator findCaptchaGenerator(String name) throws SlardarException {
+    public SlardarCaptchaGenerator findCaptchaGenerator(String name) {
         return null;
     }
 
     /**
-     *  加载所有需要的 SPI 实现并存入缓存
+     * 加载所有需要的 SPI 实现并存入缓存
+     *
      * @throws Exception
      */
     @Override

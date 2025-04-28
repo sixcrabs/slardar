@@ -103,7 +103,7 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = tokenService.getTokenValue(request);
+        String authToken = tokenService.getTokenValueFromServlet(request);
         PasswordEncoder passwordEncoder = spiContext.getBeanOrDefault(PasswordEncoder.class, new BCryptPasswordEncoder());
         SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken) && authToken.trim().startsWith("Basic ")) {

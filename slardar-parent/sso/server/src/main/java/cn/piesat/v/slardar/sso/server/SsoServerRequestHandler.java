@@ -119,7 +119,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      * @param response
      */
     private void handleValidate(HttpServletRequest request, HttpServletResponse response) throws SsoException {
-        String tokenValue = tokenService.getTokenValue(request);
+        String tokenValue = tokenService.getTokenValueFromServlet(request);
         if (StrUtil.isEmpty(tokenValue)) {
             throw new SsoException("Token is required").setCode(401);
         }
@@ -140,7 +140,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      * @param response
      */
     private void handleUserDetails(HttpServletRequest request, HttpServletResponse response) throws SsoException {
-        String tokenValue = tokenService.getTokenValue(request);
+        String tokenValue = tokenService.getTokenValueFromServlet(request);
         if (StrUtil.isEmpty(tokenValue)) {
             throw new SsoException("Token is required").setCode(401);
         }
@@ -205,7 +205,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      */
     private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         // 尝试从请求里面读取 token 并验证是否有效
-        String tokenValue = tokenService.getTokenValue(request);
+        String tokenValue = tokenService.getTokenValueFromServlet(request);
         if (StrUtil.isEmpty(tokenValue)) {
             // 跳转到SSO登录页
             sendForward(request, response, SSO_LOGIN_VIEW_URL);

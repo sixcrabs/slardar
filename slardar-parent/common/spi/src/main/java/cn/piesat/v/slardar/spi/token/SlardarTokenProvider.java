@@ -16,40 +16,26 @@ public interface SlardarTokenProvider extends SlardarSpi {
 
     /**
      * 生成 token
-     * @param userDetails
+     * @param userKey  用户key
      * @return
      */
-    Payload generate(Object userDetails);
+    SlardarToken provide(String userKey);
 
     /**
-     * 生成 token
-     * @param username
-     * @return
+     * 从 token 值中解析出 userKey
+     * @param tokenValue token值
+     * @return 用户key
      */
-    Payload generate(String username);
+    String geUserKey(String tokenValue);
 
     /**
-     * 从 token 值中解析出 subject （往往是 username）
-     * @param tokenValue
+     * token 存活秒数
      * @return
      */
-    String getSubject(String tokenValue);
-
-    /**
-     * 时间上是否已过期
-     * @param tokenValue
-     * @return
-     */
-    Boolean isExpired(String tokenValue);
-
-    /**
-     * 过期秒数
-     * @return
-     */
-    long getExpiration();
+    long getTokenTTL();
 
 
-    class Payload {
+    class SlardarToken {
 
         /**
          * token 值
@@ -65,7 +51,7 @@ public interface SlardarTokenProvider extends SlardarSpi {
             return tokenValue;
         }
 
-        public Payload setTokenValue(String tokenValue) {
+        public SlardarToken setTokenValue(String tokenValue) {
             this.tokenValue = tokenValue;
             return this;
         }
@@ -74,7 +60,7 @@ public interface SlardarTokenProvider extends SlardarSpi {
             return expiresAt;
         }
 
-        public Payload setExpiresAt(LocalDateTime expiresAt) {
+        public SlardarToken setExpiresAt(LocalDateTime expiresAt) {
             this.expiresAt = expiresAt;
             return this;
         }

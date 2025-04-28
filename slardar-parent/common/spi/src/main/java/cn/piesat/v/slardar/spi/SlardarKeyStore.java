@@ -79,6 +79,16 @@ public interface SlardarKeyStore extends SlardarSpi {
      */
     void addListener(String key, KeyEventListener listener) throws SlardarException;
 
+
+    /**
+     * 当前key 的ttl时间 单位秒
+     * 默认都返回 -1L， 只有 redis 才支持
+     * @param key
+     * @return
+     */
+    default long ttl(String key) {
+        return -1L;
+    }
     /**
      * get all keys
      *
@@ -94,6 +104,10 @@ public interface SlardarKeyStore extends SlardarSpi {
      */
     @Deprecated
     Map<String, Object> toMap();
+
+
+    String EXPIRED = "expired";
+    String REMOVED = "removed";
 
     interface KeyEventListener {
 

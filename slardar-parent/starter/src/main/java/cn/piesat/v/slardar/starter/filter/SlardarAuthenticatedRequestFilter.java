@@ -7,7 +7,6 @@ import cn.piesat.v.slardar.starter.SlardarEventManager;
 import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import cn.piesat.v.slardar.starter.support.SecUtil;
 import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
 import com.google.common.collect.Lists;
@@ -72,7 +71,6 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
         } else {
             String uri = request.getRequestURI();
             if (uri.equalsIgnoreCase(AUTH_USER_DETAILS_URL)) {
-                // 详细用户对象
                 SlardarUserDetails userDetails = (SlardarUserDetails) SecUtil.getUserDetails();
                 Account account = userDetails.getAccount();
                 if (account != null) {
@@ -83,30 +81,42 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 objectMapper.writeValue(response.getWriter(), userDetails);
                 response.getWriter().flush();
-
             } else if (uri.equals(AUTH_LOGOUT_URL)) {
-                boolean authenticated = SecUtil.isAuthenticated();
-                if (!authenticated) {
-                    sendJson(response, makeErrorResult("当前未登录", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
-                }
-                String currentUsername = SecUtil.getCurrentUsername();
-                Account account = SecUtil.getAccount();
-                boolean b = tokenService.removeTokens(currentUsername, isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC);
-                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                if (b) {
-                    SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-                    sendJsonOk(response, makeSuccessResult(""));
-                    try {
-                        context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(account, request));
-                    } catch (SlardarException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                } else {
-                    sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED, request.getHeader("Origin"));
-                }
+                handleLogout(request, response);
             }
+        }
+    }
+
+
+    /**
+     * TODO:
+     * 处理登出请求
+     *
+     * @param request
+     * @param response
+     */
+    private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
+        boolean authenticated = SecUtil.isAuthenticated();
+        if (!authenticated) {
+            sendJson(response, makeErrorResult("当前未登录", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
+        }
+        String tokenValue = tokenService.getTokenValueFromServlet(request);
+        Account account = SecUtil.getAccount();
+        // FIXME:
+        boolean b = tokenService.withdrawToken(tokenValue, getDeviceType(request));
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        if (b) {
+            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+            sendJsonOk(response, makeSuccessResult(""));
+            try {
+                context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(account, request));
+            } catch (SlardarException e) {
+                throw new RuntimeException(e);
+            }
+
+        } else {
+            sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED, request.getHeader("Origin"));
         }
     }
 

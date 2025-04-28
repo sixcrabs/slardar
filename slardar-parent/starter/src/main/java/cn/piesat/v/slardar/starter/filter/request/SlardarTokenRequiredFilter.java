@@ -114,7 +114,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = tokenService.getTokenValue(request);
+        String authToken = tokenService.getTokenValueFromServlet(request);
         SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken)) {
             LoginDeviceType deviceType = null;
@@ -141,13 +141,10 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                         }
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                         String finalAuthToken = authToken;
-                        // TODO: 修改为事件
                         LoginDeviceType finalDeviceType = deviceType;
                         POOL.submit(() -> {
-                            // token 续期
                             tokenService.renewToken(finalAuthToken, finalDeviceType);
                         });
-
                     } else {
                         // 账户过期
                         tokenValidateEx = new SlardarException("account has been expired or forbidden");
@@ -162,7 +159,12 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
         if (tokenValidateEx != null) {
             forwardRequest(request, response, tokenValidateEx, "remoteLoginException", "/remoteLoginException");
         } else {
-            filterChain.doFilter(request, response);
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                SlardarSecurityHelper.clear();
+                SecurityContextHolder.clearContext();
+            }
         }
     }
 

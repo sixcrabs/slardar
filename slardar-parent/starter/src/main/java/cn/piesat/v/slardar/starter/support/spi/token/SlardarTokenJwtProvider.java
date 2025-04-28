@@ -11,7 +11,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import java.util.Map;
  * @version v1.0 2022/9/27
  */
 @AutoService(SlardarTokenProvider.class)
-public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
+public class SlardarTokenJwtProvider implements SlardarTokenProvider {
 
     private static final String CLAIM_KEY_USERNAME = "sub";
 
@@ -43,7 +42,7 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
 
     private Long expiration;
 
-    private static final Logger log = LoggerFactory.getLogger(SlardarTokenProviderJwtImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SlardarTokenJwtProvider.class);
 
 
     /**
@@ -66,29 +65,19 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
     @Override
     public void initialize(SlardarSpiContext context) {
         secret = context.getBean(SlardarProperties.class).getToken().getJwt().getSignKey();
-        expiration = context.getBean(SlardarProperties.class).getToken().getJwt().getExpiration();
+        expiration = context.getBean(SlardarProperties.class).getToken().getTtl();
         allowedClockSkewSeconds = context.getBean(SlardarProperties.class).getToken().getJwt().getAllowedClockSkewSeconds();
     }
 
 
     @Override
-    public Payload generate(Object userDetails) {
-        if (userDetails instanceof UserDetails) {
-            return generate(((UserDetails)userDetails).getUsername());
-        } else {
-            return null;
-        }
-    }
-
-
-    @Override
-    public Payload generate(String username) {
+    public SlardarToken provide(String userKey) {
         Map<String, Object> claims = new HashMap<>(16);
-        claims.put(CLAIM_KEY_USERNAME, username);
+        claims.put(CLAIM_KEY_USERNAME, userKey);
         claims.put(CLAIM_KEY_CREATED, new Date());
-        Date expirationDate = generateExpirationDate();
-        String token = generate(claims, expirationDate);
-        return new Payload()
+        Date expirationDate = getExpirationDate();
+        String token = provide(claims, expirationDate);
+        return new SlardarToken()
                 .setTokenValue(token)
                 .setExpiresAt(DateTimeUtil.fromDate(expirationDate));
     }
@@ -100,7 +89,7 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
      * @return
      */
     @Override
-    public String getSubject(String tokenValue) {
+    public String geUserKey(String tokenValue) {
         String subject;
         try {
             Claims claims = getClaimsFromToken(tokenValue);
@@ -113,38 +102,19 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
     }
 
     /**
-     * validate token if expired or not
-     *
-     * @param tokenValue 令牌
-     * @return 是否有效
-     */
-    @Override
-    public Boolean isExpired(String tokenValue) {
-        try {
-            Claims claims = getClaimsFromToken(tokenValue);
-            Date expiration = claims.getExpiration();
-            return new Date().before(expiration);
-        } catch (Exception e) {
-            log.error("validate {} error: {}", tokenValue, e.getLocalizedMessage());
-            return false;
-        }
-    }
-
-    /**
      * 过期秒数
      *
      * @return
      */
     @Override
-    public long getExpiration() {
+    public long getTokenTTL() {
         return expiration;
     }
-
 
     /**
      * 生成token
      */
-    private String generate(Map<String, Object> claims, Date expiration) {
+    private String provide(Map<String, Object> claims, Date expiration) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
@@ -157,7 +127,7 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
     /**
      * 生成token的过期时间
      */
-    private Date generateExpirationDate() {
+    private Date getExpirationDate() {
         return new Date(System.currentTimeMillis() + expiration * 1000);
     }
 
@@ -167,6 +137,23 @@ public class SlardarTokenProviderJwtImpl implements SlardarTokenProvider {
     private Date getExpiredDataFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         return claims.getExpiration();
+    }
+
+    /**
+     * validate token if expired or not
+     *
+     * @param tokenValue 令牌
+     * @return 是否有效
+     */
+    private Boolean isExpired(String tokenValue) {
+        try {
+            Claims claims = getClaimsFromToken(tokenValue);
+            Date expiration = claims.getExpiration();
+            return new Date().before(expiration);
+        } catch (Exception e) {
+            log.error("validate {} error: {}", tokenValue, e.getLocalizedMessage());
+            return false;
+        }
     }
 
     /**

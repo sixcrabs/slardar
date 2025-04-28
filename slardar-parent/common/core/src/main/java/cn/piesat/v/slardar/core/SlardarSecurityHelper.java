@@ -22,7 +22,7 @@ import java.util.Objects;
  */
 public final class SlardarSecurityHelper {
 
-    public static final Logger log = LoggerFactory.getLogger(SlardarSecurityHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(SlardarSecurityHelper.class);
 
     private static final ThreadLocal<SecurityContext> CONTEXT_HOLDER = new InheritableThreadLocal<>();
 

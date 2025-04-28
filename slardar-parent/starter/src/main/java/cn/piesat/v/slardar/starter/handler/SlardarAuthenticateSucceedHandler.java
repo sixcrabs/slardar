@@ -102,7 +102,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         SlardarAuthentication authenticationToken = (SlardarAuthentication) authentication;
         SlardarUserDetails userDetails = authenticationToken.getUserDetails();
         //获取token,将token存储到redis中
-        SlardarTokenProvider.Payload tokenPayload = authenticateService.createToken(String.valueOf(authenticationToken.getPrincipal()),
+        SlardarTokenProvider.SlardarToken tokenSlardarToken = authenticateService.createToken(String.valueOf(authenticationToken.getPrincipal()),
                 isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());
         // 设置登录状态
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -116,14 +116,14 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         // store token value
-        authenticateService.setTokenValue(tokenPayload.getTokenValue(), request, response);
+        authenticateService.setTokenValueIntoServlet(tokenSlardarToken.getTokenValue(), request, response);
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         AccountInfoDTO accountInfoDTO = new AccountInfoDTO()
                 .setAccountName(account.getName())
                 .setAccountExpired(account.isExpired())
                 .setAccountLocked(account.isLocked())
-                .setToken(tokenPayload.getTokenValue())
-                .setTokenExpiresAt(tokenPayload.getExpiresAt())
+                .setToken(tokenSlardarToken.getTokenValue())
+                .setTokenExpiresAt(tokenSlardarToken.getExpiresAt())
                 .setAccountPwdValidRemainDays(account.getPwdValidRemainDays())
                 .setAuthorities(AuthorityUtils.authorityListToSet(authorities))
                 .setUserProfile(account.getUserProfile())
@@ -134,7 +134,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
             context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LoginEvent(getAccount(), true, getHeadersAsMap(request),
                     authenticationToken));
         } catch (SlardarException e) {
-            e.printStackTrace();
+            log.error(e.getLocalizedMessage());
         }
     }
 

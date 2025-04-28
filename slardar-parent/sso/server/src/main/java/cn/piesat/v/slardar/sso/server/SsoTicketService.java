@@ -1,11 +1,10 @@
 package cn.piesat.v.slardar.sso.server;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.piesat.v.skv.core.KvStore;
+import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
-
-import javax.annotation.Resource;
+import cn.piesat.v.slardar.starter.config.SlardarProperties;
 
 /**
  * <p>
@@ -19,17 +18,13 @@ import javax.annotation.Resource;
  */
 public class SsoTicketService {
 
-    @Resource
-    private SlardarKeyStore kvStore;
-
-    private final SsoServerProperties serverProperties;
+    private final SlardarKeyStore keyStore;
 
     private final SsoServerProperties.TicketSetting ticketSetting;
 
-
-    public SsoTicketService(SsoServerProperties serverProperties) {
-        this.serverProperties = serverProperties;
+    public SsoTicketService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties, SsoServerProperties serverProperties) {
         this.ticketSetting = serverProperties.getTicket();
+        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
     }
 
     /**
@@ -40,8 +35,7 @@ public class SsoTicketService {
     public String createTicket(String token) {
         String ticket = RandomUtil.randomString("ABCDEFGHIJKMNRST123456789",
                 ticketSetting.getLength() > 0 ? ticketSetting.getLength() : 12);
-        // set ttl
-        kvStore.setex(ticket, token, ticketSetting.getTtl().getSeconds());
+        keyStore.setex(ticket, token, ticketSetting.getTtl().getSeconds());
         return ticket;
     }
 
@@ -51,6 +45,6 @@ public class SsoTicketService {
      * @return
      */
     public String checkTicket(String ticketValue) {
-        return kvStore.get(ticketValue);
+        return keyStore.get(ticketValue);
     }
 }

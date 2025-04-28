@@ -3,13 +3,14 @@ package cn.piesat.v.slardar.starter.config;
 import cn.piesat.v.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import cn.piesat.v.slardar.starter.support.spi.EmailOtpDispatcher;
 import cn.piesat.v.slardar.starter.support.LoginConcurrentPolicy;
-import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenProviderJwtImpl;
+import cn.piesat.v.slardar.starter.support.spi.token.SlardarTokenJwtProvider;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -36,11 +37,6 @@ public class SlardarProperties implements Serializable {
     private BasicAuthSetting basic = new BasicAuthSetting();
 
     /**
-     * api 签名验签 设置
-     */
-    private ApiSignatureSetting signature = new ApiSignatureSetting();
-
-    /**
      * token 类型设置
      */
     private TokenSetting token = new TokenSetting();
@@ -65,6 +61,24 @@ public class SlardarProperties implements Serializable {
      */
     private String[] ignores = new String[]{"/login", "/captcha"};
 
+    /**
+     * api 签名验签 设置
+     */
+    private ApiSignatureSetting signature = new ApiSignatureSetting();
+
+    /**
+     * token等键值存储配置，默认采用 内存
+     */
+    private KeyStoreProperties keyStore = new KeyStoreProperties();
+
+
+    public KeyStoreProperties getKeyStore() {
+        return keyStore;
+    }
+
+    public void setKeyStore(KeyStoreProperties keyStore) {
+        this.keyStore = keyStore;
+    }
 
     public BasicAuthSetting getBasic() {
         return basic;
@@ -127,6 +141,53 @@ public class SlardarProperties implements Serializable {
     public SlardarProperties setIgnores(String[] ignores) {
         this.ignores = ignores;
         return this;
+    }
+
+    public static class KeyStoreProperties {
+
+        /**
+         * memory
+         * mapdb
+         * redis
+         */
+        private String type = "memory";
+
+        /**
+         * 设置 redis 连接uri / mapdb 指定db文件路径
+         */
+        private String uri;
+
+        /**
+         * 其他一些自定义设置
+         */
+        private Map<String, Object> setting = Collections.emptyMap();
+
+        public String getType() {
+            return type;
+        }
+
+        public KeyStoreProperties setType(String type) {
+            this.type = type;
+            return this;
+        }
+
+        public String getUri() {
+            return uri;
+        }
+
+        public KeyStoreProperties setUri(String uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public Map<String, Object> getSetting() {
+            return setting;
+        }
+
+        public KeyStoreProperties setSetting(Map<String, Object> setting) {
+            this.setting = setting;
+            return this;
+        }
     }
 
     /**
@@ -314,7 +375,6 @@ public class SlardarProperties implements Serializable {
 
         /**
          * 登录失败返回 http status 值 默认500（失败优先）
-         *
          */
         private int loginFailedHttpStatus = 500;
 
@@ -679,7 +739,7 @@ public class SlardarProperties implements Serializable {
      */
     public static class TokenSetting {
 
-        private String type = SlardarTokenProviderJwtImpl.NAME;
+        private String type = SlardarTokenJwtProvider.NAME;
 
         /**
          * 设置 token name，默认 Authorization
@@ -687,14 +747,20 @@ public class SlardarProperties implements Serializable {
         private String key = AUTH_TOKEN_KEY;
 
         /**
-         * jwt 参数
-         */
-        private JwtSetting jwt = new JwtSetting();
-
-        /**
          * token key 分隔符 默认 _
          */
         private String separator = "_";
+
+        /**
+         * in seconds
+         * 有效期(单位秒) 默认一天
+         */
+        private Long ttl = 24 * 60 * 60L;
+
+        /**
+         * jwt 参数
+         */
+        private JwtSetting jwt = new JwtSetting();
 
 
         public String getSeparator() {
@@ -732,6 +798,14 @@ public class SlardarProperties implements Serializable {
             this.jwt = jwt;
             return this;
         }
+
+        public Long getTtl() {
+            return ttl;
+        }
+
+        public void setTtl(Long ttl) {
+            this.ttl = ttl;
+        }
     }
 
     /**
@@ -742,13 +816,7 @@ public class SlardarProperties implements Serializable {
         /**
          * jwt 签名 key
          */
-        private String signKey = "piesat_nj_nync";
-
-        /**
-         * in seconds
-         * 默认有效期 一天
-         */
-        private Long expiration = 24 * 60 * 60L;
+        private String signKey = "slardar_security";
 
         /**
          * 允许的时间差 秒数 默认 60
@@ -770,15 +838,6 @@ public class SlardarProperties implements Serializable {
 
         public JwtSetting setSignKey(String signKey) {
             this.signKey = signKey;
-            return this;
-        }
-
-        public Long getExpiration() {
-            return expiration;
-        }
-
-        public JwtSetting setExpiration(Long expiration) {
-            this.expiration = expiration;
             return this;
         }
     }

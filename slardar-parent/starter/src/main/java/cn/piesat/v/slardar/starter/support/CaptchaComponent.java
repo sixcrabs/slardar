@@ -1,10 +1,12 @@
 package cn.piesat.v.slardar.starter.support;
 
+import cn.piesat.v.slardar.spi.SlardarKeyStore;
+import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.captcha.generator.RandomGenerator;
 import cn.piesat.v.slardar.starter.support.captcha.impl.LineCaptcha;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
-import cn.piesat.v.skv.core.KvStore;
+//import cn.piesat.v.skv.core.KvStore;
 import cn.piesat.v.slardar.starter.support.captcha.support.CaptchaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ import java.io.Serializable;
 @Component
 public class CaptchaComponent {
 
-    private final KvStore store;
+    private final SlardarKeyStore keyStore;
 
     private final SlardarProperties.CaptchaSetting settings;
 
@@ -33,8 +35,8 @@ public class CaptchaComponent {
 
     public static final Logger log = LoggerFactory.getLogger(CaptchaComponent.class);
 
-    public CaptchaComponent(KvStore store, SlardarProperties slardarProperties) {
-        this.store = store;
+    public CaptchaComponent(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
+        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
         this.settings = slardarProperties.getCaptcha();
     }
 
@@ -58,7 +60,7 @@ public class CaptchaComponent {
         CaptchaPayload payload = new CaptchaPayload();
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             lineCaptcha.write(baos);
-            boolean saved = store.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), code, settings.getExpiration());
+            boolean saved = keyStore.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), code, settings.getExpiration());
             if (saved) {
                 payload.setCode(code)
                         .setImgBytes(baos.toByteArray())
@@ -88,14 +90,14 @@ public class CaptchaComponent {
      * @return
      */
     public boolean verify(String sessionId, String code) {
-        String captchaCode = store.get(CAPTCHA_KEY_PREFIX.concat(sessionId));
+        String captchaCode = keyStore.get(CAPTCHA_KEY_PREFIX.concat(sessionId));
         if (StringUtil.isBlank(captchaCode)) {
             // 已过期或不存在
             return false;
         }
         boolean b = code.equalsIgnoreCase(captchaCode);
         // 立即过期
-        store.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), "", 1L);
+        keyStore.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), "", 1L);
         return b;
     }
 

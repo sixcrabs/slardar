@@ -33,9 +33,9 @@
 
         <!--key store start-->
         <dependency>
-            <groupId>org.lmdbjava</groupId>
-            <artifactId>lmdbjava</artifactId>
-            <version>0.9.1</version>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>3.0.10</version>
         </dependency>
 
         <dependency>
