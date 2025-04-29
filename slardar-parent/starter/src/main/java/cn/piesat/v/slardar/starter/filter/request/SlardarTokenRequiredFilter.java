@@ -114,14 +114,14 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = tokenService.getTokenValueFromServlet(request);
+        final String authToken = tokenService.getTokenValueFromServlet(request);
         SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken)) {
             LoginDeviceType deviceType = null;
             String username = null;
             try {
                 deviceType = getDeviceType(request);
-                username = tokenService.getUsername(authToken);
+                username = tokenService.getUsernameFromTokenValue(authToken);
             } catch (Exception e) {
                 tokenValidateEx = new SlardarException(e.getLocalizedMessage());
             }
@@ -140,10 +140,9 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                                     .setAuthenticated(true);
                         }
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        String finalAuthToken = authToken;
                         LoginDeviceType finalDeviceType = deviceType;
                         POOL.submit(() -> {
-                            tokenService.renewToken(finalAuthToken, finalDeviceType);
+                            tokenService.renewToken(authToken, finalDeviceType);
                         });
                     } else {
                         // 账户过期

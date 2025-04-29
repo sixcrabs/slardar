@@ -103,7 +103,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         SlardarUserDetails userDetails = authenticationToken.getUserDetails();
         //获取token,将token存储到redis中
         SlardarTokenProvider.SlardarToken tokenSlardarToken = authenticateService.createToken(String.valueOf(authenticationToken.getPrincipal()),
-                isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC, securityProperties.getLogin().getConcurrentPolicy());
+                isFromMobile(request) ? LoginDeviceType.APP : LoginDeviceType.PC);
         // 设置登录状态
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // set context holder

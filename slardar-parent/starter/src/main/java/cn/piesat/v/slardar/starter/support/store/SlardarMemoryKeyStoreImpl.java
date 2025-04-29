@@ -7,8 +7,10 @@ import com.google.auto.service.AutoService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -105,25 +107,14 @@ public class SlardarMemoryKeyStoreImpl extends AbstractKeyStoreImpl {
     }
 
     /**
-     * get all keys
+     * 返回类似的 key 集合
      *
+     * @param prefix 前缀 eg: `user_` 即返回所有以此开头的 key
      * @return
      */
-    @Deprecated
     @Override
-    public Collection<String> keys() throws SlardarException {
-        return Collections.emptyList();
-    }
-
-    /**
-     * 以map 方式输出所有的 kv
-     *
-     * @return
-     */
-    @Deprecated
-    @Override
-    public Map<String, Object> toMap() {
-        return Collections.emptyMap();
+    public List<String> keys(String prefix) {
+        return map.keySet().stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toList());
     }
 
     /**

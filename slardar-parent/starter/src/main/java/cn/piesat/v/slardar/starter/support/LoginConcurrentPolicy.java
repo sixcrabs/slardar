@@ -11,16 +11,12 @@ package cn.piesat.v.slardar.starter.support;
 public enum LoginConcurrentPolicy {
 
     /**
-     * 同端互斥 即相同账户只能在一个 同端页面中有效登录
+     * 同端互斥 即相同账户只能在一个同端页面中有效登录
      */
     mutex,
-    /**
-     * 不互斥，共享同一个 已有token
-     */
-    share,
 
     /**
-     * 不互斥，每次都生成一个 token
+     * 独立，不互斥，同一客户端 同个账户 每次都生成一个新的 token
      */
     separate
 

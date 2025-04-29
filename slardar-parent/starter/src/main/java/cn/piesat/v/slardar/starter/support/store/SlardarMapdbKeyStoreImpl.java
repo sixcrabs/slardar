@@ -1,13 +1,19 @@
 package cn.piesat.v.slardar.starter.support.store;
 
+import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
+import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import com.google.auto.service.AutoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * <p>
@@ -19,6 +25,8 @@ import java.util.Map;
  */
 @AutoService(SlardarKeyStore.class)
 public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
+
+    private static final Logger logger = LoggerFactory.getLogger(SlardarMapdbKeyStoreImpl.class);
 
     /**
      * set key
@@ -90,23 +98,14 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
     }
 
     /**
-     * get all keys
+     * 返回类似的 key 集合
      *
+     * @param prefix 前缀 eg: `user_` 即返回所有以此开头的 key
      * @return
      */
     @Override
-    public Collection<String> keys() throws SlardarException {
+    public List<String> keys(String prefix) {
         return Collections.emptyList();
-    }
-
-    /**
-     * 以map 方式输出所有的 kv
-     *
-     * @return
-     */
-    @Override
-    public Map<String, Object> toMap() {
-        return Collections.emptyMap();
     }
 
     /**
@@ -127,6 +126,15 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
     @Override
     public void initialize(SlardarSpiContext context) {
         // TODO 根据 keystore配置 设置 mapdb
+        SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
+        String type = properties.getKeyStore().getType();
+        if (type.equalsIgnoreCase("mapdb")) {
+            logger.info("[keystore] 初始化 mapdb ....");
+            Path path = StrUtil.isBlank(properties.getKeyStore().getUri()) ?
+                    Paths.get(System.getProperty("user.home"), "keystore.db") : Paths.get(properties.getKeyStore().getUri());
+            File dbFile = path.toFile();
+            logger.info("[keystore] use data file: {}", dbFile.getPath());
+        }
 
     }
 }

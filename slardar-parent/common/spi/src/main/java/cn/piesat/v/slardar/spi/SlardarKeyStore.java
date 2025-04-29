@@ -3,6 +3,7 @@ package cn.piesat.v.slardar.spi;
 import cn.piesat.v.slardar.core.SlardarException;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,6 +72,13 @@ public interface SlardarKeyStore extends SlardarSpi {
     void remove(String key);
 
     /**
+     * 返回类似的 key 集合
+     * @param prefix 前缀 eg: `user_` 即返回所有以此开头的 key
+     * @return
+     */
+    List<String> keys(String prefix);
+
+    /**
      * add listener
      *
      * @param key      data key
@@ -78,7 +86,6 @@ public interface SlardarKeyStore extends SlardarSpi {
      * @throws SlardarException
      */
     void addListener(String key, KeyEventListener listener) throws SlardarException;
-
 
     /**
      * 当前key 的ttl时间 单位秒
@@ -89,22 +96,6 @@ public interface SlardarKeyStore extends SlardarSpi {
     default long ttl(String key) {
         return -1L;
     }
-    /**
-     * get all keys
-     *
-     * @return
-     */
-    @Deprecated
-    Collection<String> keys() throws SlardarException;
-
-    /**
-     * 以map 方式输出所有的 kv
-     *
-     * @return
-     */
-    @Deprecated
-    Map<String, Object> toMap();
-
 
     String EXPIRED = "expired";
     String REMOVED = "removed";

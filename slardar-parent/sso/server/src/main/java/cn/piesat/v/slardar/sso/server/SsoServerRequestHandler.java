@@ -150,7 +150,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
         } else {
             try {
                 // get user details
-                String username = tokenService.getUsername(tokenValue);
+                String username = tokenService.getUsernameFromTokenValue(tokenValue);
                 SlardarUserDetails details = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
                 Collection<SlardarSsoUserDetailsHandler> ssoUserDetailsHandlers = context.getBeans(SlardarSsoUserDetailsHandler.class);
                 if (!ssoUserDetailsHandlers.isEmpty()) {

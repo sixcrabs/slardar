@@ -389,8 +389,9 @@ public class SlardarProperties implements Serializable {
         private EncryptSetting encrypt = new EncryptSetting();
 
         /**
-         * 是否同端互斥，默认不互斥，即 两个pc登录返回的token都可用
-         * 互斥：另一个PC登录时 前一个token 会失效（登出）
+         * 是否同端互斥，默认不互斥
+         * 不互斥： 即 同一类型客户端同一个用户 两次登录返回的token都可用
+         * 互斥：同一类型同一个用户进行另一次登录时， 前一个token 会失效（登出）
          */
         private LoginConcurrentPolicy concurrentPolicy = LoginConcurrentPolicy.separate;
 
