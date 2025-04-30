@@ -7,6 +7,10 @@ import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import com.google.auto.service.AutoService;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,6 +122,8 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
         return "mapdb";
     }
 
+    private DB db;
+
     /**
      * set context
      *
@@ -134,6 +140,24 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
                     Paths.get(System.getProperty("user.home"), "keystore.db") : Paths.get(properties.getKeyStore().getUri());
             File dbFile = path.toFile();
             logger.info("[keystore] use data file: {}", dbFile.getPath());
+            // 初始化 DB 对象
+            db = DBMaker.fileDB(dbFile)
+                    .checksumHeaderBypass()
+                    .fileMmapEnableIfSupported()
+                    .closeOnJvmShutdown()
+                    .closeOnJvmShutdownWeakReference()
+                    .allocateStartSize(1024 * 1024L)
+                    .concurrencyScale(128)
+                    .fileLockDisable()
+                    .make();
+
+            String mapName = "slardar_key_map";
+            // Open or create a HTreeMap (a persistent map implementation)
+            HTreeMap<String, String> dataMap = db
+                    .hashMap(mapName)
+                    .keySerializer(Serializer.STRING)
+                    .valueSerializer(Serializer.STRING)
+                    .createOrOpen();
         }
 
     }
