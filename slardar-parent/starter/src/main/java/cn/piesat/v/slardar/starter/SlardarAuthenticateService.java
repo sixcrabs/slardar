@@ -182,16 +182,14 @@ public class SlardarAuthenticateService {
      * @param deviceType
      * @return
      */
-    public boolean renewToken(String tokenValue, LoginDeviceType deviceType) {
+    public void renewToken(String tokenValue, LoginDeviceType deviceType) {
         String username = getUserKeyFromTokenValue(tokenValue);
         String key = generateTokenKey(username, deviceType);
         String existedToken = keyStore.get(key);
         if (!StringUtils.hasText(existedToken)) {
             log.error("token 续期失败, key 为 [{}] 的token 不存在", key);
-            return false;
         }
         keyStore.setex(key, existedToken, getTokenImpl().getTokenTTL());
-        return true;
     }
 
 

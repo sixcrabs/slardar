@@ -1,10 +1,12 @@
-package cn.piesat.v.slardar.starter.authenticate.handler;
+package cn.piesat.v.slardar.starter.authenticate.handler.impl;
 
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.Constants;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.v.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
+import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.v.slardar.starter.support.RequestWrapper;
 import cn.piesat.v.slardar.starter.support.SlardarAuthenticationException;
 import com.google.auto.service.AutoService;
@@ -32,7 +34,7 @@ public class OpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthent
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return NAME;
     }
 

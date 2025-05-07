@@ -1,5 +1,6 @@
 package cn.piesat.v.slardar.starter.authenticate.handler;
 
+import cn.piesat.v.slardar.spi.SlardarSpi;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.v.slardar.starter.support.RequestWrapper;
@@ -14,19 +15,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
  * @author Alex
  * @version v1.0 2023/8/23
  */
-public interface SlardarAuthenticateHandler {
-
-    /**
-     * 注入 context
-     * @param context
-     */
-    void setSlardarContext(SlardarSpiContext context);
-
-    /**
-     * 认证处理类型 用于区分
-     * @return
-     */
-    String type();
+public interface SlardarAuthenticateHandler extends SlardarSpi {
 
     /**
      * 处理认证请求

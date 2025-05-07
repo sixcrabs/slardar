@@ -1,14 +1,17 @@
-package cn.piesat.v.slardar.starter.authenticate.handler;
+package cn.piesat.v.slardar.starter.authenticate.handler.impl;
 
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.Constants;
 import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
 import cn.piesat.v.slardar.starter.SlardarUserDetailsServiceImpl;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
+import cn.piesat.v.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
+import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.v.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
 import cn.piesat.v.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
@@ -19,8 +22,6 @@ import cn.piesat.v.timer.TimerManager;
 import cn.piesat.v.timer.job.TimerJobs;
 import com.google.auto.service.AutoService;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.sync.RedisCommands;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -55,11 +56,9 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
 
     private static final Map<String, Integer> FAILED_ATTEMPTS_REPO = new WeakHashMap<>(1);
 
-    private RedisClient redisClient;
+    private SlardarKeyStore keyStore;
 
     private Integer maxAttempts = 5;
-
-    private RedisCommands<String, String> stringCommands;
 
     private static final ExecutorService FAILED_POOL = new ThreadPoolExecutor(16, 64,
             10L, TimeUnit.SECONDS,
@@ -74,10 +73,10 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
      * @param context
      */
     @Override
-    public void setSlardarContext(SlardarSpiContext context) {
-        super.setSlardarContext(context);
-        redisClient = context.getBean(RedisClient.class);
-        stringCommands = redisClient.connect().sync();
+    public void initialize(SlardarSpiContext context) {
+        super.initialize(context);
+        SlardarSpiFactory spiFactory = context.getBean(SlardarSpiFactory.class);
+        keyStore = spiFactory.findKeyStore(getProperties().getKeyStore().getType());
         maxAttempts = getProperties().getLogin().getMaxAttemptsBeforeLocked();
         // 定时器
         TimerManager timerManager = new TimerManager();
@@ -87,12 +86,20 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
     }
 
     /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+        FAILED_POOL.shutdown();
+    }
+
+    /**
      * 认证处理类型 用于区分
      *
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return NAME;
     }
 
@@ -144,7 +151,8 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
         // 用户密码方式认证
         String accountName = authentication.getAccountName();
         if (maxAttempts != null && maxAttempts > 0L) {
-            if (stringCommands.exists(LOCKED_KEY.concat(accountName)) > 0L) {
+            Integer lockedTimes = keyStore.get(LOCKED_KEY.concat(accountName));
+            if (lockedTimes != null && lockedTimes > 0L) {
                 throw new SlardarAuthenticationException("Your account has been locked due to login failed too many times", accountName);
             }
         }
@@ -228,8 +236,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
             Integer failedTimes = FAILED_ATTEMPTS_REPO.get(username);
             if (failedTimes.equals(maxAttempts)) {
                 // 触发锁定
-                stringCommands.setex(LOCKED_KEY.concat(username),
-                        getProperties().getLogin().getFailedLockDuration().getSeconds(), failedTimes.toString());
+                keyStore.setex(LOCKED_KEY.concat(username), failedTimes, getProperties().getLogin().getFailedLockDuration().getSeconds());
                 FAILED_ATTEMPTS_REPO.remove(username);
             }
         }

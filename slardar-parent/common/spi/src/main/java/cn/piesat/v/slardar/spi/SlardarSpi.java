@@ -21,4 +21,9 @@ public interface SlardarSpi {
      * @param context
      */
     void initialize(SlardarSpiContext context);
+
+    /**
+     * do destroy
+     */
+    default void destroy() {}
 }

@@ -80,7 +80,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
                             .dispatch(new LoginEvent(
                                     new SlardarAuthentication(accountName, Constants.AUTH_TYPE_NORMAL, null)
                                             .setLoginDeviceType(getDeviceType(request))
-                                            .setReqClientIp(geRequestIpAddress(request)), getHeadersAsMap(request), e));
+                                            .setReqClientIp(getRequestIpAddress(request)), getHeadersAsMap(request), e));
                 } catch (SlardarException ex) {
                     log.error(ex.getLocalizedMessage());
                 }

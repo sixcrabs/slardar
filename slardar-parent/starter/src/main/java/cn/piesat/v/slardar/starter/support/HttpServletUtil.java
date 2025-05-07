@@ -3,6 +3,7 @@ package cn.piesat.v.slardar.starter.support;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.piesat.v.slardar.core.SlardarException;
+import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,11 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static cn.piesat.v.slardar.core.Constants.MOBILE_AGENTS;
 import static cn.piesat.v.slardar.starter.support.SecUtil.GSON;
+import static cn.piesat.v.slardar.starter.support.SecUtil.objectMapper;
 
 
 /**
@@ -180,7 +179,6 @@ public final class HttpServletUtil {
         return flag;
     }
 
-
     /**
      * get all param as map
      *
@@ -277,6 +275,23 @@ public final class HttpServletUtil {
         return res;
     }
 
+    public static Map<String, String> getRequestParamWithPostStr(final HttpServletRequest request) throws IOException {
+        Map<String, String> map = getRequestParam(request);
+        if (!map.isEmpty()) {
+            return map;
+        }
+        String body = getRequestPostStr(request);
+        if (StrUtil.isBlank(body)) {
+            return Collections.emptyMap();
+        }
+        try {
+            return GSON.fromJson(body, Map.class);
+        } catch (JsonSyntaxException e) {
+            throw new RuntimeException("Invalid JSON format in login request");
+        }
+
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, String> getHeaders(final HttpServletRequest request) {
         Map<String, String> res = new HashMap<>(1);
@@ -304,7 +319,9 @@ public final class HttpServletUtil {
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         try {
-            response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
+            objectMapper.writeValue(response.getWriter(), result);
+            // FIXME: 序列化 时间格式问题
+//            response.getWriter().write((result instanceof String) ? result.toString() : GSON.toJson(result));
             response.getWriter().flush();
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
@@ -371,7 +388,7 @@ public final class HttpServletUtil {
      * @param request
      * @return
      */
-    public static String geRequestIpAddress(HttpServletRequest request) {
+    public static String getRequestIpAddress(HttpServletRequest request) {
         String ipAddress = null;
         try {
             ipAddress = request.getHeader("X-Forwarded-For");

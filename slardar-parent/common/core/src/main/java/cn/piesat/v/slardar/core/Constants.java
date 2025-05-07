@@ -70,4 +70,7 @@ public final class Constants {
      * 定义移动端请求的所有可能类型
      */
     public final static String[] MOBILE_AGENTS = {"Android", "iPhone", "iPod", "iPad", "Windows Phone", "MQQBrowser"};
+
+    public static final String TOKEN_REQUIRED = "token is required";
+    public static final String TOKEN_EXPIRED = "token has been expired";
 }

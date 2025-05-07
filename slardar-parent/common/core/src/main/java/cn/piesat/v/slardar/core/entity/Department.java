@@ -2,6 +2,7 @@ package cn.piesat.v.slardar.core.entity;
 
 import cn.piesat.v.slardar.core.entity.core.BaseTreeLikeEntity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * @author Alex
  * @version v1.0 2022/12/12
  */
-public class Department extends BaseTreeLikeEntity<Department> {
+public class Department extends BaseTreeLikeEntity<Department> implements Cloneable {
 
 
     /**
@@ -104,5 +105,26 @@ public class Department extends BaseTreeLikeEntity<Department> {
     @Override
     public int hashCode() {
         return Objects.hash(name, description);
+    }
+
+    @Override
+    public Department clone() {
+        try {
+            Department clone = (Department) super.clone();
+            clone.setAlias(this.alias)
+                    .setDescription(this.description)
+                    .setName(this.name)
+                    .setSearchKey(this.getSearchKey())
+                    .setParentId(this.getParentId())
+                    .setId(this.getId())
+                    .setDeleted(this.isDeleted() ? 1 : 0);
+            clone.setRealm(this.getRealm());
+            if (this.attributes != null) {
+                clone.setAttributes(new HashMap<>(this.attributes));
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

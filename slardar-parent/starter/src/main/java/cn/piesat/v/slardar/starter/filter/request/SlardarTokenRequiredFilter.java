@@ -20,6 +20,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,6 +36,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import static cn.piesat.v.slardar.core.Constants.TOKEN_EXPIRED;
+import static cn.piesat.v.slardar.core.Constants.TOKEN_REQUIRED;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
 /**
@@ -125,42 +128,47 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 tokenValidateEx = new SlardarException(e.getLocalizedMessage());
             }
-            if (Objects.isNull(tokenValidateEx) && !tokenService.isExpired(authToken, deviceType)) {
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // 加载详细信息
-                    SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
-                    if (userDetails.isEnabled()) {
-                        SlardarAuthentication authenticationToken = new SlardarAuthentication(username, "", userDetails);
-                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        authenticationToken.setAuthenticated(true);
-                        if (userDetails.getAccount() != null) {
-                            SlardarSecurityHelper.getContext()
-                                    .setAccount(userDetails.getAccount())
-                                    .setUserProfile(userDetails.getAccount().getUserProfile())
-                                    .setAuthenticated(true);
-                        }
-                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                        LoginDeviceType finalDeviceType = deviceType;
-                        POOL.submit(() -> {
-                            tokenService.renewToken(authToken, finalDeviceType);
-                        });
-                    } else {
-                        // 账户过期
-                        tokenValidateEx = new SlardarException("account has been expired or forbidden");
+            if (tokenService.isExpired(authToken, deviceType)) {
+                tokenValidateEx = new SlardarException(TOKEN_EXPIRED);
+            }
+            if (Objects.isNull(tokenValidateEx) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
+                // 加载详细信息
+                SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
+                if (userDetails.isEnabled()) {
+                    SlardarAuthentication authenticationToken = new SlardarAuthentication(username, "", userDetails);
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    authenticationToken.setAuthenticated(true);
+                    if (userDetails.getAccount() != null) {
+                        SlardarSecurityHelper.getContext()
+                                .setAccount(userDetails.getAccount())
+                                .setUserProfile(userDetails.getAccount().getUserProfile())
+                                .setAuthenticated(true);
                     }
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    LoginDeviceType finalDeviceType = deviceType;
+                    POOL.submit(() -> {
+                        try {
+                            tokenService.renewToken(authToken, finalDeviceType);
+                        } catch (Exception e) {
+                            log.error("Failed to renew token asynchronously", e);
+                        }
+                    });
+                } else {
+                    // 账户过期
+                    tokenValidateEx = new SlardarException("account has been expired or forbidden");
                 }
-            } else {
-                tokenValidateEx = new SlardarException("token is not valid");
             }
         } else {
-            tokenValidateEx = new SlardarException("token is required");
+            tokenValidateEx = new SlardarException(TOKEN_REQUIRED);
         }
         if (tokenValidateEx != null) {
+            log.error("Failed to parse token or user disabled. token:  {}, error: {}", authToken, tokenValidateEx.getLocalizedMessage());
             forwardRequest(request, response, tokenValidateEx, "remoteLoginException", "/remoteLoginException");
         } else {
             try {
                 filterChain.doFilter(request, response);
             } finally {
+                // 避免 threadLocal 内存溢出
                 SlardarSecurityHelper.clear();
                 SecurityContextHolder.clearContext();
             }
@@ -181,7 +189,10 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
     private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
         request.setAttribute(param, e);
         sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
-//        response.getWriter().println(GSON.toJson(ImmutableMap.of("code", HttpStatus.UNAUTHORIZED.value(), "message", e.getLocalizedMessage())));
-//        request.getRequestDispatcher(url).forward(request, response);
+    }
+
+    @PreDestroy
+    public void shutdownPool() {
+        POOL.shutdown();
     }
 }

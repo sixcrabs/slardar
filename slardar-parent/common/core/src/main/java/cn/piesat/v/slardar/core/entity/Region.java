@@ -2,6 +2,7 @@ package cn.piesat.v.slardar.core.entity;
 
 import cn.piesat.v.slardar.core.entity.core.BaseTreeLikeEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author Alex
  * @version v1.0 2022/12/12
  */
-public class Region extends BaseTreeLikeEntity<Region> {
+public class Region extends BaseTreeLikeEntity<Region> implements Cloneable {
 
     /**
      * 行政区名称
@@ -54,5 +55,19 @@ public class Region extends BaseTreeLikeEntity<Region> {
     public Region setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
         return this;
+    }
+
+    @Override
+    public Region clone() {
+        try {
+            Region clone = (Region) super.clone();
+            clone.setName(this.name).setCode(this.code);
+            if (this.attributes!=null) {
+                clone.setAttributes(new HashMap<>(this.attributes));
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

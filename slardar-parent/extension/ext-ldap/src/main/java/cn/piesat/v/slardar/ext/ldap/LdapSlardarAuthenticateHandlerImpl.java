@@ -40,8 +40,16 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return NAME;
+    }
+
+    /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+
     }
 
     /**

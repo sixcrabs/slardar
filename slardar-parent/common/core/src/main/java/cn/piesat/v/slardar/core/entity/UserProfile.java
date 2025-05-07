@@ -2,8 +2,7 @@ package cn.piesat.v.slardar.core.entity;
 
 import cn.piesat.v.slardar.core.entity.core.BaseRealmEntity;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -13,7 +12,7 @@ import java.util.Map;
  * @author Alex
  * @version v1.0 2022/12/12
  */
-public class UserProfile extends BaseRealmEntity<String> {
+public class UserProfile extends BaseRealmEntity<String> implements Cloneable {
 
 
     /**
@@ -169,5 +168,39 @@ public class UserProfile extends BaseRealmEntity<String> {
     public UserProfile setDepartment(Department department) {
         this.department = department;
         return this;
+    }
+
+    @Override
+    public UserProfile clone() {
+        try {
+            UserProfile clone = (UserProfile) super.clone();
+            clone.setAddress(this.address)
+                    .setAvatar(this.avatar)
+                    .setDepartmentId(this.departmentId)
+                    .setEmail(this.email)
+                    .setName(this.name)
+                    .setTelephone(this.telephone)
+                    .setRealm(this.getRealm())
+                    .setId(this.getId())
+                    .setDeleted(this.isDeleted() ? 1 : 0);
+            if (this.attributes != null) {
+                clone.setAttributes(new HashMap<>(this.attributes));
+            }
+            if (this.authorities != null) {
+                clone.setAuthorities(new ArrayList<>(this.authorities));
+            }
+            if (this.roles != null) {
+                clone.setRoles(new ArrayList<>(this.roles));
+            }
+            if (this.region != null) {
+                clone.setRegion(this.region.clone());
+            }
+            if (this.department != null) {
+                clone.setDepartment(this.department.clone());
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

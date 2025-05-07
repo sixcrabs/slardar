@@ -1,6 +1,5 @@
 package cn.piesat.v.slardar.starter.filter;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
@@ -8,9 +7,6 @@ import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.HttpServletUtil;
 import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.v.slardar.starter.support.RequestWrapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -26,10 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
 import static cn.piesat.v.slardar.core.Constants.HEADER_KEYS_OF_AUTH_TYPE;
-import static cn.piesat.v.slardar.core.Constants.HEADER_KEY_OF_AUTH_TYPE;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
 /**
@@ -46,9 +40,7 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private final SlardarAuthenticateHandlerFactory authenticateHandlerFactory;
 
-    private boolean postOnly;
-
-    private static final Gson GSON = new GsonBuilder().create();
+    private final boolean postOnly;
 
     private static final Logger logger = LoggerFactory.getLogger(SlardarLoginFilter.class);
 
@@ -64,7 +56,6 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
         setAuthenticationFailureHandler(authenticationFailureHandler);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException {
         if (authenticateHandlerFactory != null) {
@@ -72,12 +63,9 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
                 throw new AuthenticationServiceException("Authentication method [" + request.getMethod() + "] not supported. ");
             }
             try {
-                Map<String, String> requestParam = getRequestParam(request);
-                if (requestParam.isEmpty()) {
-                    requestParam = GSON.fromJson(getRequestPostStr(request), Map.class);
-                }
-                if (Objects.isNull(requestParam)) {
-                    throw new AuthenticationServiceException("Login params cannot be null");
+                Map<String, String> requestParams = getRequestParamWithPostStr(request);
+                if (requestParams.isEmpty()) {
+                    throw new AuthenticationServiceException("Login params cannot be empty");
                 }
                 Map<String, String> requestHeaders = getHeaders(request);
                 // 1. 找出匹配的认证处理器 根据请求头参数： X-Auth-Type
@@ -86,25 +74,23 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
                 String authType = getAuthType(request);
                 SlardarAuthenticateHandler authenticateHandler = authenticateHandlerFactory.findAuthenticateHandler(authType);
                 if (authenticateHandler == null) {
+                    logger.warn("No handler found for auth type: {}", authType);
                     throw new AuthenticationServiceException("Unsupported authentication type: " + authType);
                 }
                 SlardarAuthentication authenticationToken = authenticateHandler.handleRequest(new RequestWrapper()
-                        .setRequestParams(requestParam)
+                        .setRequestParams(requestParams)
                         .setLoginDeviceType(getDeviceType(request))
                         .setSessionId(getSessionId(request))
                         .setRequestHeaders(requestHeaders));
-                authenticationToken.setReqClientIp(HttpServletUtil.geRequestIpAddress(request));
+                authenticationToken.setReqClientIp(HttpServletUtil.getRequestIpAddress(request));
                 // 调用特定的认证逻辑
                 return authenticateHandler.doAuthenticate(authenticationToken);
             } catch (AuthenticationServiceException e) {
                 throw e;
-            } catch (SlardarException e) {
+            } catch (SlardarException | IOException e) {
                 logger.error("Authentication failed: {}", e.getMessage());
                 throw new AuthenticationServiceException(e.getLocalizedMessage());
-            } catch (JsonSyntaxException e) {
-                throw new AuthenticationServiceException("Invalid JSON format in login request");
             }
-
         } else {
             throw new AuthenticationServiceException("must implements interface `AuthenticationHandler`");
         }

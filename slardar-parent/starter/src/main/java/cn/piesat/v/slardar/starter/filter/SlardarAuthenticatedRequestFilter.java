@@ -10,6 +10,7 @@ import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.SecUtil;
 import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
 import com.google.common.collect.Lists;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,6 @@ import java.util.List;
 import static cn.piesat.v.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.v.slardar.core.Constants.AUTH_USER_DETAILS_URL;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
-import static cn.piesat.v.slardar.starter.support.SecUtil.objectMapper;
 
 /**
  * <p>
@@ -71,25 +71,33 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
         } else {
             String uri = request.getRequestURI();
             if (uri.equalsIgnoreCase(AUTH_USER_DETAILS_URL)) {
-                SlardarUserDetails userDetails = (SlardarUserDetails) SecUtil.getUserDetails();
-                Account account = userDetails.getAccount();
-                if (account != null) {
-                    account.setPassword("");
-                }
-                response.setStatus(HttpStatus.OK.value());
-                response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                objectMapper.writeValue(response.getWriter(), userDetails);
-                response.getWriter().flush();
+                handleUserDetails(request, response);
             } else if (uri.equals(AUTH_LOGOUT_URL)) {
                 handleLogout(request, response);
             }
         }
     }
 
+    /**
+     * 处理获取用户详情请求
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    private void handleUserDetails(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        SlardarUserDetails userDetails = (SlardarUserDetails) SecUtil.getUserDetails();
+        Account account = userDetails.getAccount();
+        Account cloned = new Account();
+        if (account != null) {
+            cloned = account.clone();
+            cloned.setPassword("");
+        }
+        sendJsonOk(response, makeSuccessResult(new SlardarUserDetails(cloned)));
+    }
+
 
     /**
-     * TODO:
      * 处理登出请求
      *
      * @param request

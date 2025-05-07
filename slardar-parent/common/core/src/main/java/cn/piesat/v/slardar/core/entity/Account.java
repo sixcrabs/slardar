@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author alex
  * @version v1.0 2023/3/9
  */
-public class Account extends BaseRealmEntity<String> {
+public class Account extends BaseRealmEntity<String> implements Cloneable {
 
 
     /**
@@ -133,5 +133,25 @@ public class Account extends BaseRealmEntity<String> {
     public Account setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
         return this;
+    }
+
+    @Override
+    public Account clone() {
+        try {
+            Account clone = (Account) super.clone();
+            clone.setName(this.name)
+                    .setPassword(this.password)
+                    .setStatus(this.status)
+                    .setExpireAt(this.expireAt)
+                    .setOpenId(this.openId)
+                    .setPwdValidRemainDays(this.pwdValidRemainDays)
+                    .setUserProfile(this.userProfile.clone());
+            clone.setId(this.getId());
+            clone.setDeleted(this.isDeleted() ? 1 : 0);
+            clone.setRealm(this.getRealm());
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

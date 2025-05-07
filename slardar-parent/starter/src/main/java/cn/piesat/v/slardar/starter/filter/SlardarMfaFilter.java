@@ -24,7 +24,7 @@ import static cn.piesat.v.slardar.starter.support.SecUtil.GSON;
 
 /**
  * <p>
- * .
+ * MFA 认证过滤器
  * </p>
  *
  * @author Alex
@@ -60,9 +60,7 @@ public class SlardarMfaFilter extends AbstractAuthenticationProcessingFilter {
         String code = requestParam.get("code");
         try {
             boolean b = mfaAuthService.verify(key, code);
-            // 失败如何处理
             if (!b) {
-//                sendJson(response, makeErrorResult("MFA 认证失败，口令可能已过期或不存在", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
                 throw new AuthenticationServiceException("MFA 认证失败，口令可能已过期或不存在");
             }
             // 设置已认证

@@ -6,11 +6,13 @@ import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.core.entity.AuditLog;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.support.HttpServletUtil;
+import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.getDeviceType;
 
@@ -38,11 +40,13 @@ public class LogoutEventListener implements SlardarEventListener<LogoutEvent> {
             LogoutEvent.Payload payload = event.payload();
             AuditLog auditLog = new AuditLog();
             HttpServletRequest request = payload.getRequest();
+            LoginDeviceType deviceType = getDeviceType(request);
+            String requestIpAddress = HttpServletUtil.getRequestIpAddress(request);
             auditLog.setAccountName(payload.getAccount().getName())
                     .setLogType("logout")
                     .setLogTime(LocalDateTime.now())
-                    .setClientType(getDeviceType(request).name());
-            auditLog.setClientIp(HttpServletUtil.geRequestIpAddress(request));
+                    .setClientType(Objects.isNull(deviceType) ? "unknown" : deviceType.name());
+            auditLog.setClientIp(requestIpAddress);
             auditLogIngest.ingest(auditLog);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -22,7 +22,7 @@ import static cn.piesat.v.slardar.starter.support.HttpServletUtil.getSessionId;
 
 /**
  * <p>
- * 返回验证码
+ * 返回验证码图片
  * </p>
  *
  * @author Alex
@@ -35,7 +35,8 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     @Autowired
     private CaptchaComponent captchaComponent;
 
-    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10); // 每秒10次
+    // 每秒10次
+    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
 
     public SlardarCaptchaFilter() {
         this.requestMatcher = new AntPathRequestMatcher("/captcha", HttpMethod.GET.name());

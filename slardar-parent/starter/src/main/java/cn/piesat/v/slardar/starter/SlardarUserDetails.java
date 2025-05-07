@@ -45,14 +45,14 @@ public class SlardarUserDetails implements UserDetails {
         UserProfile userProfile = account.getUserProfile();
         // 添加所有的role(自动添加 'ROLE_') 和 自定义的所有的 authority
         List<Role> roles = userProfile.getRoles();
-        if (roles != null && roles.size() > 0) {
+        if (roles != null && !roles.isEmpty()) {
             roles.forEach(role -> authorities.add((GrantedAuthority) () -> ROLE_NAME_PREFIX.concat(role.getName())));
         }
         List<Authority> list = userProfile.getAuthorities();
-        if (list != null && list.size() > 0) {
+        if (list != null && !list.isEmpty()) {
             list.forEach(authority -> authorities.add((GrantedAuthority) authority::getContent));
         }
-        return authorities.size() > 0 ? authorities : Collections.EMPTY_LIST;
+        return !authorities.isEmpty() ? authorities : Collections.EMPTY_LIST;
     }
 
     @Override

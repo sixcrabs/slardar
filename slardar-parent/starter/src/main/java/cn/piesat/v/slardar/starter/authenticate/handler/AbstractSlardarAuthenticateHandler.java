@@ -27,12 +27,12 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
     protected SlardarSpiContext context;
 
     /**
-     * 注入 context
+     * set context
      *
      * @param context
      */
     @Override
-    public void setSlardarContext(SlardarSpiContext context) {
+    public void initialize(SlardarSpiContext context) {
         this.context = context;
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
     public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws SlardarAuthenticationException {
         // TBD: 多个 prehandler 都需要处理
         Collection<SlardarAuthenticatePreHandler> preHandlers = context.getBeans(SlardarAuthenticatePreHandler.class);
-        if (preHandlers != null && preHandlers.size() > 0) {
+        if (preHandlers != null && !preHandlers.isEmpty()) {
             for (SlardarAuthenticatePreHandler preHandler : preHandlers) {
                 try {
                     preHandler.preHandle(authentication);
