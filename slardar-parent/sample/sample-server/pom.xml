@@ -15,11 +15,11 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>cn.piesat.v</groupId>
-            <artifactId>slardar-sso-server-starter</artifactId>
-            <version>${sso.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.piesat.v</groupId>-->
+<!--            <artifactId>slardar-sso-server-starter</artifactId>-->
+<!--            <version>${sso.version}</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>cn.piesat.v</groupId>

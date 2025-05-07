@@ -48,8 +48,16 @@ public class MyOpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthe
      * @return
      */
     @Override
-    public String type() {
+    public String name() {
         return NAME;
+    }
+
+    /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+        // ...
     }
 
     /**

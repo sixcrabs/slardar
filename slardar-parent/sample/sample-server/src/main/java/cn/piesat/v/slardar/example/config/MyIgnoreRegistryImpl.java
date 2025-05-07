@@ -23,6 +23,6 @@ public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
      */
     @Override
     public void customize(List<String> antPatterns) {
-        antPatterns.add("/api/greeting");
+        antPatterns.add("/api/hello");
     }
 }

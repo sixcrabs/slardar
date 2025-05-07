@@ -13,7 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -69,6 +74,7 @@ public class AccountProviderImpl implements AccountProvider {
                 .setUserProfile(profile);
         // 口令过期剩余天数
         zhangsan.setPwdValidRemainDays(5);
+        zhangsan.setExpireAt(LocalDateTime.now().plus(Duration.ofDays(20)));
 
         Account lisi = new Account().setName("lisi")
                 .setPassword(ENCODER.encode("lisi123"));
@@ -76,6 +82,7 @@ public class AccountProviderImpl implements AccountProvider {
         lisi.setId(RandomUtil.randomString(8));
         lisi.setStatus(AccountStatus.accessible)
                 .setUserProfile(profile2);
+        lisi.setExpireAt(LocalDateTime.now().plus(Duration.ofDays(10)));
 
         ACCOUNTS.add(zhangsan);
         ACCOUNTS.add(lisi);
