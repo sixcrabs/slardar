@@ -2,6 +2,7 @@ package cn.piesat.v.slardar.starter.support;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
@@ -236,11 +237,13 @@ public final class HttpServletUtil {
 
     public static String getRequestPostStr(HttpServletRequest request) throws IOException {
         byte[] buffer = getRequestPostBytes(request);
+        if (Objects.isNull(buffer)) {
+            return StringUtil.EMPTY;
+        }
         String charEncoding = request.getCharacterEncoding();
         if (charEncoding == null) {
             charEncoding = "UTF-8";
         }
-        assert buffer != null;
         return new String(buffer, charEncoding);
     }
 
