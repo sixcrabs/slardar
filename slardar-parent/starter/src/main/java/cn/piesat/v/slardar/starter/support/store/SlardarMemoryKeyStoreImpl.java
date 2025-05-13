@@ -136,4 +136,13 @@ public class SlardarMemoryKeyStoreImpl extends AbstractKeyStoreImpl {
     public void initialize(SlardarSpiContext context) {
         // do nothing
     }
+
+    /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+        super.destroy();
+        map.clear();
+    }
 }
