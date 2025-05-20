@@ -1,9 +1,9 @@
 package cn.piesat.v.slardar.captcha;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
+import cn.piesat.v.misc.hutool.mini.codec.Base64Util;
+import cn.piesat.v.misc.hutool.mini.io.FileUtil;
+import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
+import cn.piesat.v.misc.hutool.mini.io.IoUtil;
 import cn.piesat.v.slardar.captcha.generator.CodeGenerator;
 import cn.piesat.v.slardar.captcha.generator.RandomGenerator;
 import cn.piesat.v.slardar.captcha.support.ImgUtil;
@@ -178,7 +178,7 @@ public abstract class AbstractCaptcha implements ICaptcha {
 	 * @since 3.3.0
 	 */
 	public String getImageBase64() {
-		return Base64.encode(getImageBytes());
+		return Base64Util.encode(getImageBytes());
 	}
 
 	/**

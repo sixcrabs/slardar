@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.handler;
 
-import cn.hutool.core.map.MapUtil;
+import cn.piesat.v.misc.hutool.mini.MapUtil;
 import cn.piesat.v.slardar.core.Constants;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;

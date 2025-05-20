@@ -1,21 +1,24 @@
 package cn.piesat.v.slardar.starter.support.store;
 
+import cn.piesat.v.misc.hutool.mini.ArrayUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.timer.TimerManager;
 import cn.piesat.v.timer.job.TimerJobs;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.security.Key;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * <p>
- * .
+ * abstract keystore impl
  * </p>
  *
  * @author Alex
@@ -31,6 +34,17 @@ public abstract class AbstractKeyStoreImpl implements SlardarKeyStore {
      */
     protected static final TimerManager TIMER_MANAGER = new TimerManager(new TimerManager.TimerConfig().setTickDuration(1).setTicksPerWheel(64).setTimeUnit(TimeUnit.SECONDS));
 
+    /**
+     * 用于定期commit (mapdb & mvstore)
+     */
+    protected static final ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
+    /**
+     * 每隔30s 自动提交一次mapdb / mvstore
+     */
+    protected static final int autosaveInterval = 30;
+
+    protected static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
     @Override
     public void addListener(String key, KeyEventListener listener) throws SlardarException {
@@ -100,5 +114,43 @@ public abstract class AbstractKeyStoreImpl implements SlardarKeyStore {
      */
     protected List<KeyEventListener> getListeners(String key) {
         return EVENT_LISTENERS.get(key);
+    }
+
+    protected String stringify(Object obj) {
+        if (null == obj) {
+            return null;
+        }
+        if (obj instanceof String) {
+            return (String) obj;
+        } else if (obj instanceof byte[]) {
+            return StringUtil.str((byte[]) obj, StringUtil.CHARSET_UTF_8);
+        } else if (obj instanceof Byte[]) {
+            return StringUtil.str((Byte[]) obj, StringUtil.CHARSET_UTF_8);
+        } else if (obj instanceof ByteBuffer) {
+            return StringUtil.str((ByteBuffer) obj, StringUtil.CHARSET_UTF_8);
+        } else if (ArrayUtil.isArray(obj)) {
+            return ArrayUtil.toString(obj);
+        }  else if (isPrimitive(obj.getClass())) {
+            return String.valueOf(obj);
+        }
+        // TESTME: 采用Gson序列化
+        return GSON.toJson(obj);
+    }
+
+    private boolean isPrimitive(Class<?> clazz) {
+        return clazz.isPrimitive() || clazz == String.class || int.class.isAssignableFrom(clazz) || clazz == Integer.class
+                || clazz == Float.class || float.class.isAssignableFrom(clazz)
+                || clazz == Double.class || double.class.isAssignableFrom(clazz)
+                || clazz == Boolean.class || boolean.class.isAssignableFrom(clazz)
+                || clazz == Long.class || long.class.isAssignableFrom(clazz);
+    }
+
+    /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+        SlardarKeyStore.super.destroy();
+        scheduledThreadPool.shutdown();
     }
 }

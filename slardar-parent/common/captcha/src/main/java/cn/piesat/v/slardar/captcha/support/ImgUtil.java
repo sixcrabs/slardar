@@ -1,13 +1,12 @@
 package cn.piesat.v.slardar.captcha.support;
 
-import cn.hutool.core.codec.Base64;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.resource.Resource;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.*;
+import cn.piesat.v.misc.hutool.mini.*;
+import cn.piesat.v.misc.hutool.mini.codec.Base64Util;
+import cn.piesat.v.misc.hutool.mini.convert.Convert;
+import cn.piesat.v.misc.hutool.mini.io.FileUtil;
+import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
+import cn.piesat.v.misc.hutool.mini.io.IoUtil;
+import cn.piesat.v.misc.hutool.mini.io.Resource;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
@@ -472,13 +471,13 @@ public class ImgUtil {
 	 * @param destImageFile 目标图像文件
 	 */
 	public static void convert(File srcImageFile, File destImageFile) {
-		Assert.notNull(srcImageFile);
-		Assert.notNull(destImageFile);
-		Assert.isFalse(srcImageFile.equals(destImageFile), "Src file is equals to dest file!");
+		AssertUtil.notNull(srcImageFile);
+		AssertUtil.notNull(destImageFile);
+		AssertUtil.isFalse(srcImageFile.equals(destImageFile), "Src file is equals to dest file!");
 
 		final String srcExtName = FileUtil.extName(srcImageFile);
 		final String destExtName = FileUtil.extName(destImageFile);
-		if (StrUtil.equalsIgnoreCase(srcExtName, destExtName)) {
+		if (StringUtil.equalsIgnoreCase(srcExtName, destExtName)) {
 			// 扩展名相同直接复制文件
 			FileUtil.copy(srcImageFile, destImageFile, true);
 		}
@@ -486,7 +485,7 @@ public class ImgUtil {
 		ImageOutputStream imageOutputStream = null;
 		try {
 			imageOutputStream = getImageOutputStream(destImageFile);
-			convert(read(srcImageFile), destExtName, imageOutputStream, StrUtil.equalsIgnoreCase(IMAGE_TYPE_PNG, srcExtName));
+			convert(read(srcImageFile), destExtName, imageOutputStream, StringUtil.equalsIgnoreCase(IMAGE_TYPE_PNG, srcExtName));
 		} finally {
 			IoUtil.close(imageOutputStream);
 		}
@@ -1214,7 +1213,7 @@ public class ImgUtil {
 	 * @throws IORuntimeException IO异常
 	 */
 	public static BufferedImage toImage(String base64) throws IORuntimeException {
-		return toImage(Base64.decode(base64));
+		return toImage(Base64Util.decode(base64));
 	}
 
 	/**
@@ -1263,7 +1262,7 @@ public class ImgUtil {
 	 * @since 4.1.8
 	 */
 	public static String toBase64(Image image, String imageType) {
-		return Base64.encode(toBytes(image, imageType));
+		return Base64Util.encode(toBytes(image, imageType));
 	}
 
 	/**
@@ -1483,7 +1482,7 @@ public class ImgUtil {
 	 * @since 4.3.2
 	 */
 	public static boolean write(Image image, String imageType, ImageOutputStream destImageStream, float quality) throws IORuntimeException {
-		if (StrUtil.isBlank(imageType)) {
+		if (StringUtil.isBlank(imageType)) {
 			imageType = IMAGE_TYPE_JPG;
 		}
 
@@ -1820,7 +1819,7 @@ public class ImgUtil {
 	 * @since 4.1.14
 	 */
 	public static Color hexToColor(String hex) {
-		return getColor(Integer.parseInt(StrUtil.removePrefix(hex, "#"), 16));
+		return getColor(Integer.parseInt(StringUtil.removePrefix(hex, "#"), 16));
 	}
 
 	/**
@@ -1850,7 +1849,7 @@ public class ImgUtil {
 	 * @since 4.1.14
 	 */
 	public static Color getColor(String colorName) {
-		if (StrUtil.isBlank(colorName)) {
+		if (StringUtil.isBlank(colorName)) {
 			return null;
 		}
 		colorName = colorName.toUpperCase();
@@ -1887,16 +1886,16 @@ public class ImgUtil {
 		} else if ("LIGHTGOLD".equals(colorName)) {
 			// 亮金色
 			return hexToColor("#ac9c85");
-		} else if (StrUtil.startWith(colorName, '#')) {
+		} else if (StringUtil.startWith(colorName, '#')) {
 			return hexToColor(colorName);
-		} else if (StrUtil.startWith(colorName, '$')) {
+		} else if (StringUtil.startWith(colorName, '$')) {
 			// 由于#在URL传输中无法传输，因此用$代替#
 			return hexToColor("#" + colorName.substring(1));
 		} else {
 			// rgb值
-			final List<String> rgb = StrUtil.split(colorName, ',');
+			final List<String> rgb = StringUtil.split(colorName, ',');
 			if (3 == rgb.size()) {
-				final Integer r = Convert.toInt(rgb.get(0));
+				final Integer r = cn.piesat.v.misc.hutool.mini.convert.Convert.toInt(rgb.get(0));
 				final Integer g = Convert.toInt(rgb.get(1));
 				final Integer b = Convert.toInt(rgb.get(2));
 				if (!ArrayUtil.hasNull(r, g, b)) {

@@ -1,11 +1,13 @@
 package cn.piesat.v.slardar.starter.support.spi.crypto;
 
+import cn.piesat.v.misc.hutool.mini.CharsetUtil;
+import cn.piesat.v.misc.hutool.mini.HexUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.SmUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.symmetric.SM4;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.crypto.SlardarCrypto;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
-import com.antherd.smcrypto.sm4.Sm4;
-import com.antherd.smcrypto.sm4.Sm4Options;
 import com.google.auto.service.AutoService;
 
 /**
@@ -23,6 +25,9 @@ public class Sm4Crypto implements SlardarCrypto {
      * // 16 进制字符串，要求为 128 比特
      */
     private String key = "0a1b2c3d4e5f6f7e8d9cba9876543210";
+
+
+    private SM4 sm4;
 
     /**
      * 加密模式
@@ -47,6 +52,7 @@ public class Sm4Crypto implements SlardarCrypto {
         if (encrypt.getSecretKey() != null) {
             key = encrypt.getSecretKey();
         }
+        sm4 = SmUtil.sm4(HexUtil.decodeHex(key));
     }
 
     /**
@@ -57,10 +63,7 @@ public class Sm4Crypto implements SlardarCrypto {
      */
     @Override
     public String encrypt(String plaintext) throws SlardarException {
-        Sm4Options sm4Options2 = new Sm4Options();
-        sm4Options2.setPadding("none");
-        // 加密，不使用 padding，输出16进制字符串
-        return Sm4.encrypt(plaintext, key, sm4Options2);
+        return sm4.encryptHex(plaintext);
     }
 
     /**
@@ -71,9 +74,6 @@ public class Sm4Crypto implements SlardarCrypto {
      */
     @Override
     public String decrypt(String ciphertext) throws SlardarException {
-        // 解密，不使用 padding，输出 utf8 字符串
-        Sm4Options sm4Options6 = new Sm4Options();
-        sm4Options6.setPadding("none");
-        return Sm4.decrypt(ciphertext, key, sm4Options6);
+        return sm4.decryptStr(ciphertext, CharsetUtil.CHARSET_UTF_8);
     }
 }

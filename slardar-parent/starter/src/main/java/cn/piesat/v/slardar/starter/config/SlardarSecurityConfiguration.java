@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.starter.config;
 
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.ReflectUtil;
+import cn.piesat.v.misc.hutool.mini.ReUtil;
+import cn.piesat.v.misc.hutool.mini.ReflectUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.core.annotation.SlardarAuthority;

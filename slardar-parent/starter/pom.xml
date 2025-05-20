@@ -28,7 +28,18 @@
 
         <dependency>
             <groupId>cn.piesat.v</groupId>
+            <artifactId>slardar-captcha</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.piesat.v</groupId>
             <artifactId>ring-timer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.piesat.v</groupId>
+            <artifactId>hutool-mini</artifactId>
         </dependency>
 
         <!--key store start-->
@@ -43,6 +54,12 @@
             <artifactId>lettuce-core</artifactId>
             <version>6.2.1.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.220</version>
+        </dependency>
         <!--key store end-->
 
         <dependency>
@@ -51,21 +68,16 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.piesat.v</groupId>
-            <artifactId>hutool-mini</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
         <!--国密-->
-        <dependency>
-            <groupId>com.antherd</groupId>
-            <artifactId>sm-crypto</artifactId>
-            <version>0.3.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.antherd</groupId>-->
+<!--            <artifactId>sm-crypto</artifactId>-->
+<!--            <version>0.3.2</version>-->
+<!--        </dependency>-->
 
         <!--邮件发送-->
         <dependency>
@@ -81,21 +93,9 @@
         </dependency>
 
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-crypto</artifactId>
-            <version>5.7.22</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>cn.hutool</groupId>
-                    <artifactId>hutool-core</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>5.7.22</version>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.78.1</version>
         </dependency>
 
         <dependency>

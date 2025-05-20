@@ -1,12 +1,14 @@
 package cn.piesat.v.slardar.starter.support.store;
 
-import cn.hutool.core.util.StrUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
-import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.misc.hutool.mini.thread.ThreadUtil;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
+import cn.piesat.v.timer.cron.DateTimeUtil;
+import cn.piesat.v.timer.job.TimerJobs;
 import com.google.auto.service.AutoService;
+import org.jetbrains.annotations.NotNull;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
@@ -17,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -32,6 +36,117 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
 
     private static final Logger logger = LoggerFactory.getLogger(SlardarMapdbKeyStoreImpl.class);
 
+    private static final String NAME = "mapdb";
+
+    private DB db = null;
+
+    /**
+     * 用于记录expire key
+     * key: setex 的key
+     * value: 到期时间戳
+     */
+    private HTreeMap<String, Long> expireRecordMap = null;
+
+    /**
+     * 存储kv数据的map
+     */
+    private HTreeMap<String, String> dataMap = null;
+
+    /**
+     * 存储值的 class 类型
+     */
+    private HTreeMap<String, String> typedMap = null;
+
+    /**
+     * 实现名称, 区分不同的 SPI 实现，必须
+     *
+     * @return
+     */
+    @Override
+    public String name() {
+        return NAME;
+    }
+
+    /**
+     * set context
+     *
+     * @param context
+     */
+    @Override
+    public void initialize(SlardarSpiContext context) {
+        // 根据 keystore配置 设置 mapdb
+        SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
+        String type = properties.getKeyStore().getType();
+        if (NAME.equalsIgnoreCase(type)) {
+            logger.info("[keystore] 初始化存储 ....");
+            Path path = StringUtil.isBlank(properties.getKeyStore().getUri()) ?
+                    Paths.get(System.getProperty("user.home"), "keystore.db") : Paths.get(properties.getKeyStore().getUri());
+            File dbFile = path.toFile();
+            logger.info("[keystore] use data file: {}", dbFile.getPath());
+            // 初始化 DB 对象
+            db = DBMaker.fileDB(dbFile)
+                    .checksumHeaderBypass()
+                    .fileMmapEnableIfSupported()
+                    .closeOnJvmShutdown()
+                    .closeOnJvmShutdownWeakReference()
+                    .allocateStartSize(1024 * 1024L)
+                    .concurrencyScale(128)
+                    .fileLockDisable()
+                    .make();
+
+            dataMap = db
+                    .hashMap("data")
+                    .keySerializer(Serializer.STRING)
+                    .valueSerializer(Serializer.STRING)
+                    .createOrOpen();
+            expireRecordMap = db.hashMap("expired")
+                    .keySerializer(Serializer.STRING)
+                    .valueSerializer(Serializer.LONG)
+                    .createOrOpen();
+
+            typedMap = db.hashMap("typed")
+                    .keySerializer(Serializer.STRING)
+                    .valueSerializer(Serializer.STRING)
+                    .createOrOpen();
+
+            ThreadUtil.execute(() -> {
+                long now = DateTimeUtil.toTimeStamp();
+                expireRecordMap.forEach((key, value) -> {
+                    if (value <= now) {
+                        expireKey(key);
+                    } else {
+                        // 加入计时器
+                        TIMER_MANAGER.addTimerJob(
+                                TimerJobs.newDelayJob(key, Duration.ofMillis(value - now), timeout -> {
+                                    expireKey(key);
+                                })
+                        );
+                    }
+                });
+
+            });
+            logger.trace("Scheduling MapDB commit task");
+            scheduledThreadPool.scheduleWithFixedDelay(() -> {
+                logger.trace("Committing to MapDB");
+                db.commit();
+            }, autosaveInterval, autosaveInterval, TimeUnit.SECONDS);
+        }
+
+    }
+
+    /**
+     * do destroy
+     */
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (db != null) {
+            dataMap.close();
+            expireRecordMap.close();
+            db.close();
+        }
+    }
+
     /**
      * set key
      *
@@ -40,8 +155,23 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
      * @return
      */
     @Override
-    public boolean set(String key, Object val) {
-        return false;
+    public boolean set(String key,  @NotNull Object val) {
+        Class<?> valClass = val.getClass();
+        typedMap.put(key, valClass.getName());
+        if (val instanceof Map) {
+            Map tmp = (Map) val;
+            if (!tmp.isEmpty()) {
+                tmp.keySet().forEach(k -> {
+                    Object v = tmp.get(k);
+                    set(key + "." + k, v);
+                });
+            }
+            return true;
+        } else {
+            dataMap.put(key, StringUtil.str());
+            db.commit();
+            return true;
+        }
     }
 
     /**
@@ -112,53 +242,17 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
         return Collections.emptyList();
     }
 
-    /**
-     * 实现名称, 区分不同的 SPI 实现，必须
-     *
-     * @return
-     */
-    @Override
-    public String name() {
-        return "mapdb";
-    }
-
-    private DB db;
 
     /**
-     * set context
+     * 过期并trigger
      *
-     * @param context
+     * @param key
      */
-    @Override
-    public void initialize(SlardarSpiContext context) {
-        // TODO 根据 keystore配置 设置 mapdb
-        SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
-        String type = properties.getKeyStore().getType();
-        if (type.equalsIgnoreCase("mapdb")) {
-            logger.info("[keystore] 初始化 mapdb ....");
-            Path path = StrUtil.isBlank(properties.getKeyStore().getUri()) ?
-                    Paths.get(System.getProperty("user.home"), "keystore.db") : Paths.get(properties.getKeyStore().getUri());
-            File dbFile = path.toFile();
-            logger.info("[keystore] use data file: {}", dbFile.getPath());
-            // 初始化 DB 对象
-            db = DBMaker.fileDB(dbFile)
-                    .checksumHeaderBypass()
-                    .fileMmapEnableIfSupported()
-                    .closeOnJvmShutdown()
-                    .closeOnJvmShutdownWeakReference()
-                    .allocateStartSize(1024 * 1024L)
-                    .concurrencyScale(128)
-                    .fileLockDisable()
-                    .make();
-
-            String mapName = "slardar_key_map";
-            // Open or create a HTreeMap (a persistent map implementation)
-            HTreeMap<String, String> dataMap = db
-                    .hashMap(mapName)
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.STRING)
-                    .createOrOpen();
-        }
-
+    private void expireKey(String key) {
+        notifyListeners(EXPIRED, key, get(key));
+        dataMap.remove(key);
+        expireRecordMap.remove(key);
+        db.commit();
     }
+
 }

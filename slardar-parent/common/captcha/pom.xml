@@ -17,13 +17,6 @@
             <groupId>cn.piesat.v</groupId>
             <artifactId>hutool-mini</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
-            <version>4.1.1</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 </project>

@@ -1,13 +1,13 @@
 package cn.piesat.v.slardar.captcha.support;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IORuntimeException;
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.resource.Resource;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.NumberUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.AssertUtil;
+import cn.piesat.v.misc.hutool.mini.NumberUtil;
+import cn.piesat.v.misc.hutool.mini.ObjectUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.io.FileUtil;
+import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
+import cn.piesat.v.misc.hutool.mini.io.IoUtil;
+import cn.piesat.v.misc.hutool.mini.io.Resource;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
@@ -526,11 +526,11 @@ public class Img implements Serializable {
      * @throws IORuntimeException IO异常
      */
     public boolean write(ImageOutputStream targetImageStream) throws IORuntimeException {
-        Assert.notBlank(this.targetImageType, "Target image type is blank !");
-        Assert.notNull(targetImageStream, "Target output stream is null !");
+        AssertUtil.notBlank(this.targetImageType, "Target image type is blank !");
+        AssertUtil.notNull(targetImageStream, "Target output stream is null !");
 
         final Image targetImage = (null == this.targetImage) ? this.srcImage : this.targetImage;
-        Assert.notNull(targetImage, "Target image is null !");
+        AssertUtil.notNull(targetImage, "Target image is null !");
 
         return ImgUtil.write(targetImage, this.targetImageType, targetImageStream, this.quality);
     }
@@ -544,7 +544,7 @@ public class Img implements Serializable {
      */
     public boolean write(File targetFile) throws IORuntimeException {
         final String formatName = FileUtil.extName(targetFile);
-        if (StrUtil.isNotBlank(formatName)) {
+        if (StringUtil.isNotBlank(formatName)) {
             this.targetImageType = formatName;
         }
 

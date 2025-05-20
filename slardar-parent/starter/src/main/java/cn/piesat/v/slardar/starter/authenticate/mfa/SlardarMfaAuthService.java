@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.authenticate.mfa;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;

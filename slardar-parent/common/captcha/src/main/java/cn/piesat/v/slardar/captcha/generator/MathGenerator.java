@@ -1,8 +1,7 @@
 package cn.piesat.v.slardar.captcha.generator;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.piesat.v.misc.hutool.mini.CharUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 
 import static cn.piesat.v.misc.hutool.mini.StringUtil.sub;
@@ -63,7 +62,7 @@ public class MathGenerator implements CodeGenerator {
 			return sub(str, strLen - minLength, strLen);
 		}
 
-		return str.toString().concat(StrUtil.repeat(padChar, minLength - strLen));
+		return str.toString().concat(StringUtil.repeat(padChar, minLength - strLen));
 	}
 
 	@Override
@@ -107,6 +106,6 @@ public class MathGenerator implements CodeGenerator {
 	 * @return 最大值
 	 */
 	private int getLimit() {
-		return Integer.parseInt("1" + StrUtil.repeat('0', this.numberLength));
+		return Integer.parseInt("1" + StringUtil.repeat('0', this.numberLength));
 	}
 }

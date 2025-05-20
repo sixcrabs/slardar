@@ -1,8 +1,9 @@
 package cn.piesat.v.slardar.starter.support.spi.crypto;
 
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
-import cn.hutool.crypto.symmetric.AES;
+import cn.piesat.v.misc.hutool.mini.crypto.Mode;
+import cn.piesat.v.misc.hutool.mini.crypto.Padding;
+import cn.piesat.v.misc.hutool.mini.crypto.SecureUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.symmetric.AES;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.crypto.SlardarCrypto;
@@ -14,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
- * AES 加解密
+ * AES 对称加解密
  * </p>
  *
  * @author Alex
@@ -25,7 +26,7 @@ public class AESCrypto implements SlardarCrypto {
 
     public static final String MODE = "AES";
 
-    private AES aes = new AES();
+    private AES aes = SecureUtil.aes();
 
     /**
      * 加密模式

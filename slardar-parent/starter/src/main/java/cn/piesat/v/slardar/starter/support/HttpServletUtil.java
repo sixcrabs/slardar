@@ -1,8 +1,7 @@
 package cn.piesat.v.slardar.starter.support;
 
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.thread.ThreadUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
@@ -284,7 +283,7 @@ public final class HttpServletUtil {
             return map;
         }
         String body = getRequestPostStr(request);
-        if (StrUtil.isBlank(body)) {
+        if (StringUtil.isBlank(body)) {
             return Collections.emptyMap();
         }
         try {
@@ -395,25 +394,25 @@ public final class HttpServletUtil {
         String ipAddress = null;
         try {
             ipAddress = request.getHeader("X-Forwarded-For");
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 //apache服务代理
                 ipAddress = request.getHeader("Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 //weblogic 代理
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getHeader("HTTP_CLIENT_IP");
             }
 
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 //nginx代理
                 ipAddress = request.getHeader("X-Real-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
                 ipAddress = request.getRemoteAddr();
-                if (StrUtil.equals(ipAddress, LOCAL_IP) || StrUtil.equals(ipAddress, DEFAULT_IP)) {
+                if (StringUtil.equals(ipAddress, LOCAL_IP) || StringUtil.equals(ipAddress, DEFAULT_IP)) {
                     //根据网卡取本机配置的IP
                     if (Objects.isNull(localAddress)) {
                         getLocalIpAsync();
@@ -425,7 +424,7 @@ public final class HttpServletUtil {
 
             //对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
             //"***.***.***.***".length() = 15
-            if (!StringUtils.isEmpty(ipAddress) && ipAddress.length() > DEFAULT_IP_LENGTH) {
+            if (StringUtil.isNotBlank(ipAddress) && ipAddress.length() > DEFAULT_IP_LENGTH) {
                 if (ipAddress.indexOf(",") > 0) {
                     ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
                 }

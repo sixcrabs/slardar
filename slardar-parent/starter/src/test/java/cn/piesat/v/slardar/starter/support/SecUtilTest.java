@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.support;
 
-import cn.hutool.core.util.ReUtil;
+import cn.piesat.v.misc.hutool.mini.ReUtil;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.config;
 
-import cn.hutool.core.util.ArrayUtil;
+import cn.piesat.v.misc.hutool.mini.ArrayUtil;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.starter.*;

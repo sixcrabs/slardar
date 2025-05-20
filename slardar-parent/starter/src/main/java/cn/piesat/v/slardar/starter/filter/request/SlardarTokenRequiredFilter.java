@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.starter.filter.request;
 
-import cn.hutool.core.thread.NamedThreadFactory;
+import cn.piesat.v.misc.hutool.mini.thread.NamedThreadFactory;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.core.SlardarSecurityHelper;
 import cn.piesat.v.slardar.core.annotation.SlardarIgnore;

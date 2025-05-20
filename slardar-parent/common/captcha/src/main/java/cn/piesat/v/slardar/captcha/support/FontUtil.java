@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.captcha.support;
 
-import cn.hutool.core.exceptions.UtilException;
-import cn.hutool.core.io.IORuntimeException;
+import cn.piesat.v.misc.hutool.mini.UtilException;
+import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
 
 import java.awt.*;
 import java.io.File;

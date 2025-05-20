@@ -1,10 +1,10 @@
 package cn.piesat.v.slardar.starter.support.spi.crypto;
 
-import cn.hutool.crypto.CipherMode;
-import cn.hutool.crypto.Mode;
-import cn.hutool.crypto.Padding;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.symmetric.AES;
+import cn.piesat.v.misc.hutool.mini.crypto.CipherMode;
+import cn.piesat.v.misc.hutool.mini.crypto.Mode;
+import cn.piesat.v.misc.hutool.mini.crypto.Padding;
+import cn.piesat.v.misc.hutool.mini.crypto.SecureUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.symmetric.AES;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

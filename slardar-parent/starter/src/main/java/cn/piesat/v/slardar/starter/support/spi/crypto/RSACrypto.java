@@ -1,8 +1,9 @@
 package cn.piesat.v.slardar.starter.support.spi.crypto;
 
-import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.crypto.asymmetric.RSA;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.SecureUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.asymmetric.KeyType;
+import cn.piesat.v.misc.hutool.mini.crypto.asymmetric.RSA;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.crypto.SlardarCrypto;
@@ -15,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
- * TESTME:
  * RSA 非对称加密
  * </p>
  *
@@ -56,7 +56,7 @@ public class RSACrypto implements SlardarCrypto {
             publicKey = "ab0c1de2fg3hi4jk5l1n9";
         }
         try {
-            rsa = new RSA(rsaPrivateKey, publicKey);
+            rsa = SecureUtil.rsa(rsaPrivateKey, publicKey);
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
         }

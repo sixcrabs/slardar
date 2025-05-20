@@ -1,5 +1,14 @@
 package cn.piesat.v.slardar.starter.authenticate.crypto.impl;
 
+import cn.piesat.v.misc.hutool.mini.CharsetUtil;
+import cn.piesat.v.misc.hutool.mini.HexUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.Mode;
+import cn.piesat.v.misc.hutool.mini.crypto.Padding;
+import cn.piesat.v.misc.hutool.mini.crypto.SmUtil;
+import cn.piesat.v.misc.hutool.mini.crypto.symmetric.SM4;
+import cn.piesat.v.slardar.core.SlardarException;
+import cn.piesat.v.slardar.starter.support.spi.crypto.Sm4Crypto;
 import com.antherd.smcrypto.sm4.Sm4;
 import com.antherd.smcrypto.sm4.Sm4Options;
 import com.bastiaanjansen.otp.HMACAlgorithm;
@@ -10,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
+import static cn.piesat.v.misc.hutool.mini.crypto.CipherMode.encrypt;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -30,14 +40,18 @@ class Sm4CryptoTest {
     public static final String text = "{\"1\":\"landtype='N0101'\",\"2\":\"landtype='N0101'\",\"3\":\"landtype='N0101'\",\"4\":\"landtype='N0101'\",\"5\":\"landtype='N0101'\",\"6\":\"landtype='N0101'\",\"7\":\"landtype='N0101'\",\"8\":\"landtype='N0101'\",\"9\":\"landtype='N0101'\"}";
 
 
+    SM4 sm4 = SmUtil.sm4(HexUtil.decodeHex(key));
+
     @Test
-    void encrypt() {
-        String plaintext = "zhangsan123";
-        Sm4Options sm4Options2 = new Sm4Options();
-        sm4Options2.setPadding("none");
-        // 加密，不使用 padding，输出16进制字符串
-        String encrypt = Sm4.encrypt(plaintext, key, sm4Options2);
-        System.out.println(encrypt);
+    void encrypt() throws SlardarException {
+
+        String content = "test中文";
+//        SM4 sm4 = SmUtil.sm4();
+
+        String encryptHex = sm4.encryptHex(content);
+        String decryptStr = sm4.decryptStr(encryptHex, CharsetUtil.CHARSET_UTF_8);
+        System.out.println(encryptHex);
+        System.out.println(decryptStr);
     }
 
     @Test

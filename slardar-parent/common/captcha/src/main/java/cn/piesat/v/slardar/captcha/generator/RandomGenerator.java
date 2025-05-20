@@ -1,7 +1,6 @@
 package cn.piesat.v.slardar.captcha.generator;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 
 /**
@@ -41,7 +40,7 @@ public class RandomGenerator extends AbstractGenerator {
 	@Override
 	public boolean verify(String code, String userInputCode) {
 		if (StringUtil.isNotBlank(userInputCode)) {
-			return StrUtil.equalsIgnoreCase(code, userInputCode);
+			return StringUtil.equalsIgnoreCase(code, userInputCode);
 		}
 		return false;
 	}
