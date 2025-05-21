@@ -1,29 +1,22 @@
 package cn.piesat.v.slardar.starter.support.store;
 
-import cn.piesat.v.misc.hutool.mini.ClassUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.misc.hutool.mini.thread.ThreadUtil;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.timer.Timeout;
-import cn.piesat.v.timer.TimerTask;
 import cn.piesat.v.timer.cron.DateTimeUtil;
 import cn.piesat.v.timer.job.TimerJobs;
 import com.google.auto.service.AutoService;
-import org.jetbrains.annotations.NotNull;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.HTreeMap;
-import org.mapdb.Serializer;
+import org.h2.mvstore.MVMap;
+import org.h2.mvstore.MVStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -31,37 +24,29 @@ import static cn.piesat.v.slardar.starter.support.store.KeyStoreUtil.*;
 
 /**
  * <p>
- * mapdb 实现
+ * 使用 h2 mvstore 实现key存储
  * </p>
  *
  * @author Alex
- * @since 2025/4/15
+ * @since 2025/5/14
  */
 @AutoService(SlardarKeyStore.class)
-public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
+public class SlardarMVStoreKeyStoreImpl extends AbstractKeyStoreImpl {
 
-    private static final Logger logger = LoggerFactory.getLogger(SlardarMapdbKeyStoreImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SlardarMVStoreKeyStoreImpl.class);
 
-    private static final String NAME = "mapdb";
+    public static final String NAME = "mvstore";
 
-    private DB db = null;
+    private MVStore mvStore = null;
 
+    private MVMap<String, String> dataMap = null;
+    private MVMap<String, String> typedMap = null;
     /**
      * 用于记录expire key
      * key: setex 的key
      * value: 到期时间戳
      */
-    private HTreeMap<String, Long> expireRecordMap = null;
-
-    /**
-     * 存储kv数据的map
-     */
-    private HTreeMap<String, String> dataMap = null;
-
-    /**
-     * 存储值的 class 类型
-     */
-    private HTreeMap<String, String> typedMap = null;
+    private MVMap<String, Long> expireRecordMap = null;
 
     /**
      * 实现名称, 区分不同的 SPI 实现，必须
@@ -80,40 +65,29 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
      */
     @Override
     public void initialize(SlardarSpiContext context) {
-        // 根据 keystore配置 设置 mapdb
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         String type = properties.getKeyStore().getType();
         if (NAME.equalsIgnoreCase(type)) {
-            logger.info("[keystore] 初始化存储 ....");
-            Path path = StringUtil.isBlank(properties.getKeyStore().getUri()) ?
-                    Paths.get(System.getProperty("user.home"), "keystore.db") : Paths.get(properties.getKeyStore().getUri());
-            File dbFile = path.toFile();
-            logger.info("[keystore] use data file: {}", dbFile.getPath());
-            // 初始化 DB 对象
-            db = DBMaker.fileDB(dbFile)
-                    .checksumHeaderBypass()
-                    .fileMmapEnableIfSupported()
-                    .closeOnJvmShutdown()
-                    .closeOnJvmShutdownWeakReference()
-                    .allocateStartSize(1024 * 1024L)
-                    .concurrencyScale(128)
-                    .fileLockDisable()
-                    .make();
+            Path storePath = StringUtil.isBlank(properties.getKeyStore().getUri()) ?
+                    Paths.get(System.getProperty("user.home"), "h2_keystore.db") : Paths.get(properties.getKeyStore().getUri());
+            logger.info("Initializing H2 mv store to {}", storePath);
+//            if (!Files.exists(storePath)) {
+//                try {
+//                    Files.createFile(storePath);
+//                } catch (IOException ex) {
+//                    throw new IllegalArgumentException("Error creating " + storePath + " file", ex);
+//                }
+//            }
+            // 创建或打开一个 MVStore 参数为文件路径，如果文件不存在则创建，如果为 null 则创建内存模式的 store
+            mvStore = new MVStore.Builder()
+                    .fileName(storePath.toString())
+                    .compress() // 可以选择开启数据压缩
+                    .autoCommitDisabled()
+                    .open();
 
-            dataMap = db
-                    .hashMap("data")
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.STRING)
-                    .createOrOpen();
-            expireRecordMap = db.hashMap("expired")
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.LONG)
-                    .createOrOpen();
-
-            typedMap = db.hashMap("typed")
-                    .keySerializer(Serializer.STRING)
-                    .valueSerializer(Serializer.STRING)
-                    .createOrOpen();
+            dataMap = mvStore.openMap("data");
+            typedMap = mvStore.openMap("typed");
+            expireRecordMap = mvStore.openMap("expired");
 
             ThreadUtil.execute(() -> {
                 long now = DateTimeUtil.toTimeStamp();
@@ -130,13 +104,13 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
                     }
                 });
             });
-            logger.trace("Scheduling MapDB commit task");
+            logger.trace("Scheduling H2 commit task");
             scheduledThreadPool.scheduleWithFixedDelay(() -> {
-                logger.trace("Committing to MapDB");
-                db.commit();
+                logger.trace("Committing to H2");
+                mvStore.commit();
             }, autosaveInterval, autosaveInterval, TimeUnit.SECONDS);
-        }
 
+        }
     }
 
     /**
@@ -145,11 +119,9 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
     @Override
     public void destroy() {
         super.destroy();
-        if (db != null) {
-            dataMap.close();
-            expireRecordMap.close();
-            db.commit();
-            db.close();
+        if (mvStore != null) {
+            mvStore.commit();
+            mvStore.close();
         }
     }
 
@@ -161,7 +133,7 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
      * @return
      */
     @Override
-    public boolean set(String key, @NotNull Object val) {
+    public boolean set(String key, Object val) {
         Class<?> valClass = val.getClass();
         typedMap.put(key, valClass.getName());
         dataMap.put(key, stringify(val));
@@ -213,7 +185,6 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
      * @return
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T get(String key) {
         if (has(key)) {
             String strVal = dataMap.get(key);
@@ -254,7 +225,6 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
         dataMap.remove(key);
         expireRecordMap.remove(key);
         typedMap.remove(key);
-        db.commit();
         TIMER_MANAGER.removeTimerJob(key);
     }
 
@@ -266,24 +236,16 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
      */
     @Override
     public List<String> keys(String prefix) {
-        List<String> keys = new ArrayList<>(dataMap.keySet());
-        return StringUtil.isBlank(prefix) ? keys : keys.stream()
-                .filter(key -> key.startsWith(prefix))
-                .collect(Collectors.toList());
+        List<String> keys = dataMap.keyList();
+        return StringUtil.isBlank(prefix) ? keys : keys.stream().filter(key -> key.startsWith(prefix)).collect(Collectors.toList());
     }
 
-
-    /**
-     * 过期并trigger
-     *
-     * @param key
-     */
     private void expireKey(String key) {
         notifyListeners(EXPIRED, key, get(key));
         dataMap.remove(key);
         expireRecordMap.remove(key);
         typedMap.remove(key);
-        db.commit();
+        mvStore.commit();
     }
 
 }

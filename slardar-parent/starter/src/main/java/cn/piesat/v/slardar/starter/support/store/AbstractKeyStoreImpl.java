@@ -5,12 +5,12 @@ import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;
 import cn.piesat.v.timer.TimerManager;
+import cn.piesat.v.timer.TimerTask;
 import cn.piesat.v.timer.job.TimerJobs;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +44,6 @@ public abstract class AbstractKeyStoreImpl implements SlardarKeyStore {
      */
     protected static final int autosaveInterval = 30;
 
-    protected static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-
     @Override
     public void addListener(String key, KeyEventListener listener) throws SlardarException {
         if (has(key)) {
@@ -69,6 +67,22 @@ public abstract class AbstractKeyStoreImpl implements SlardarKeyStore {
                 notifyListeners(EXPIRED, key, get(key));
                 remove(key);
             }));
+        }
+        return false;
+    }
+
+    /**
+     * add ttl timer with used-defined task
+     * @param key
+     * @param ttl
+     * @param task 到期后执行的自定义任务
+     * @return
+     */
+    protected boolean addTTLTimer(String key, long ttl, TimerTask task) {
+        if (ttl > 0) {
+            // 清空已存在的 ttl timer
+            TIMER_MANAGER.removeTimerJob(key);
+            return TIMER_MANAGER.addTimerJob(TimerJobs.newDelayJob(key, Duration.ofSeconds(ttl), task));
         }
         return false;
     }
@@ -114,35 +128,6 @@ public abstract class AbstractKeyStoreImpl implements SlardarKeyStore {
      */
     protected List<KeyEventListener> getListeners(String key) {
         return EVENT_LISTENERS.get(key);
-    }
-
-    protected String stringify(Object obj) {
-        if (null == obj) {
-            return null;
-        }
-        if (obj instanceof String) {
-            return (String) obj;
-        } else if (obj instanceof byte[]) {
-            return StringUtil.str((byte[]) obj, StringUtil.CHARSET_UTF_8);
-        } else if (obj instanceof Byte[]) {
-            return StringUtil.str((Byte[]) obj, StringUtil.CHARSET_UTF_8);
-        } else if (obj instanceof ByteBuffer) {
-            return StringUtil.str((ByteBuffer) obj, StringUtil.CHARSET_UTF_8);
-        } else if (ArrayUtil.isArray(obj)) {
-            return ArrayUtil.toString(obj);
-        }  else if (isPrimitive(obj.getClass())) {
-            return String.valueOf(obj);
-        }
-        // TESTME: 采用Gson序列化
-        return GSON.toJson(obj);
-    }
-
-    private boolean isPrimitive(Class<?> clazz) {
-        return clazz.isPrimitive() || clazz == String.class || int.class.isAssignableFrom(clazz) || clazz == Integer.class
-                || clazz == Float.class || float.class.isAssignableFrom(clazz)
-                || clazz == Double.class || double.class.isAssignableFrom(clazz)
-                || clazz == Boolean.class || boolean.class.isAssignableFrom(clazz)
-                || clazz == Long.class || long.class.isAssignableFrom(clazz);
     }
 
     /**
