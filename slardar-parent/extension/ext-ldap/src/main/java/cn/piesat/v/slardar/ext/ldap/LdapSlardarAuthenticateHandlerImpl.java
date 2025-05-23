@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.ext.ldap;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.entity.Account;
 import cn.piesat.v.slardar.core.entity.UserProfile;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
@@ -87,12 +87,12 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
     protected SlardarAuthentication doAuthenticate0(SlardarAuthentication authentication) {
         LdapProperties properties = context.getBeanIfAvailable(LdapProperties.class);
         LdapUtils ldapUtils = new LdapUtils(properties.determineUrls(),
-                StrUtil.format("cn={},{}", authentication.getAccountName(), properties.getBase()),
+                StringUtil.format("cn={},{}", authentication.getAccountName(), properties.getBase()),
                 authentication.getPassword(), properties.getBase());
         try {
             SearchControls searchCtls = new SearchControls();
             searchCtls.setSearchScope(ldapUtils.getSearchScope());
-            String filter = StrUtil.format("cn={}", authentication.getAccountName().trim(),
+            String filter = StringUtil.format("cn={}", authentication.getAccountName().trim(),
                     authentication.getCredentials().toString());
             NamingEnumeration<SearchResult> results = ldapUtils.getConnection().search(ldapUtils.getBaseDN(), filter, searchCtls);
             long recordCount = 0;

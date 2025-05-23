@@ -6,11 +6,10 @@
  */
 package cn.piesat.v.slardar.example.impl;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 

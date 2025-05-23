@@ -148,6 +148,7 @@ public class SlardarProperties implements Serializable {
         /**
          * memory
          * mapdb
+         * mvstore
          * redis
          */
         private String type = "memory";

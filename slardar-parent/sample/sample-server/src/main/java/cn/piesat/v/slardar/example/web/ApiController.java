@@ -1,11 +1,9 @@
 package cn.piesat.v.slardar.example.web;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.shared.as.response.Resp;
 import cn.piesat.v.slardar.core.SlardarSecurityHelper;
-import cn.piesat.v.slardar.core.annotation.AuditLogger;
 import cn.piesat.v.slardar.core.annotation.SlardarAuthority;
-import cn.piesat.v.slardar.core.annotation.SlardarIgnore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

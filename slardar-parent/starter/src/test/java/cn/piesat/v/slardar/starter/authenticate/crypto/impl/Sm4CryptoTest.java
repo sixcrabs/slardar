@@ -2,25 +2,15 @@ package cn.piesat.v.slardar.starter.authenticate.crypto.impl;
 
 import cn.piesat.v.misc.hutool.mini.CharsetUtil;
 import cn.piesat.v.misc.hutool.mini.HexUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
-import cn.piesat.v.misc.hutool.mini.crypto.Mode;
-import cn.piesat.v.misc.hutool.mini.crypto.Padding;
 import cn.piesat.v.misc.hutool.mini.crypto.SmUtil;
 import cn.piesat.v.misc.hutool.mini.crypto.symmetric.SM4;
 import cn.piesat.v.slardar.core.SlardarException;
-import cn.piesat.v.slardar.starter.support.spi.crypto.Sm4Crypto;
-import com.antherd.smcrypto.sm4.Sm4;
-import com.antherd.smcrypto.sm4.Sm4Options;
 import com.bastiaanjansen.otp.HMACAlgorithm;
-import com.bastiaanjansen.otp.SecretGenerator;
 import com.bastiaanjansen.otp.TOTPGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-
-import static cn.piesat.v.misc.hutool.mini.crypto.CipherMode.encrypt;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * <p>
@@ -58,10 +48,10 @@ class Sm4CryptoTest {
     void decrypt() {
         String ciphertext = "1888d09ab6cc672d0017ab63a9f96b55";
         // 解密，不使用 padding，输出 utf8 字符串
-        Sm4Options sm4Options6 = new Sm4Options();
-        sm4Options6.setPadding("none");
-        String decrypt = Sm4.decrypt(ciphertext, key, sm4Options6);
-        System.out.println(decrypt);
+//        Sm4Options sm4Options6 = new Sm4Options();
+//        sm4Options6.setPadding("none");
+//        String decrypt = Sm4.decrypt(ciphertext, key, sm4Options6);
+//        System.out.println(decrypt);
     }
 
     TOTPGenerator totp;

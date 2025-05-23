@@ -19,7 +19,7 @@ slardar:
     type: jwt
     separator: _MY_
   key-store:
-    type: memory
+    type: mapdb
     setting:
       foo: bar
   login:

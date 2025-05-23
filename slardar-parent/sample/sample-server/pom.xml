@@ -23,14 +23,14 @@
 
         <dependency>
             <groupId>cn.piesat.v</groupId>
-            <artifactId>slardar-ext-ldap</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <artifactId>slardar-starter</artifactId>
+            <version>${slardar.version}</version>
         </dependency>
 
         <dependency>
             <groupId>cn.piesat.v</groupId>
-            <artifactId>slardar-starter</artifactId>
-            <version>${slardar.version}</version>
+            <artifactId>slardar-ext-ldap</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
