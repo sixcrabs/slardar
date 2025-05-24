@@ -188,6 +188,7 @@ public class SlardarAuthenticateService {
         String existedToken = keyStore.get(key);
         if (!StringUtils.hasText(existedToken)) {
             log.error("token 续期失败, key 为 [{}] 的token 不存在", key);
+            return;
         }
         keyStore.setex(key, existedToken, getTokenImpl().getTokenTTL());
     }

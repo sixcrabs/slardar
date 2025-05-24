@@ -1,12 +1,15 @@
 package cn.piesat.v.slardar.starter.filter;
 
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.core.entity.Account;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.SlardarEventManager;
 import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.SlardarUserDetails;
+import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
+import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import cn.piesat.v.slardar.starter.support.SecUtil;
 import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
 import com.google.common.collect.Lists;
@@ -15,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
@@ -29,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 import static cn.piesat.v.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.v.slardar.core.Constants.AUTH_USER_DETAILS_URL;
@@ -55,6 +61,9 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     @Autowired
     private SlardarAuthenticateService tokenService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarSpiContext context) {
         this.context = context;
@@ -104,27 +113,29 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
      * @param response
      */
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
-        boolean authenticated = SecUtil.isAuthenticated();
-        if (!authenticated) {
-            sendJson(response, makeErrorResult("当前未登录", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
-        }
         String tokenValue = tokenService.getTokenValueFromServlet(request);
-        Account account = SecUtil.getAccount();
-        // FIXME:
-        boolean b = tokenService.withdrawToken(tokenValue, getDeviceType(request));
-        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        if (StringUtil.isBlank(tokenValue)) {
+            sendJson(response, makeErrorResult("Not logged in", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
+        }
+        LoginDeviceType deviceType = getDeviceType(request);
+        if (tokenService.isExpired(tokenValue, deviceType)) {
+            sendJson(response, makeErrorResult("Token has been expired", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
+        }
+        String username = tokenService.getUsernameFromTokenValue(tokenValue);
+        SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
+        Account account = userDetails.getAccount();
+        boolean b = tokenService.withdrawToken(tokenValue, deviceType);
         if (b) {
-            SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-            sendJsonOk(response, makeSuccessResult(""));
+            SlardarAuthentication logoutAuth = new SlardarAuthentication(username, "", null);
+            logoutAuth.setAuthenticated(false);
+            sendJsonOk(response, makeSuccessResult("Logout Successful"));
             try {
                 context.getBeanIfAvailable(SlardarEventManager.class).dispatch(new LogoutEvent(account, request));
             } catch (SlardarException e) {
                 throw new RuntimeException(e);
             }
-
         } else {
-            sendJson(response, makeErrorResult("server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED, request.getHeader("Origin"));
+            sendJson(response, makeErrorResult("Server error...", HttpStatus.EXPECTATION_FAILED.value()), HttpStatus.EXPECTATION_FAILED, request.getHeader("Origin"));
         }
     }
 

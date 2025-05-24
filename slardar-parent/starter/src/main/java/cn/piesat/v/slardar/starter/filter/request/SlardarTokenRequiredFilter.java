@@ -36,8 +36,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static cn.piesat.v.slardar.core.Constants.TOKEN_EXPIRED;
-import static cn.piesat.v.slardar.core.Constants.TOKEN_REQUIRED;
+import static cn.piesat.v.slardar.core.Constants.*;
 import static cn.piesat.v.slardar.starter.support.HttpServletUtil.*;
 
 /**
@@ -78,6 +77,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
         if (ignoredUrls != null && ignoredUrls.length > 0) {
             Arrays.stream(ignoredUrls).forEach(url -> ignoredPathRequestMatchers.add(new AntPathRequestMatcher(url)));
         }
+        // 忽略 /logout
+        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(AUTH_LOGOUT_URL));
     }
 
     /**

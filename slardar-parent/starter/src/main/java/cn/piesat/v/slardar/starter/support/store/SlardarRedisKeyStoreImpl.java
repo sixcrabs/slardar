@@ -174,7 +174,7 @@ public class SlardarRedisKeyStoreImpl extends AbstractKeyStoreImpl {
             RedisStringCommands<String, String> commands = conn.sync();
             String reply = commands.setex(key, ttl, stringify(val));
             String replyTyped = commands.setex(key.concat(TYPE_SUFFIX), ttl, val.getClass().getName());
-            return StringUtil.isNotBlank(reply) && StringUtil.isNotBlank(replyTyped);
+            return "OK".equalsIgnoreCase(reply) && "OK".equalsIgnoreCase(replyTyped);
         }));
     }
 
