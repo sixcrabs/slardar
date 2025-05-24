@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.sso.server.web;
 
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.starter.config.SlardarProperties;
 import cn.piesat.v.slardar.starter.support.HttpServletUtil;
 import org.springframework.stereotype.Controller;
@@ -43,7 +43,7 @@ public class SsoServerController {
         mav.getModel().put("captchaEnabled", slardarProperties.getLogin().getCaptchaEnabled());
         // TODO: 这里根据租户信息指向不同的登陆页 从请求header 里获取租户信息 若为空 则默认登陆页
         String realm = HttpServletUtil.getHeadersAsMap(request).getOrDefault("realm", "");
-        mav.setViewName(StrUtil.isBlank(realm) ? "sso-login" : realm + "/login");
+        mav.setViewName(StringUtil.isBlank(realm) ? "sso-login" : realm + "/login");
         return mav;
     }
 }

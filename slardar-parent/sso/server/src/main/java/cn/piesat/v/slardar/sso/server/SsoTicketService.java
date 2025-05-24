@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.sso.server;
 
-import cn.hutool.core.util.RandomUtil;
+import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import cn.piesat.v.slardar.spi.SlardarSpiFactory;
 import cn.piesat.v.slardar.sso.server.config.SsoServerProperties;
 import cn.piesat.v.slardar.spi.SlardarKeyStore;

@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.sso.server;
 
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.piesat.v.misc.hutool.mini.MapUtil;
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.core.SlardarException;
 import cn.piesat.v.slardar.core.entity.Account;
 import cn.piesat.v.slardar.core.entity.UserProfile;
@@ -120,7 +120,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      */
     private void handleValidate(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         String tokenValue = tokenService.getTokenValueFromServlet(request);
-        if (StrUtil.isEmpty(tokenValue)) {
+        if (StringUtil.isBlank(tokenValue)) {
             throw new SsoException("Token is required").setCode(401);
         }
         LoginDeviceType deviceType = getDeviceType(request);
@@ -141,7 +141,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
      */
     private void handleUserDetails(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         String tokenValue = tokenService.getTokenValueFromServlet(request);
-        if (StrUtil.isEmpty(tokenValue)) {
+        if (StringUtil.isBlank(tokenValue)) {
             throw new SsoException("Token is required").setCode(401);
         }
         boolean expired = tokenService.isExpired(tokenValue, getDeviceType(request));
@@ -206,7 +206,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
     private void handleSsoAuth(HttpServletRequest request, HttpServletResponse response) throws SsoException {
         // 尝试从请求里面读取 token 并验证是否有效
         String tokenValue = tokenService.getTokenValueFromServlet(request);
-        if (StrUtil.isEmpty(tokenValue)) {
+        if (StringUtil.isBlank(tokenValue)) {
             // 跳转到SSO登录页
             sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }

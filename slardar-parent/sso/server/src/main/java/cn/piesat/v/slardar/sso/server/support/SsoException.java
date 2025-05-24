@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.sso.server.support;
 
-import cn.hutool.core.map.MapUtil;
+import cn.piesat.v.misc.hutool.mini.MapUtil;
 
 import java.util.HashMap;
 
