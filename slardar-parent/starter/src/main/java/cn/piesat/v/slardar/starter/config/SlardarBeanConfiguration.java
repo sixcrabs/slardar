@@ -47,6 +47,7 @@ public class SlardarBeanConfiguration {
     public static final String[] STATIC_RES_MATCHERS = new String[]{
             "/",
             "/*.html",
+            "/**/*.html",
             "/v2/api-docs/**",
             "/doc.html",
             "/image/**",
@@ -59,10 +60,9 @@ public class SlardarBeanConfiguration {
             "/**/*.png",
             "/**/*.jpg",
             "/**/*.jpeg",
+            "/**/*.svg",
             "/favicon.ico",
             "/manifest.json",
-            "/*.html",
-            "/**/*.html",
             "/swagger-resources/**",
             "/v2/api-docs"};
 
