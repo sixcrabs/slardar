@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Alex
  * @since 2025/4/13
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(OauthServerProperties.class)
 public class SlardarOauthServerAutoConfiguration {
 

@@ -2,7 +2,7 @@ package cn.piesat.v.slardar.oauth.server.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static cn.piesat.v.slardar.oauth.server.OauthConstants.OAUTH_CTX_PATH;
+import static cn.piesat.v.slardar.oauth.server.support.OauthServerUtil.OAUTH_CTX_PATH;
 
 /**
  * <p>

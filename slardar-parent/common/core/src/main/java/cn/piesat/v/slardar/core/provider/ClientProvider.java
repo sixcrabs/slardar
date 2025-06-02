@@ -9,6 +9,7 @@ import cn.piesat.v.slardar.core.entity.Client;
  * 适用于
  *  <ul>
  *      <li> - sso client</li>
+ *      <li> - oauth2 client</li>
  *      <li> - api signature</li>
  *  </ul>
  * </p>

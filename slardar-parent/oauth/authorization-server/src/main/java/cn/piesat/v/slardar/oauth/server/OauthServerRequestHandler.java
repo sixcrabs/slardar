@@ -1,6 +1,8 @@
 package cn.piesat.v.slardar.oauth.server;
 
+import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.oauth.server.config.OauthServerProperties;
+import cn.piesat.v.slardar.oauth.server.support.OauthServerHandlerMapping;
 import cn.piesat.v.slardar.spi.SlardarSpiContext;
 import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
 import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
@@ -23,16 +25,17 @@ public class OauthServerRequestHandler implements SlardarIgnoringCustomizer {
 
     private final SlardarAuthenticateService authenticateService;
 
-    private final SlardarSpiContext spiContext;
+    private final SlardarSpiContext context;
 
     public OauthServerRequestHandler(OauthServerProperties serverProperties, SlardarSpiContext spiContext) {
         this.serverProperties = serverProperties;
-        this.authenticateService = spiContext.getBean(SlardarAuthenticateService.class);;
-        this.spiContext = spiContext;
+        this.authenticateService = spiContext.getBean(SlardarAuthenticateService.class);
+        this.context = spiContext;
     }
 
     /**
      * 处理/oauth/ 的各请求
+     *
      * @param request
      * @param response
      */
@@ -40,7 +43,32 @@ public class OauthServerRequestHandler implements SlardarIgnoringCustomizer {
         String uri = request.getRequestURI();
         // 根据不同 path 分发处理
         String mapping = uri.replace(serverProperties.getCtxPath(), "").replaceFirst("/", "");
+        OauthServerHandlerMapping handlerMapping = OauthServerHandlerMapping.valueOf(mapping);
+        switch (handlerMapping) {
+            case authorize:
+                // TODO:
+                handleAuthorize(request, response);
+                break;
+            case token:
+                break;
+            case refresh:
+                break;
+            case revoke:
+                break;
+            case userdetails:
+            case userDetails:
+                break;
+        }
 
+    }
+
+    private void handleAuthorize(HttpServletRequest request, HttpServletResponse response) {
+        // 尝试从请求里面读取 token 并验证是否有效
+        String tokenValue = authenticateService.getTokenValueFromServlet(request);
+        if (StringUtil.isBlank(tokenValue)) {
+            // 跳转到SSO登录页
+            sendForward(request, response, SSO_LOGIN_VIEW_URL);
+        }
     }
 
     @Override
