@@ -51,7 +51,8 @@ public class RSACrypto implements SlardarCrypto {
     @Override
     public void initialize(SlardarSpiContext context) {
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
-        String publicKey = properties.getLogin().getEncrypt().getSecretKey();
+        SlardarProperties.EncryptSetting encrypt = properties.getLogin().getEncrypt();
+        String publicKey = encrypt.getMode().equalsIgnoreCase(MODE) ? encrypt.getSecretKey() : null;
         if (StringUtil.isBlank(publicKey)) {
             publicKey = "ab0c1de2fg3hi4jk5l1n9";
         }

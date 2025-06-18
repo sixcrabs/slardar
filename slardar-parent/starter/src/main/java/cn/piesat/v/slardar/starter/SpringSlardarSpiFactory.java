@@ -119,43 +119,47 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      */
     @Override
     public void afterPropertiesSet() throws Exception {
-        // 获取所有的 otp 发送实现 并存入 缓存
-        ServiceLoader<SlardarOtpDispatcher> impls = ServiceLoader.load(SlardarOtpDispatcher.class);
-        for (SlardarOtpDispatcher impl : impls) {
-            impl.initialize(this.spiContext);
-            OTP_REPO.put(impl.name().toUpperCase(), impl);
-        }
-        logger.info("[slardar] 已加载 [{}] 个OTP发送组件实现", OTP_REPO.size());
+        try {
+            // 获取所有的 otp 发送实现 并存入 缓存
+            ServiceLoader<SlardarOtpDispatcher> impls = ServiceLoader.load(SlardarOtpDispatcher.class);
+            for (SlardarOtpDispatcher impl : impls) {
+                impl.initialize(this.spiContext);
+                OTP_REPO.put(impl.name().toUpperCase(), impl);
+            }
+            logger.info("[slardar] 已加载 [{}] 个OTP发送组件实现", OTP_REPO.size());
 
-        // 获取所有的 加解密 实现 并存入 缓存
-        ServiceLoader<SlardarCrypto> cryptos = ServiceLoader.load(SlardarCrypto.class);
-        for (SlardarCrypto impl : cryptos) {
-            impl.initialize(this.spiContext);
-            CRYPTO_REPO.put(impl.name().toUpperCase(), impl);
-        }
-        logger.info("[slardar] 已加载 [{}] 个登录加密组件实现", CRYPTO_REPO.size());
+            // 获取所有的 加解密 实现 并存入 缓存
+            ServiceLoader<SlardarCrypto> cryptos = ServiceLoader.load(SlardarCrypto.class);
+            for (SlardarCrypto impl : cryptos) {
+                impl.initialize(this.spiContext);
+                CRYPTO_REPO.put(impl.name().toUpperCase(), impl);
+            }
+            logger.info("[slardar] 已加载 [{}] 个登录加密组件实现", CRYPTO_REPO.size());
 
-        // 获取所有的 token 实现 并存入 缓存
-        ServiceLoader<SlardarTokenProvider> tokenProviders = ServiceLoader.load(SlardarTokenProvider.class);
-        for (SlardarTokenProvider tokenImpl : tokenProviders) {
-            tokenImpl.initialize(this.spiContext);
-            TOKEN_REPO.put(tokenImpl.name().toUpperCase(), tokenImpl);
-        }
-        logger.info("[slardar] 已加载 [{}] 个token实现组件", TOKEN_REPO.size());
+            // 获取所有的 token 实现 并存入 缓存
+            ServiceLoader<SlardarTokenProvider> tokenProviders = ServiceLoader.load(SlardarTokenProvider.class);
+            for (SlardarTokenProvider tokenImpl : tokenProviders) {
+                tokenImpl.initialize(this.spiContext);
+                TOKEN_REPO.put(tokenImpl.name().toUpperCase(), tokenImpl);
+            }
+            logger.info("[slardar] 已加载 [{}] 个token实现组件", TOKEN_REPO.size());
 
-        ServiceLoader<SlardarAuthenticateResultAdapter> authenticateResultHandlers = ServiceLoader.load(SlardarAuthenticateResultAdapter.class);
-        for (SlardarAuthenticateResultAdapter resultHandler : authenticateResultHandlers) {
-            resultHandler.initialize(this.spiContext);
-            RESULT_HANDLER_REPO.put(resultHandler.name().toUpperCase(), resultHandler);
-        }
-        logger.info("[slardar] 已加载 [{}] 个认证结果处理组件", RESULT_HANDLER_REPO.size());
+            ServiceLoader<SlardarAuthenticateResultAdapter> authenticateResultHandlers = ServiceLoader.load(SlardarAuthenticateResultAdapter.class);
+            for (SlardarAuthenticateResultAdapter resultHandler : authenticateResultHandlers) {
+                resultHandler.initialize(this.spiContext);
+                RESULT_HANDLER_REPO.put(resultHandler.name().toUpperCase(), resultHandler);
+            }
+            logger.info("[slardar] 已加载 [{}] 个认证结果处理组件", RESULT_HANDLER_REPO.size());
 
-        ServiceLoader<SlardarKeyStore> keyStores = ServiceLoader.load(SlardarKeyStore.class);
-        for (SlardarKeyStore keyStore : keyStores) {
-            keyStore.initialize(this.spiContext);
-            KEY_STORE_REPO.put(keyStore.name().toUpperCase(), keyStore);
+            ServiceLoader<SlardarKeyStore> keyStores = ServiceLoader.load(SlardarKeyStore.class);
+            for (SlardarKeyStore keyStore : keyStores) {
+                keyStore.initialize(this.spiContext);
+                KEY_STORE_REPO.put(keyStore.name().toUpperCase(), keyStore);
+            }
+            logger.info("[slardar] 已加载 [{}] 个 kv 存储组件", KEY_STORE_REPO.size());
+        } catch (Exception e) {
+            logger.error("[slardar] spi load error {}", e.getLocalizedMessage());
         }
-        logger.info("[slardar] 已加载 [{}] 个 kv 存储组件", KEY_STORE_REPO.size());
 
     }
 }

@@ -77,13 +77,6 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
-        <!--国密-->
-<!--        <dependency>-->
-<!--            <groupId>com.antherd</groupId>-->
-<!--            <artifactId>sm-crypto</artifactId>-->
-<!--            <version>0.3.2</version>-->
-<!--        </dependency>-->
-
         <!--邮件发送-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -97,6 +90,7 @@
             <version>2.0.2</version>
         </dependency>
 
+        <!--  aes crypto   -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>

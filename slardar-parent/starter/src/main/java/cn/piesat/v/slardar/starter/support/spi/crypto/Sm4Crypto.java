@@ -49,7 +49,7 @@ public class Sm4Crypto implements SlardarCrypto {
     public void initialize(SlardarSpiContext context) {
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         SlardarProperties.EncryptSetting encrypt = properties.getLogin().getEncrypt();
-        if (encrypt.getSecretKey() != null) {
+        if (encrypt.getMode().equalsIgnoreCase(name()) && encrypt.getSecretKey() != null) {
             key = encrypt.getSecretKey();
         }
         sm4 = SmUtil.sm4(HexUtil.decodeHex(key));
