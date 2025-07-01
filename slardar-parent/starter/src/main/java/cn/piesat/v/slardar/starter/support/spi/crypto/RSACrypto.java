@@ -83,6 +83,10 @@ public class RSACrypto implements SlardarCrypto {
      */
     @Override
     public String decrypt(String ciphertext) throws SlardarException {
-        return rsa.decryptStr(ciphertext, KeyType.PrivateKey, StandardCharsets.UTF_8);
+        try {
+            return rsa.decryptStr(ciphertext, KeyType.PrivateKey, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new SlardarException(e);
+        }
     }
 }

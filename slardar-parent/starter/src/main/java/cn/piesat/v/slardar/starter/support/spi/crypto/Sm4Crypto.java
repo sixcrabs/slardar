@@ -21,8 +21,10 @@ import com.google.auto.service.AutoService;
 @AutoService(SlardarCrypto.class)
 public class Sm4Crypto implements SlardarCrypto {
 
+    public static final String MODE = "sm4";
+
     /**
-     * // 16 进制字符串，要求为 128 比特
+     * 16 进制字符串，要求为 128 比特
      */
     private String key = "0a1b2c3d4e5f6f7e8d9cba9876543210";
 
@@ -37,7 +39,7 @@ public class Sm4Crypto implements SlardarCrypto {
      */
     @Override
     public String name() {
-        return "sm4";
+        return MODE;
     }
 
     /**
@@ -63,7 +65,11 @@ public class Sm4Crypto implements SlardarCrypto {
      */
     @Override
     public String encrypt(String plaintext) throws SlardarException {
-        return sm4.encryptHex(plaintext);
+        try {
+            return sm4.encryptHex(plaintext);
+        } catch (Exception e) {
+            throw new SlardarException(e);
+        }
     }
 
     /**
@@ -74,6 +80,10 @@ public class Sm4Crypto implements SlardarCrypto {
      */
     @Override
     public String decrypt(String ciphertext) throws SlardarException {
-        return sm4.decryptStr(ciphertext, CharsetUtil.CHARSET_UTF_8);
+        try {
+            return sm4.decryptStr(ciphertext, CharsetUtil.CHARSET_UTF_8);
+        } catch (Exception e) {
+            throw new SlardarException(e);
+        }
     }
 }

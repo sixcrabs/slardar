@@ -79,6 +79,10 @@ public class AESCrypto implements SlardarCrypto {
      */
     @Override
     public String decrypt(String ciphertext) throws SlardarException {
-        return aes.decryptStr(ciphertext, StandardCharsets.UTF_8);
+        try {
+            return aes.decryptStr(ciphertext, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new SlardarException(e);
+        }
     }
 }
