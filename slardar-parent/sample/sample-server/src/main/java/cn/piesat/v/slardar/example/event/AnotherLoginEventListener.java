@@ -37,6 +37,7 @@ public class AnotherLoginEventListener implements SlardarEventListener<LoginEven
     @Override
     public void onEvent(LoginEvent event) throws SlardarException {
         LoginEvent.LoginEventPayload payload = event.payload();
+        Object principal = event.payload().getAuthentication().getLoginDeviceType();
         // 登录成功后续操作
         Map headers = payload.getRequestHeaders();
 

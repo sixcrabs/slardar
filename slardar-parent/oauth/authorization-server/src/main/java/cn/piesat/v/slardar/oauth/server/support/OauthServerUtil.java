@@ -77,7 +77,7 @@ public final class OauthServerUtil {
      * @param response
      * @param path
      */
-    private void sendForward(HttpServletRequest request, HttpServletResponse response, String path) {
+    public static void sendForward(HttpServletRequest request, HttpServletResponse response, String path) {
         try {
             // token 为空 则 跳转到 登录页(登录页面由 认证中心提供)
             forward(request, response, path);
@@ -94,7 +94,7 @@ public final class OauthServerUtil {
      * @param result
      * @throws IOException
      */
-    private void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
+    public static void sendJson(HttpServletResponse response, Serializable result, HttpStatus httpStatus) {
         response.setStatus(httpStatus.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -106,13 +106,13 @@ public final class OauthServerUtil {
         }
     }
 
-    private HashMap<String, Object> makeResult(Object result, int code) {
+    public static HashMap<String, Object> makeResult(Object result, int code) {
         HashMap<String, Object> ret = MapUtil.of("code", code);
         ret.put("data", result);
         return ret;
     }
 
-    private HashMap<String, Object> makeErrorResult(String msg, int code) {
+    public static HashMap<String, Object> makeErrorResult(String msg, int code) {
         HashMap<String, Object> ret = MapUtil.of("code", code);
         ret.put("data", null);
         ret.put("message", msg);
@@ -129,7 +129,7 @@ public final class OauthServerUtil {
      *
      * @param url redirect to
      */
-    public String resolveRedirectUrl(String url) throws OauthServerException {
+    public static String resolveRedirectUrl(String url) throws OauthServerException {
         if (!StringUtils.hasText(url)) {
             throw new OauthServerException("重定向地址[url]为空").setCode(CODE_REDIRECT_FAILED);
         }
