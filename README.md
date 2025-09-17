@@ -1,7 +1,7 @@
 
 # Slardar
 
-基于 Spring Securtiy 框架封装定义了 4A (Authentication、Authorization、Account、Audit) 相关的接口和逻辑流程，应用服务可以快速具有4A等能力。
+基于 Spring Security 框架封装定义了 4A (Authentication、Authorization、Account、Audit) 相关的接口和逻辑流程，应用服务可以快速具有`4A`等能力。
 
 ## 特性
 
@@ -123,9 +123,7 @@ public class AccountProviderImpl implements AccountProvider {
 }
 ```
 
-:::tip
-这里示例代码在本地创建了示例账户，实际应用开发时 这部分应当从数据库中获取到用户信息
-:::
+> 这里示例代码在本地创建了示例账户，实际应用开发时 这部分应当从数据库中获取到用户信息
 
 实现 AuditLogIngest，用于保存审计日志
 
@@ -217,7 +215,7 @@ skv:
 ### @SlardarIgnore
 配置该接口被忽略，即无需进行认证
 
-```java{2}
+```java
     @GetMapping("/name")
     @SlardarIgnore
     public Resp getName() {
@@ -228,28 +226,26 @@ skv:
 ### @SlardarAuthority
 指定被注解的接口的访问权限
 
-```java{2}
+```java
     @GetMapping("/admin/demo")
     @SlardarAuthority("hasRole('ADMIN')")
     public Resp onlyAdmin() {
         return Resp.of("admin_".concat(RandomUtil.randomString(12)));
     }
 ```
-:::tip
-定义可访问权限，支持:
-- hasAnyRole('ADMIN')
-- hasRole('xx')
-- hasAuthority('xxx')
-- hasAnyAuthority('xx','yy')
-- permitAll()
-- denyAll()
-- ...
-:::
+> 定义可访问权限，支持:
+    - hasAnyRole('ADMIN')
+    - hasRole('xx')
+    - hasAuthority('xxx')
+    - hasAnyAuthority('xx','yy')
+    - permitAll()
+    - denyAll()
+    - ...
 
 ### 配置方式
 支持在配置文件中全局配置哪些url会被忽略:
 
-```yaml{2}
+```yaml
 slardar:
   ignores: /login,/open/**
 ```
@@ -257,7 +253,6 @@ slardar:
 ### 自定义bean
 自定义bean 可以定义需要被忽略的url以及对url进行细粒度的权限控制
 
-:::code-group
 ```java [MyIgnoreRegistryImpl.java]
 @Component
 public class MyIgnoreRegistryImpl implements SlardarIgnoringCustomizer {
@@ -285,7 +280,6 @@ public class MyUrlRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer
 }
 
 ```
-:::
 
 ## 登录定制
 
@@ -301,7 +295,7 @@ slardar:
 
 - 启用/关闭 登录验证码
 
-```yaml {3}
+```yaml
 slardar:
   login:
     captcha-enabled: false

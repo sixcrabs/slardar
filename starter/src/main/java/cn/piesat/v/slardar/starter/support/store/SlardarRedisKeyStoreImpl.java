@@ -22,16 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 import static cn.piesat.v.slardar.starter.support.store.KeyStoreUtil.GSON;
 import static cn.piesat.v.slardar.starter.support.store.KeyStoreUtil.stringify;
-import static jdk.nashorn.internal.runtime.JSType.isPrimitive;
 
 /**
  * <p>
