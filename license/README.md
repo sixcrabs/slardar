@@ -1,8 +1,11 @@
 # slardar-license
 
 - cli: 命令行工具 jar， 用于生成 公/私钥、lic授权文件(交给客户)，测试验证lic有效性等
-- manager: 应用服务需要引入 用于安装lic、实时验证lic等
+- manager: 应用服务需要引入, 用于安装lic、验证lic有效性等（配合slardar-starter使用）
 
+## 实现思路
+生成公/私钥，使用私钥生成lic授权文件，将公钥和lic授权文件给到客户，客户将lic授权文件配置给应用服务，应用服务将lic授权文件解密，并验证lic授权文件是否有效
+slardar-license-cli -----> 生成 lic & public key ----> 
 lic 文件字段
 - sign： 签名值
 - data: customer 信息

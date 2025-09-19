@@ -65,13 +65,6 @@ public class SlardarAuthenticateService {
         this.slardarProperties = slardarProperties;
         this.spiFactory = spiFactory;
         this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
-//        this.redisClient = redisClient;
-//        try {
-//            this.stringCommands = redisClient.connect().sync();
-//            this.setCommands = redisClient.connect().sync();
-//        } catch (Exception e) {
-//            log.error("redis error: {}", e.getLocalizedMessage());
-//        }
         this.keyJoiner = Joiner.on(slardarProperties.getToken().getSeparator());
         this.keySplitter = Splitter.on(slardarProperties.getToken().getSeparator());
     }
