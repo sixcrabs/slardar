@@ -43,6 +43,9 @@ public class LicenseCommander implements Callable<Integer> {
     @CommandLine.Option(names = {"-c", "--customer"}, description = "客户信息, 生成许可时必须")
     Map<CustomerKey, String> customerInfo = new HashMap<>(1);
 
+    @CommandLine.Option(names = {"-p", "--product"}, description = "产品名或码，用于识别授权的产品, 生成许可时必须")
+    String productCode;
+
     @CommandLine.Option(names = {"-o", "--output"}, description = "输出lic文件名")
     String outputFile;
 
@@ -92,6 +95,9 @@ public class LicenseCommander implements Callable<Integer> {
      * @throws Exception
      */
     private void handleGenerate() throws Exception {
+        if (isBlank(productCode)) {
+            throw new Exception("请提供产品码");
+        }
         if (customerInfo.isEmpty()) {
             throw new Exception("生成授权文件必须提供客户信息");
         }
@@ -102,11 +108,11 @@ public class LicenseCommander implements Callable<Integer> {
         // 验证输入的过期时间是否有效 格式 yyyyMMdd
         String expiryDateStr = customerInfo.get(CustomerKey.expired);
         if (isBlank(expiryDateStr)) {
-            throw new Exception("必须提供过期时间");
+            throw new Exception("必须提供过期时间, 格式 yyyyMMdd ");
         }
         LocalDate expiryDate = DateTimeUtil.toLocalDate(expiryDateStr, "yyyyMMdd");
         if (expiryDate.isBefore(LocalDate.now())) {
-            throw new Exception("提供的过期时间无效");
+            throw new Exception("提供的过期时间无效, 格式 yyyyMMdd ");
         }
         // 获取jar当前所在的目录作为输出目录
         String pwd;
@@ -131,8 +137,8 @@ public class LicenseCommander implements Callable<Integer> {
                 .setCustomerContact(customerInfo.get(CustomerKey.contact))
                 .setIssueDate(DateTimeUtil.format(LocalDate.now(), DateTimeUtil.DATE_PATTERN))
                 .setExpiryDate(DateTimeUtil.format(expiryDate, DateTimeUtil.DATE_PATTERN))
-                .setIssuedBy("slardar")
-                .setProductCode(customerInfo.get(CustomerKey.productCode))
+                .setIssuedBy("Slardar License")
+                .setProductCode(productCode)
                 .setMachineFingerprint(customerInfo.get(CustomerKey.machineCode));
         String licenseStr = GSON.toJson(license);
         // 2. 对 license 信息生成签名
@@ -148,6 +154,7 @@ public class LicenseCommander implements Callable<Integer> {
 
     /**
      * 验证授权文件
+     *
      * @throws Exception
      */
     private void handleVerify() throws Exception {

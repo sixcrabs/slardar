@@ -40,9 +40,4 @@ public enum CustomerKey {
      */
     machineCode,
 
-    /**
-     * 产品码(用于绑定授权的产品，暂未启用)
-     */
-    productCode,
-
 }
