@@ -13,6 +13,7 @@
     <modules>
         <module>sample-server</module>
         <module>sample-client</module>
+        <module>sample-license</module>
     </modules>
     <artifactId>slardar-sample-parent</artifactId>
     <packaging>pom</packaging>

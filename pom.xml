@@ -35,12 +35,12 @@
 
     <distributionManagement>
         <repository>
-            <id>releases</id>
+            <id>repo-v</id>
             <name>Nexus Release Repository</name>
             <url>${project.scm.host}</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
+            <id>repo-v</id>
             <name>Nexus Snapshot Repository</name>
             <url>${project.scm.host}</url>
         </snapshotRepository>
