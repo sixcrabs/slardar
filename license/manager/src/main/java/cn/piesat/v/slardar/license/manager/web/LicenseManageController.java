@@ -33,7 +33,7 @@ public class LicenseManageController {
         ModelAndView mav = new ModelAndView();
         // 这里根据租户信息指向不同的页面
         String realm = HttpServletUtil.getHeadersAsMap(request).getOrDefault("realm", "");
-        mav.setViewName(StringUtil.isBlank(realm) ? "license" : realm + "/license");
+        mav.setViewName(StringUtil.isBlank(realm) ? "index" : realm + "/index");
         return mav;
     }
 }

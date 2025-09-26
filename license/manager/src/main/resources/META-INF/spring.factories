@@ -1,3 +1,0 @@
-# Auto Configure
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- cn.piesat.v.slardar.license.manager.config.SlardarLicenseConfiguration

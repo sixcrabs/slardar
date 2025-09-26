@@ -16,19 +16,24 @@ public class SlardarLicenseProperties {
     /**
      * 许可文件 全路径
      */
-    private String licFile;
+    private String licenseFile;
 
     /**
      * 产品编码或名称
      */
     private String productCode;
 
-    public String getLicFile() {
-        return licFile;
+    /**
+     * true 则每次启动都安装许可（覆盖）
+     */
+    private boolean installAlways = false;
+
+    public String getLicenseFile() {
+        return licenseFile;
     }
 
-    public SlardarLicenseProperties setLicFile(String licFile) {
-        this.licFile = licFile;
+    public SlardarLicenseProperties setLicenseFile(String licenseFile) {
+        this.licenseFile = licenseFile;
         return this;
     }
 
@@ -39,5 +44,13 @@ public class SlardarLicenseProperties {
     public SlardarLicenseProperties setProductCode(String productCode) {
         this.productCode = productCode;
         return this;
+    }
+
+    public boolean isInstallAlways() {
+        return installAlways;
+    }
+
+    public void setInstallAlways(boolean installAlways) {
+        this.installAlways = installAlways;
     }
 }

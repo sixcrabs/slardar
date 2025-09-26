@@ -5,19 +5,27 @@ slardar:
   token:
     type: jwt
   key-store:
-    type: mapdb
+    type: memory
   login:
     post-only: false
     captcha-enabled: false
     max-attempts-before-locked: 3 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
     login-failed-http-status: 200 # 登录失败返回的状态码200 默认是 500
-  ignores: /licenseManager,/login,/sso-login,/mfa-login
-
+  ignores: /licenseManager,/login,/sso-login,/mfa-login,/doc.html
+  license:
+    product-code: varok
+    license-file: /Users/alex/Data/swap/piesat.lic
 
 
 spring:
   application:
     name: slardar-license-demo
-swagger:
-  enabled: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    custom:
+      local-date-format: yyyy-MM-dd
+
+openapi:
+  cors: true

@@ -28,6 +28,11 @@ public class LicenseException extends Exception {
         super(message);
     }
 
+    public LicenseException(String message, int code) {
+        super(message);
+        this.code = code;
+    }
+
     public LicenseException(String message, Throwable cause) {
         super(message, cause);
     }
