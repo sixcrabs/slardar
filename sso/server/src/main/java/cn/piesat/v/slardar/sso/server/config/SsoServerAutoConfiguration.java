@@ -33,13 +33,13 @@ public class SsoServerAutoConfiguration {
     }
 
     @Bean
-    public SsoServerRequestHandler requestHandler(SsoServerProperties serverProperties, SlardarSpiContext context,
+    public SsoServerRequestHandler ssoServerRequestHandler(SsoServerProperties serverProperties, SlardarSpiContext context,
                                                   SsoTicketService ssoTicketService) {
         return new SsoServerRequestHandler(serverProperties, context, ssoTicketService);
     }
 
     @Bean
-    public SsoServerRequestFilter serverRequestFilter(SsoServerProperties properties,
+    public SsoServerRequestFilter ssoServerRequestFilter(SsoServerProperties properties,
                                                       SsoServerRequestHandler requestHandler) {
         return new SsoServerRequestFilter(properties, requestHandler);
     }

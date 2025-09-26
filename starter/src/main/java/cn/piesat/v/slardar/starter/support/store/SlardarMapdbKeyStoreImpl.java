@@ -252,8 +252,12 @@ public class SlardarMapdbKeyStoreImpl extends AbstractKeyStoreImpl {
     @Override
     public void remove(String key) {
         dataMap.remove(key);
-        expireRecordMap.remove(key);
-        typedMap.remove(key);
+        try {
+            expireRecordMap.remove(key);
+            typedMap.remove(key);
+        } catch (Exception e) {
+            logger.error(e.getLocalizedMessage());
+        }
         db.commit();
         TIMER_MANAGER.removeTimerJob(key);
     }

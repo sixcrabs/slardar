@@ -101,13 +101,16 @@ public class SlardarSecurityConfiguration {
 
     private final List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList;
 
+    private final List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers;
+
     public SlardarSecurityConfiguration(SlardarTokenRequiredFilter tokenRequiredFilter,
                                         SlardarSpiContext slardarSpiContext,
                                         SlardarCaptchaFilter captchaFilter,
                                         SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
                                         SlardarMfaFilter mfaLoginFilter, SlardarProperties properties,
                                         List<SlardarIgnoringCustomizer> ignoringCustomizerList,
-                                        List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList) {
+                                        List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList,
+                                        List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers) {
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.basicAuthFilter = slardarSpiContext.getBeanIfAvailable(SlardarBasicAuthFilter.class);
         this.captchaFilter = captchaFilter;
@@ -116,6 +119,7 @@ public class SlardarSecurityConfiguration {
         this.properties = properties;
         this.ignoringCustomizerList = ignoringCustomizerList;
         this.urlRegistryCustomizerList = urlRegistryCustomizerList;
+        this.httpSecurityCustomizers = httpSecurityCustomizers;
     }
 
 
@@ -174,7 +178,9 @@ public class SlardarSecurityConfiguration {
                 SlardarTokenRequiredFilter.class);
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginFilter.class);
         httpSecurity.addFilterAfter(mfaLoginFilter, SlardarLoginFilter.class);
-
+        if (httpSecurityCustomizers != null) {
+            httpSecurityCustomizers.forEach(customizer -> customizer.customize(httpSecurity));
+        }
         return httpSecurity.build();
     }
 
@@ -208,8 +214,7 @@ public class SlardarSecurityConfiguration {
         for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
             HandlerMethod handlerMethod = methodEntry.getValue();
             if (handlerMethod.hasMethodAnnotation(SlardarIgnore.class)) {
-                assert methodEntry.getKey().getPatternsCondition() != null;
-                Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
+                Set<String> patternValues = methodEntry.getKey().getPatternsCondition() != null ? methodEntry.getKey().getPatternsCondition().getPatterns() : methodEntry.getKey().getPatternValues();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 if (CollectionUtils.isEmpty(methods)) {
                     registry.antMatchers(patternValues.toArray(new String[0])).permitAll();
