@@ -22,7 +22,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -49,8 +48,8 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Resource
-    private SlardarAuthenticateService tokenService;
+    @Autowired
+    private SlardarAuthenticateService authenticateService;
 
     private final SlardarSpiContext spiContext;
 
@@ -103,7 +102,7 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authToken = tokenService.getTokenValueFromServlet(request);
+        String authToken = authenticateService.getTokenValueFromServlet(request);
         PasswordEncoder passwordEncoder = spiContext.getBeanOrDefault(PasswordEncoder.class, new BCryptPasswordEncoder());
         SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken) && authToken.trim().startsWith("Basic ")) {

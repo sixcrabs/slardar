@@ -57,8 +57,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
     private static final ExecutorService POOL = new ThreadPoolExecutor(4, Runtime.getRuntime().availableProcessors() * 2,
             3000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(512), new NamedThreadFactory("auth-token-%d", true));
 
-    @Resource
-    private SlardarAuthenticateService tokenService;
+    @Autowired
+    private SlardarAuthenticateService authenticateService;
 
     /**
      * 忽略的url pattern
@@ -118,18 +118,18 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authToken = tokenService.getTokenValueFromServlet(request);
+        final String authToken = authenticateService.getTokenValueFromServlet(request);
         SlardarException tokenValidateEx = null;
         if (StringUtils.hasText(authToken)) {
             LoginDeviceType deviceType = null;
             String username = null;
             try {
                 deviceType = getDeviceType(request);
-                username = tokenService.getUsernameFromTokenValue(authToken);
+                username = authenticateService.getUsernameFromTokenValue(authToken);
             } catch (Exception e) {
                 tokenValidateEx = new SlardarException(e.getLocalizedMessage());
             }
-            if (tokenService.isExpired(authToken, deviceType)) {
+            if (authenticateService.isExpired(authToken, deviceType)) {
                 tokenValidateEx = new SlardarException(TOKEN_EXPIRED);
             }
             if (Objects.isNull(tokenValidateEx) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
@@ -149,7 +149,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                     LoginDeviceType finalDeviceType = deviceType;
                     POOL.submit(() -> {
                         try {
-                            tokenService.renewToken(authToken, finalDeviceType);
+                            authenticateService.renewToken(authToken, finalDeviceType);
                         } catch (Exception e) {
                             log.error("Failed to renew token asynchronously", e);
                         }

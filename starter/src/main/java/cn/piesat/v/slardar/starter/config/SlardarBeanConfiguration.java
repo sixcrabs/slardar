@@ -8,6 +8,7 @@ import cn.piesat.v.slardar.starter.authenticate.handler.SlardarAuthenticateHandl
 import cn.piesat.v.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import cn.piesat.v.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import cn.piesat.v.slardar.starter.filter.SlardarCaptchaFilter;
+import cn.piesat.v.slardar.starter.filter.SlardarLoginFilter;
 import cn.piesat.v.slardar.starter.filter.SlardarMfaFilter;
 import cn.piesat.v.slardar.starter.filter.request.SlardarApiSignatureFilter;
 import cn.piesat.v.slardar.starter.filter.request.SlardarBasicAuthFilter;
@@ -17,9 +18,7 @@ import cn.piesat.v.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import cn.piesat.v.slardar.starter.handler.SlardarAuthenticateSucceedHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -35,7 +34,7 @@ import java.util.Arrays;
  * @author alex
  * @version v1.0 2023/3/13
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(SlardarProperties.class)
 @ComponentScan(basePackages = {"cn.piesat"})
 public class SlardarBeanConfiguration {
@@ -77,6 +76,40 @@ public class SlardarBeanConfiguration {
         return new SlardarEventManager();
     }
 
+    @Bean
+    public SlardarSpiContext slardarSpiContext() {
+        return new SpringSlardarSpiContextImpl();
+    }
+
+
+    @Bean
+    public SlardarSpiFactory slardarSpiFactory(SlardarSpiContext spiContext) {
+        return new SpringSlardarSpiFactory(spiContext);
+    }
+
+
+    /**
+     * 注入认证处理 service
+     *
+     * @param spiFactory
+     * @param properties
+     * @return
+     */
+    @Bean
+    public SlardarAuthenticateService authenticateService(SlardarSpiFactory spiFactory, SlardarProperties properties) {
+        return new SlardarAuthenticateService(properties, spiFactory);
+    }
+
+    /**
+     * 注入 认证 handler factory
+     *
+     * @return
+     */
+    @Bean
+    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarSpiContext context) {
+        return new SlardarAuthenticateHandlerFactory(context);
+    }
+
 
     /**
      * 注入 认证失败 handler
@@ -91,14 +124,12 @@ public class SlardarBeanConfiguration {
     /**
      * 注入 认证成功 handler
      *
-     * @param properties
      * @return
      */
     @Bean
-    public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarProperties properties,
-                                                                        SlardarAuthenticateService tokenService,
+    public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarAuthenticateService tokenService,
                                                                         SlardarSpiContext context) {
-        return new SlardarAuthenticateSucceedHandler(properties, tokenService, context);
+        return new SlardarAuthenticateSucceedHandler(tokenService, context);
     }
 
     /**
@@ -110,7 +141,6 @@ public class SlardarBeanConfiguration {
     public SlardarAccessDeniedHandler accessDeniedHandler(SlardarAuthenticateService authenticateService) {
         return new SlardarAccessDeniedHandler(authenticateService);
     }
-
 
     /**
      * 处理 MFA 认证
@@ -125,39 +155,6 @@ public class SlardarBeanConfiguration {
     }
 
     /**
-     * 注入 认证 handler factory
-     *
-     * @return
-     */
-    @Bean
-    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarSpiContext context) {
-        return new SlardarAuthenticateHandlerFactory(context);
-    }
-
-    /**
-     * MFA 登录过滤器
-     *
-     * @return
-     */
-    @Bean
-    public SlardarMfaFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
-                                                  AuthenticationFailureHandler failureHandler,
-                                                  AuthenticationSuccessHandler successHandler) {
-        return new SlardarMfaFilter(mfaAuthService, failureHandler, successHandler);
-    }
-
-    @Bean
-    public SlardarSpiContext slardarSpiContext() {
-        return new SpringSlardarSpiContextImpl();
-    }
-
-
-    @Bean
-    public SlardarSpiFactory slardarSpiFactory(SlardarSpiContext spiContext) {
-        return new SpringSlardarSpiFactory(spiContext);
-    }
-
-    /**
      * 注入用户详情获取 service
      *
      * @param context
@@ -169,20 +166,21 @@ public class SlardarBeanConfiguration {
     }
 
     /**
-     * 注入认证处理 service
+     * MFA 登录过滤器
      *
-     * @param spiFactory
-     * @param properties
      * @return
      */
     @Bean
-    public SlardarAuthenticateService authenticateService(SlardarSpiFactory spiFactory,
-                                                          SlardarProperties properties) {
-        return new SlardarAuthenticateService(properties, spiFactory);
+    @DependsOn("slardarMfaAuthService")
+    public SlardarMfaFilter slardarMfaLoginFilter(SlardarMfaAuthService mfaAuthService,
+                                                  AuthenticationFailureHandler failureHandler,
+                                                  AuthenticationSuccessHandler successHandler) {
+        return new SlardarMfaFilter(mfaAuthService, failureHandler, successHandler);
     }
 
     @Bean
     @ConditionalOnProperty(name = "slardar.basic.enable")
+    @DependsOn("authenticateService")
     public SlardarBasicAuthFilter basicAuthFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
         return new SlardarBasicAuthFilter(properties.getBasic().getFilterUrls(), spiContext);
     }
@@ -200,6 +198,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
+    @DependsOn("authenticateService")
     public SlardarTokenRequiredFilter requestFilter(SlardarProperties properties) {
         // 忽略的url 包含配置的参数以及静态资源、swagger context
         String[] ignoresFromConfig = properties.getIgnores();
@@ -221,6 +220,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
+    @DependsOn("authenticateService")
     public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarSpiContext context) {
         return new SlardarAuthenticatedRequestFilter(properties, context);
     }
@@ -233,6 +233,23 @@ public class SlardarBeanConfiguration {
     @Bean
     public SlardarCaptchaFilter slardarCaptchaFilter() {
         return new SlardarCaptchaFilter();
+    }
+
+    /**
+     * 登录请求
+     *
+     * @param properties
+     * @param failureHandler
+     * @param successHandler
+     * @param authenticateHandlerFactory
+     * @return
+     */
+    @Bean
+    public SlardarLoginFilter loginProcessingFilter(SlardarProperties properties,
+                                                    AuthenticationFailureHandler failureHandler,
+                                                    AuthenticationSuccessHandler successHandler,
+                                                    SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
+        return new SlardarLoginFilter(properties, failureHandler, successHandler, authenticateHandlerFactory);
     }
 
 

@@ -62,8 +62,6 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 
     private static final ObjectMapper globalObjectMapper = new ObjectMapper();
 
-    private final SlardarProperties securityProperties;
-
     private final SlardarAuthenticateService authenticateService;
 
     private final SlardarSpiContext context;
@@ -80,9 +78,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.registerModule(javaTimeModule);
     }
 
-    public SlardarAuthenticateSucceedHandler(SlardarProperties securityProperties, SlardarAuthenticateService authenticateService,
-                                             SlardarSpiContext context) {
-        this.securityProperties = securityProperties;
+    public SlardarAuthenticateSucceedHandler(SlardarAuthenticateService authenticateService, SlardarSpiContext context) {
         this.authenticateService = authenticateService;
         this.context = context;
     }

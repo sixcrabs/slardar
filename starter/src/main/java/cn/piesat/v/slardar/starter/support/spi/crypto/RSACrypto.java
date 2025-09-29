@@ -54,7 +54,7 @@ public class RSACrypto implements SlardarCrypto {
         SlardarProperties.EncryptSetting encrypt = properties.getLogin().getEncrypt();
         String publicKey = encrypt.getMode().equalsIgnoreCase(MODE) ? encrypt.getSecretKey() : null;
         if (StringUtil.isBlank(publicKey)) {
-            publicKey = "ab0c1de2fg3hi4jk5l1n9";
+            publicKey = "aK0hD0jP5";
         }
         try {
             rsa = SecureUtil.rsa(rsaPrivateKey, publicKey);

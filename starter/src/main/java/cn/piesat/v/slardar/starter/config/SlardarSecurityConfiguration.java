@@ -57,7 +57,7 @@ import java.util.Set;
  * @author Alex
  * @version v1.0 2024/12/18
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @AutoConfigureAfter({SlardarBeanConfiguration.class})
@@ -74,12 +74,6 @@ public class SlardarSecurityConfiguration {
     private SlardarAuthenticateFailedHandler authenticateFailedHandler;
 
     @Autowired
-    private SlardarAuthenticateSucceedHandler authenticateSucceedHandler;
-
-    @Autowired
-    private SlardarAuthenticateHandlerFactory authenticateHandlerFactory;
-
-    @Autowired
     private HttpFirewall httpFirewall;
 
     @Resource
@@ -90,6 +84,8 @@ public class SlardarSecurityConfiguration {
     private final SlardarBasicAuthFilter basicAuthFilter;
 
     private final SlardarCaptchaFilter captchaFilter;
+
+    private final SlardarLoginFilter loginFilter;
 
     private final SlardarAuthenticatedRequestFilter authenticatedRequestFilter;
 
@@ -105,7 +101,7 @@ public class SlardarSecurityConfiguration {
 
     public SlardarSecurityConfiguration(SlardarTokenRequiredFilter tokenRequiredFilter,
                                         SlardarSpiContext slardarSpiContext,
-                                        SlardarCaptchaFilter captchaFilter,
+                                        SlardarCaptchaFilter captchaFilter, SlardarLoginFilter loginFilter,
                                         SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
                                         SlardarMfaFilter mfaLoginFilter, SlardarProperties properties,
                                         List<SlardarIgnoringCustomizer> ignoringCustomizerList,
@@ -114,6 +110,7 @@ public class SlardarSecurityConfiguration {
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.basicAuthFilter = slardarSpiContext.getBeanIfAvailable(SlardarBasicAuthFilter.class);
         this.captchaFilter = captchaFilter;
+        this.loginFilter = loginFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.mfaLoginFilter = mfaLoginFilter;
         this.properties = properties;
@@ -174,8 +171,7 @@ public class SlardarSecurityConfiguration {
         if (basicAuthFilter != null) {
             httpSecurity.addFilterBefore(basicAuthFilter, SlardarTokenRequiredFilter.class);
         }
-        httpSecurity.addFilterBefore(loginProcessingFilter(properties, authenticateFailedHandler, authenticateSucceedHandler, authenticateHandlerFactory),
-                SlardarTokenRequiredFilter.class);
+        httpSecurity.addFilterBefore(loginFilter, SlardarTokenRequiredFilter.class);
         httpSecurity.addFilterBefore(captchaFilter, SlardarLoginFilter.class);
         httpSecurity.addFilterAfter(mfaLoginFilter, SlardarLoginFilter.class);
         if (httpSecurityCustomizers != null) {
@@ -192,23 +188,6 @@ public class SlardarSecurityConfiguration {
         };
     }
 
-    /**
-     * 登录请求
-     *
-     * @param properties
-     * @param failureHandler
-     * @param successHandler
-     * @param authenticateHandlerFactory
-     * @return
-     */
-    @Bean
-    public SlardarLoginFilter loginProcessingFilter(SlardarProperties properties,
-                                                    AuthenticationFailureHandler failureHandler,
-                                                    AuthenticationSuccessHandler successHandler,
-                                                    SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
-        return new SlardarLoginFilter(properties, failureHandler, successHandler, authenticateHandlerFactory);
-    }
-
     private void permitAllByAnno(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
@@ -222,33 +201,6 @@ public class SlardarSecurityConfiguration {
                 } else {
                     for (RequestMethod method : methods) {
                         registry.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0])).permitAll();
-                        patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, method.name()));
-                    }
-                }
-            }
-        }
-    }
-
-
-    /**
-     * 配置使用 注解标记忽略的 接口
-     *
-     * @param ignoredRequestConfigurer
-     */
-    private void ignoreByAnnotation(WebSecurity.IgnoredRequestConfigurer ignoredRequestConfigurer) {
-        Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
-        for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethods.entrySet()) {
-            HandlerMethod handlerMethod = methodEntry.getValue();
-            if (handlerMethod.hasMethodAnnotation(SlardarIgnore.class)) {
-                Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
-                Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
-                if (CollectionUtils.isEmpty(methods)) {
-                    // 没有指定method
-                    ignoredRequestConfigurer.antMatchers(patternValues.toArray(new String[0]));
-                    patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, null));
-                } else {
-                    for (RequestMethod method : methods) {
-                        ignoredRequestConfigurer.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0]));
                         patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, method.name()));
                     }
                 }
@@ -293,7 +245,7 @@ public class SlardarSecurityConfiguration {
             HandlerMethod handlerMethod = methodEntry.getValue();
             if (handlerMethod.hasMethodAnnotation(SlardarAuthority.class)) {
                 SlardarAuthority annotation = handlerMethod.getMethodAnnotation(SlardarAuthority.class);
-                Set<String> patternValues = methodEntry.getKey().getPatternsCondition().getPatterns();
+                Set<String> patternValues = methodEntry.getKey().getPatternsCondition() != null ? methodEntry.getKey().getPatternsCondition().getPatterns() : methodEntry.getKey().getPatternValues();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 try {
                     if (CollectionUtils.isEmpty(methods)) {

@@ -13,13 +13,9 @@ import cn.piesat.v.slardar.starter.support.LoginDeviceType;
 import cn.piesat.v.slardar.starter.support.SecUtil;
 import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
 import com.google.common.collect.Lists;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -32,9 +28,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 import static cn.piesat.v.slardar.core.Constants.AUTH_LOGOUT_URL;
 import static cn.piesat.v.slardar.core.Constants.AUTH_USER_DETAILS_URL;
@@ -60,7 +54,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
     private final SlardarSpiContext context;
 
     @Autowired
-    private SlardarAuthenticateService tokenService;
+    private SlardarAuthenticateService authenticateService;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -113,18 +107,18 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
      * @param response
      */
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) {
-        String tokenValue = tokenService.getTokenValueFromServlet(request);
+        String tokenValue = authenticateService.getTokenValueFromServlet(request);
         if (StringUtil.isBlank(tokenValue)) {
             sendJson(response, makeErrorResult("Not logged in", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
         }
         LoginDeviceType deviceType = getDeviceType(request);
-        if (tokenService.isExpired(tokenValue, deviceType)) {
+        if (authenticateService.isExpired(tokenValue, deviceType)) {
             sendJson(response, makeErrorResult("Token has been expired", HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
         }
-        String username = tokenService.getUsernameFromTokenValue(tokenValue);
+        String username = authenticateService.getUsernameFromTokenValue(tokenValue);
         SlardarUserDetails userDetails = (SlardarUserDetails) userDetailsService.loadUserByUsername(username);
         Account account = userDetails.getAccount();
-        boolean b = tokenService.withdrawToken(tokenValue, deviceType);
+        boolean b = authenticateService.withdrawToken(tokenValue, deviceType);
         if (b) {
             SlardarAuthentication logoutAuth = new SlardarAuthentication(username, "", null);
             logoutAuth.setAuthenticated(false);
