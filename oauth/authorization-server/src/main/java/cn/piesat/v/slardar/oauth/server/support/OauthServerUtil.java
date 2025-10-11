@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.oauth.server.support;
 
 import cn.piesat.v.misc.hutool.mini.MapUtil;
-import cn.piesat.v.slardar.core.SlardarException;
+import org.winterfell.slardar.core.SlardarException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
-import static cn.piesat.v.slardar.starter.support.HttpServletUtil.forward;
+import static org.winterfell.slardar.starter.support.HttpServletUtil.forward;
 
 /**
  * <p>

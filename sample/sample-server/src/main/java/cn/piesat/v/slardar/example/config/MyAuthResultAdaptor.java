@@ -1,12 +1,11 @@
 package cn.piesat.v.slardar.example.config;
 
 import cn.piesat.v.misc.hutool.mini.MapUtil;
-import cn.piesat.v.slardar.core.AccountInfoDTO;
-import cn.piesat.v.slardar.spi.SlardarSpiContext;
-import cn.piesat.v.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
+import org.winterfell.slardar.core.AccountInfoDTO;
+import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import com.google.auto.service.AutoService;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 

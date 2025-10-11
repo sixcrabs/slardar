@@ -1,8 +1,8 @@
 package cn.piesat.v.slardar.example.config;
 
-import cn.piesat.v.slardar.core.SlardarException;
-import cn.piesat.v.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
-import cn.piesat.v.slardar.starter.authenticate.SlardarAuthentication;
+import org.winterfell.slardar.core.SlardarException;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;
 

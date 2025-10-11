@@ -3,9 +3,9 @@ package cn.piesat.v.slardar.oauth.server;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
 import cn.piesat.v.slardar.oauth.server.config.OauthServerProperties;
 import cn.piesat.v.slardar.oauth.server.support.OauthServerHandlerMapping;
-import cn.piesat.v.slardar.spi.SlardarSpiContext;
-import cn.piesat.v.slardar.starter.SlardarAuthenticateService;
-import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
+import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.starter.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.config.SlardarIgnoringCustomizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +67,7 @@ public class OauthServerRequestHandler implements SlardarIgnoringCustomizer {
         String tokenValue = authenticateService.getTokenValueFromServlet(request);
         if (StringUtil.isBlank(tokenValue)) {
             // 跳转到SSO登录页
-            sendForward(request, response, SSO_LOGIN_VIEW_URL);
+//            sendForward(request, response, SSO_LOGIN_VIEW_URL);
         }
     }
 

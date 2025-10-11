@@ -1,13 +1,19 @@
 package cn.piesat.v.slardar.example.web;
 
+import cn.piesat.v.misc.hutool.mini.MapUtil;
 import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.shared.as.response.Resp;
-import cn.piesat.v.slardar.core.SlardarSecurityHelper;
-import cn.piesat.v.slardar.core.annotation.SlardarAuthority;
+import cn.piesat.v.shared.as.advice.response.Response;
+import cn.piesat.v.shared.as.advice.response.ResponseFactory;
+import org.winterfell.slardar.core.SlardarSecurityHelper;
+import org.winterfell.slardar.core.annotation.AuditLogger;
+import org.winterfell.slardar.core.annotation.SlardarAuthority;
+import org.winterfell.slardar.core.annotation.SlardarIgnore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,22 +28,24 @@ import java.util.Objects;
 @RequestMapping("/api")
 public class ApiController {
 
+    @Resource
+    private ResponseFactory responseFactory;
 
     @GetMapping("/greeting")
-    public Resp sayHi() {
-        return Resp.of("Hello, ".concat(Objects.requireNonNull(SlardarSecurityHelper.getCurrentUsername())));
+    public Response<String> sayHi() {
+        return responseFactory.createSuccess("Hello, ".concat(Objects.requireNonNull(SlardarSecurityHelper.getCurrentUsername())));
     }
 
     @GetMapping("/name")
-//    @AuditLogger(detail = "被忽略的方法")
-//    @SlardarIgnore
-    public Resp getName() {
-        return Resp.of(RandomUtil.randomString(18));
+    @AuditLogger(detail = "被忽略的方法")
+    @SlardarIgnore
+    public String getName() {
+        return RandomUtil.randomString(18);
     }
 
     @GetMapping("/admin/demo")
     @SlardarAuthority("hasRole('ADMIN')")
-    public Resp onlyAdmin() {
-        return Resp.of("admin_".concat(RandomUtil.randomString(12)));
+    public Map<String, String> onlyAdmin() {
+        return MapUtil.of("content", "admin_".concat(RandomUtil.randomString(12)));
     }
 }

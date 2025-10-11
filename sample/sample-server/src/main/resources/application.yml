@@ -1,6 +1,5 @@
 server:
   port: 9600
-
 #skv:
 #  type: redis
 #  uri: redis://localhost/0
@@ -55,5 +54,9 @@ spring:
   #    allow-bean-definition-overriding: true
   application:
     name: slardar-server-demo
-swagger:
-  enabled: true
+
+
+openapi:
+  cors: true
+  info:
+    version: 1.0.0

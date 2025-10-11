@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>slardar-sample-parent</artifactId>
-        <groupId>cn.piesat.v</groupId>
+        <groupId>org.winterfell</groupId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -15,23 +15,23 @@
 
     <dependencies>
 
-<!--        <dependency>-->
-<!--            <groupId>cn.piesat.v</groupId>-->
-<!--            <artifactId>slardar-sso-server-starter</artifactId>-->
-<!--            <version>${sso.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>cn.piesat.v</groupId>-->
+        <!--            <artifactId>slardar-sso-server-starter</artifactId>-->
+        <!--            <version>${sso.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
-            <groupId>cn.piesat.v</groupId>
+            <groupId>org.winterfell</groupId>
             <artifactId>slardar-starter</artifactId>
             <version>${slardar.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>cn.piesat.v</groupId>
-            <artifactId>slardar-ext-ldap</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.piesat.v</groupId>-->
+<!--            <artifactId>slardar-ext-ldap</artifactId>-->
+<!--            <version>1.0.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,7 +41,19 @@
         <dependency>
             <groupId>cn.piesat.v</groupId>
             <artifactId>app-spring-boot-starter</artifactId>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>junit</groupId>

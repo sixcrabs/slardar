@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.sample;
 
 import cn.piesat.v.shared.as.response.Resp;
-import cn.piesat.v.slardar.core.annotation.SlardarIgnore;
+import org.winterfell.slardar.core.annotation.SlardarIgnore;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

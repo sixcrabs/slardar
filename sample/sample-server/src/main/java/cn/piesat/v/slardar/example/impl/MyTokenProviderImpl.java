@@ -7,8 +7,8 @@
 package cn.piesat.v.slardar.example.impl;
 
 import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.slardar.spi.SlardarSpiContext;
-import cn.piesat.v.slardar.spi.token.SlardarTokenProvider;
+import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.spi.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 
 import java.time.LocalDateTime;

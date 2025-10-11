@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.example.event;
 
-import cn.piesat.v.slardar.core.event.SlardarEvent;
-import cn.piesat.v.slardar.core.entity.AuditLog;
+import org.winterfell.slardar.core.event.SlardarEvent;
+import org.winterfell.slardar.core.entity.AuditLog;
 
 /**
  * <p>

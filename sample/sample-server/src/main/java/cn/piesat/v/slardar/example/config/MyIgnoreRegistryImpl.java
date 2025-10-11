@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.example.config;
 
-import cn.piesat.v.slardar.starter.config.SlardarIgnoringCustomizer;
+import org.winterfell.slardar.starter.config.SlardarIgnoringCustomizer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

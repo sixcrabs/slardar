@@ -1,9 +1,9 @@
 package cn.piesat.v.slardar.example.event;
 
-import cn.piesat.v.slardar.core.event.SlardarEventListener;
-import cn.piesat.v.slardar.core.SlardarException;
-import cn.piesat.v.slardar.core.entity.Account;
-import cn.piesat.v.slardar.starter.support.event.LogoutEvent;
+import org.winterfell.slardar.core.event.SlardarEventListener;
+import org.winterfell.slardar.core.SlardarException;
+import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 
 /**

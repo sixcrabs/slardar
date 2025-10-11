@@ -1,9 +1,8 @@
 package cn.piesat.v.slardar.example.config;
 
-import cn.piesat.v.slardar.starter.config.SlardarUrlRegistryCustomizer;
+import org.winterfell.slardar.starter.config.SlardarUrlRegistryCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 /**

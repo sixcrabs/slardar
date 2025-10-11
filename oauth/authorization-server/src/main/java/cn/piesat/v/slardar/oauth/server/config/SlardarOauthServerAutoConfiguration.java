@@ -2,7 +2,7 @@ package cn.piesat.v.slardar.oauth.server.config;
 
 import cn.piesat.v.slardar.oauth.server.OauthServerRequestFilter;
 import cn.piesat.v.slardar.oauth.server.OauthServerRequestHandler;
-import cn.piesat.v.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.spi.SlardarSpiContext;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

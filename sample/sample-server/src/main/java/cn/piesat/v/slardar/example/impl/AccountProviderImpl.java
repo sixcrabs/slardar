@@ -1,13 +1,13 @@
 package cn.piesat.v.slardar.example.impl;
 
 import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.slardar.core.SlardarException;
-import cn.piesat.v.slardar.core.provider.AccountProvider;
-import cn.piesat.v.slardar.core.AccountStatus;
-import cn.piesat.v.slardar.core.entity.Account;
-import cn.piesat.v.slardar.core.entity.Authority;
-import cn.piesat.v.slardar.core.entity.Role;
-import cn.piesat.v.slardar.core.entity.UserProfile;
+import org.winterfell.slardar.core.SlardarException;
+import org.winterfell.slardar.core.provider.AccountProvider;
+import org.winterfell.slardar.core.AccountStatus;
+import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.core.entity.Authority;
+import org.winterfell.slardar.core.entity.Role;
+import org.winterfell.slardar.core.entity.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,2 +1,2 @@
-cn.piesat.v.slardar.starter.config.SlardarBeanConfiguration
-cn.piesat.v.slardar.starter.config.SlardarSecurityConfiguration
+org.winterfell.slardar.starter.config.SlardarBeanConfiguration
+org.winterfell.slardar.starter.config.SlardarSecurityConfiguration
