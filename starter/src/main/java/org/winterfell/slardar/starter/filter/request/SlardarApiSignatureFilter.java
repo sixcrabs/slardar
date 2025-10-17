@@ -1,10 +1,13 @@
 package org.winterfell.slardar.starter.filter.request;
 
+import cn.piesat.v.timer.cron.DateTimeUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
 import org.winterfell.slardar.core.entity.Client;
 import org.winterfell.slardar.core.provider.ClientProvider;
+import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.config.SlardarProperties;
 import org.winterfell.slardar.starter.support.SignatureUtil;
 import cn.piesat.v.misc.hutool.mini.StringUtil;
@@ -19,6 +22,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,14 +46,18 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
 
     private final SlardarProperties.ApiSignatureSetting apiSignatureSetting;
 
+    private final SlardarKeyStore keyStore;
+
     /**
      * 执行过滤的请求匹配器
      */
     private final List<AntPathRequestMatcher> requestMatchers = new ArrayList<>(1);
 
-    public SlardarApiSignatureFilter(SlardarSpiContext spiContext, SlardarProperties.ApiSignatureSetting apiSignatureSetting) {
+    public SlardarApiSignatureFilter(SlardarSpiContext spiContext, SlardarSpiFactory spiFactory,
+                                     SlardarProperties slardarProperties) {
         this.spiContext = spiContext;
-        this.apiSignatureSetting = apiSignatureSetting;
+        this.apiSignatureSetting = slardarProperties.getSignature();
+        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
         String[] filterUrls = apiSignatureSetting.getFilterUrls();
         if (filterUrls != null && filterUrls.length > 0) {
             Arrays.stream(filterUrls).forEach(url -> requestMatchers.add(new AntPathRequestMatcher(url)));
@@ -110,6 +119,16 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
         if (StringUtil.isBlank(sign)) {
             exception = new SlardarException("签名不能为空");
         }
+        // 判断时间是否大于设定的超时时间 (防止重放攻击)
+        long NONCE_STR_TIMEOUT_SECONDS = apiSignatureSetting.getNonceTimeoutSeconds();
+        if (Duration.between(DateTimeUtil.toDateTime(requestTime), LocalDateTime.now()).getSeconds() > NONCE_STR_TIMEOUT_SECONDS) {
+            exception = new SlardarException("invalid  requestTime");
+        }
+        // 判断该用户的nonceStr参数是否已经在redis中（防止短时间内的重放攻击）
+        if (keyStore.has(nonce)) {
+            exception = new SlardarException("nonce 参数已存在, 请求非法！");
+        }
+        keyStore.setex(nonce, appKey, NONCE_STR_TIMEOUT_SECONDS);
         ClientProvider clientProvider = spiContext.getClientProvider();
         if (Objects.isNull(clientProvider)) {
             exception = new SlardarException("ClientProvider 需要被实现");

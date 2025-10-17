@@ -69,8 +69,8 @@ public final class SignatureUtil {
      *
      * @param appKey       app key
      * @param secretKey    secret key
-     * @param nonce       请求时需传入的唯一请求消息编码，一般为32位UUID
-     * @param requestTime 请求时间，格式为：yyyy-MM-dd HH:mm:ss
+     * @param nonce       请求时需传入的唯一请求消息编码，一般为32位UUID 随机数
+     * @param requestTime 请求时间，格式为：yyyy-MM-dd HH:mm:ss 用于禁止非法请求
      * @return
      */
     public static String generateSignature(String urlPath, String appKey, String secretKey, String nonce, String requestTime) throws SlardarException {

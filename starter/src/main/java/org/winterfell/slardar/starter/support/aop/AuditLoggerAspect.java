@@ -46,15 +46,17 @@ public class AuditLoggerAspect {
     private static final Logger logger = LoggerFactory.getLogger(AuditLoggerAspect.class);
 
     @Pointcut("@annotation(org.winterfell.slardar.core.annotation.AuditLogger)") // 指定切入点为所有标记了注解的地方
-    public void logPointCut(){};
+    public void logPointCut() {
+    }
 
     /**
-     *  后置通知，在目标方法执行之后进行操作
+     * 后置通知，在目标方法执行之后进行操作
+     *
      * @param joinPoint
      */
     @After("logPointCut()")
-    public void beforeAdvice(JoinPoint joinPoint){
-        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+    public void beforeAdvice(JoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         // 获取请求信息
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -68,10 +70,10 @@ public class AuditLoggerAspect {
         // 当前登录账号信息
         Account account = SlardarSecurityHelper.getAccount();
         UserProfile userProfile = SlardarSecurityHelper.getUserProfile();
-        String accountName = Objects.isNull(account)? Constants.ANONYMOUS: account.getName();
-        String accountId = Objects.isNull(account)? Constants.ANONYMOUS: account.getId();
-        String userProfileId = Objects.isNull(userProfile)? Constants.ANONYMOUS: userProfile.getId();
-        String userProfileName = Objects.isNull(userProfile)? Constants.ANONYMOUS: userProfile.getName();
+        String accountName = Objects.isNull(account) ? Constants.ANONYMOUS : account.getName();
+        String accountId = Objects.isNull(account) ? Constants.ANONYMOUS : account.getId();
+        String userProfileId = Objects.isNull(userProfile) ? Constants.ANONYMOUS : userProfile.getId();
+        String userProfileName = Objects.isNull(userProfile) ? Constants.ANONYMOUS : userProfile.getName();
         // 触发日志事件
         try {
             eventManager.dispatch(new AuditLogEvent(new AuditLog()

@@ -188,8 +188,8 @@ public class SlardarBeanConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "slardar.signature.enable")
-    public SlardarApiSignatureFilter apiSignatureFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
-        return new SlardarApiSignatureFilter(spiContext, properties.getSignature());
+    public SlardarApiSignatureFilter apiSignatureFilter(SlardarProperties properties, SlardarSpiContext spiContext, SlardarSpiFactory spiFactory) {
+        return new SlardarApiSignatureFilter(spiContext, spiFactory, properties);
     }
 
     /**

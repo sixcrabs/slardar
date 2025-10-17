@@ -206,6 +206,11 @@ public class SlardarProperties implements Serializable {
         private String headerKeyPrefix = "X-";
 
         /**
+         * 签名随机数有效期 默认 60s 超过此时间则认为是非法请求
+         */
+        private long nonceTimeoutSeconds = 60L;
+
+        /**
          * 针对哪些 url pattern 采用 Api 签名验证
          */
         private String[] filterUrls = new String[]{};
@@ -236,6 +241,14 @@ public class SlardarProperties implements Serializable {
         public ApiSignatureSetting setFilterUrls(String[] filterUrls) {
             this.filterUrls = filterUrls;
             return this;
+        }
+
+        public long getNonceTimeoutSeconds() {
+            return nonceTimeoutSeconds;
+        }
+
+        public void setNonceTimeoutSeconds(long nonceTimeoutSeconds) {
+            this.nonceTimeoutSeconds = nonceTimeoutSeconds;
         }
     }
 
