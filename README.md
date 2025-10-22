@@ -15,7 +15,13 @@
 
 ## 版本更新
 
-最新版本: `1.6.0-SNAPSHOT`
+最新版本: `1.7.0-SNAPSHOT`
+
+### 1.7.0-SNAPSHOT
+- 更新升级内部依赖包的版本号
+- 增加插件`slardar-ext-firewall` 用于控制接口访问
+- 增加了`license`授权模块，可用于对应用进行授权
+- 其他一些bug修复
 
 ### 1.6.0-SNAPSHOT
 - 移除了 `hutool` 的相关依赖，改为内部实现，可以避免和应用包内的 hutool 依赖冲突
@@ -29,7 +35,7 @@
 <dependency>
     <groupId>cn.piesat.v</groupId>
     <artifactId>slardar-starter</artifactId>
-    <version>1.6.0-SNAPSHOT</version>
+    <version>${latest.version}</version>
 </dependency>
 ```
 
