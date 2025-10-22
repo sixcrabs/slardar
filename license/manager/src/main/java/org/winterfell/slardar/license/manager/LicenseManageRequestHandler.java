@@ -1,7 +1,7 @@
 package org.winterfell.slardar.license.manager;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.license.core.DateTimeUtil;
 import org.winterfell.slardar.license.core.KeyAlgorithm;
 import org.winterfell.slardar.license.core.License;

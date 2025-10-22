@@ -1,6 +1,6 @@
 package org.winterfell.slardar.license.manager.web;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.starter.support.HttpServletUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
