@@ -1,6 +1,6 @@
 package cn.piesat.v.slardar.example.event;
 
-import org.winterfell.slardar.core.AuditLogIngest;
+import org.winterfell.slardar.starter.provider.AuditLogIngest;
 import org.winterfell.slardar.core.event.SlardarEventListener;
 import org.winterfell.slardar.core.SlardarException;
 import org.springframework.stereotype.Component;

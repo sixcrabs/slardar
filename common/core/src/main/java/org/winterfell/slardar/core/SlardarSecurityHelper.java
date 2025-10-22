@@ -1,8 +1,8 @@
 package org.winterfell.slardar.core;
 
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.Role;
-import org.winterfell.slardar.core.entity.UserProfile;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.Role;
+import org.winterfell.slardar.core.domain.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

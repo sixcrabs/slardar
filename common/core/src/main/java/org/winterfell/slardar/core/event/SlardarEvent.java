@@ -14,6 +14,7 @@ public interface SlardarEvent<T extends Serializable> {
 
     /**
      * payload with the event
+     *
      * @return
      */
     T payload();

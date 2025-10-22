@@ -2,7 +2,7 @@ package org.winterfell.slardar.sso.server.config;
 
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.sso.server.support.SsoException;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 
 import java.io.Serializable;
 

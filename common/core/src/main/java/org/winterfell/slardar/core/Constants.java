@@ -30,6 +30,11 @@ public final class Constants {
     public static final String AUTH_LOGOUT_URL = "/logout";
 
     /**
+     * 默认 验证码地址
+     */
+    public static final String CAPTCHA_URL = "/captcha";
+
+    /**
      * 提供rest 方式获取用户详情的url
      */
     public static final String AUTH_USER_DETAILS_URL = "/userdetails";

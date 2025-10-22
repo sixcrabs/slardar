@@ -1,7 +1,7 @@
 package cn.piesat.v.slardar.example.impl;
 
-import org.winterfell.slardar.core.AuditLogIngest;
-import org.winterfell.slardar.core.entity.AuditLog;
+import org.winterfell.slardar.starter.provider.AuditLogIngest;
+import org.winterfell.slardar.core.domain.AuditLog;
 import org.springframework.stereotype.Component;
 
 /**

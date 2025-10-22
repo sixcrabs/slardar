@@ -1,6 +1,6 @@
 package org.winterfell.slardar.license.manager;
 
-import org.winterfell.slardar.starter.config.SlardarHttpSecurityCustomizer;
+import org.winterfell.slardar.starter.config.customizer.SlardarHttpSecurityCustomizer;
 import org.winterfell.slardar.starter.filter.SlardarLoginFilter;
 import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;

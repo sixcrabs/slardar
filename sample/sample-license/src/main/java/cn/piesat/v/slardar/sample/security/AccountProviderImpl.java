@@ -1,8 +1,8 @@
 package cn.piesat.v.slardar.sample.security;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.provider.AccountProvider;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.starter.provider.AccountProvider;
 import org.springframework.stereotype.Component;
 
 /**

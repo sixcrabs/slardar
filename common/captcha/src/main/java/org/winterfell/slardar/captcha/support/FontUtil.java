@@ -1,7 +1,8 @@
 package org.winterfell.slardar.captcha.support;
 
-import cn.piesat.v.misc.hutool.mini.UtilException;
-import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
+
+import org.winterfell.misc.hutool.mini.UtilException;
+import org.winterfell.misc.hutool.mini.io.IORuntimeException;
 
 import java.awt.*;
 import java.io.File;

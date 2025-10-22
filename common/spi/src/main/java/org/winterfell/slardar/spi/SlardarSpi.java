@@ -1,5 +1,7 @@
 package org.winterfell.slardar.spi;
 
+import org.winterfell.slardar.core.SlardarContext;
+
 /**
  * <p>
  * spi core interface
@@ -20,7 +22,7 @@ public interface SlardarSpi {
      *  set context
      * @param context
      */
-    void initialize(SlardarSpiContext context);
+    void initialize(SlardarContext context);
 
     /**
      * do destroy

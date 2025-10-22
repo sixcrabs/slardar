@@ -6,8 +6,8 @@
  */
 package cn.piesat.v.slardar.example.impl;
 
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 
@@ -42,7 +42,7 @@ public class MyTokenProviderImpl implements SlardarTokenProvider {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
     }
 
 

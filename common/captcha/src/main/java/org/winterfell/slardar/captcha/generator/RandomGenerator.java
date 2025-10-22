@@ -1,7 +1,8 @@
 package org.winterfell.slardar.captcha.generator;
 
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+
+import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 
 /**
  * 随机字符验证码生成器<br>

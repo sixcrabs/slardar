@@ -1,8 +1,7 @@
 package org.winterfell.slardar.captcha.impl;
 
-import cn.piesat.v.misc.hutool.mini.ObjectUtil;
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.captcha.AbstractCaptcha;
+import org.winterfell.misc.hutool.mini.ObjectUtil;
+import org.winterfell.misc.hutool.mini.RandomUtil;
 import org.winterfell.slardar.captcha.support.GraphicsUtil;
 import org.winterfell.slardar.captcha.support.ImgUtil;
 

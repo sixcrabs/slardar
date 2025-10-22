@@ -1,8 +1,8 @@
 package cn.piesat.v.slardar.example.config;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.MapUtil;
 import org.winterfell.slardar.core.AccountInfoDTO;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import com.google.auto.service.AutoService;
 
@@ -80,7 +80,7 @@ public class MyAuthResultAdaptor implements SlardarAuthenticateResultAdapter {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         // 这里可以获取到容器里注入的 bean、配置等上下文环境
     }
 }

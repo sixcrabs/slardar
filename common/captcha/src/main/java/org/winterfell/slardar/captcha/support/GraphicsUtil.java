@@ -1,6 +1,6 @@
 package org.winterfell.slardar.captcha.support;
 
-import cn.piesat.v.misc.hutool.mini.ObjectUtil;
+import org.winterfell.misc.hutool.mini.ObjectUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

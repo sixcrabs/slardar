@@ -1,6 +1,6 @@
 package org.winterfell.slardar.core;
 
-import org.winterfell.slardar.core.entity.UserProfile;
+import org.winterfell.slardar.core.domain.UserProfile;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

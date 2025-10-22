@@ -1,7 +1,7 @@
 package org.winterfell.slardar.spi.mfa;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.core.domain.Account;
 import org.winterfell.slardar.spi.SlardarSpi;
 
 /**

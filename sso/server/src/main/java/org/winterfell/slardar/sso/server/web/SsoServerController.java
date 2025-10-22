@@ -1,7 +1,7 @@
 package org.winterfell.slardar.sso.server.web;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.HttpServletUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

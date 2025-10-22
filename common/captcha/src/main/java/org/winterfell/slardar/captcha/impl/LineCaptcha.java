@@ -1,8 +1,8 @@
 package org.winterfell.slardar.captcha.impl;
 
-import cn.piesat.v.misc.hutool.mini.ObjectUtil;
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.captcha.AbstractCaptcha;
+import org.winterfell.misc.hutool.mini.ObjectUtil;
+import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.slardar.captcha.generator.RandomGenerator;
 import org.winterfell.slardar.captcha.support.GraphicsUtil;
 import org.winterfell.slardar.captcha.support.ImgUtil;
 
@@ -40,6 +40,19 @@ public class LineCaptcha extends AbstractCaptcha {
 	 */
 	public LineCaptcha(int width, int height, int codeCount, int lineCount) {
 		super(width, height, codeCount, lineCount);
+	}
+
+	/**
+	 * 构造
+	 *
+	 * @param width          图片宽
+	 * @param height         图片高
+	 * @param codeCount      字符个数
+	 * @param interfereCount 验证码干扰元素个数
+	 * @param size           字体的大小 高度的倍数
+	 */
+	public LineCaptcha(int width, int height, int codeCount, int interfereCount, float size) {
+		super(width, height, new RandomGenerator(codeCount), interfereCount, size);
 	}
 	// -------------------------------------------------------------------- Constructor end
 

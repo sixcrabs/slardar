@@ -9,7 +9,7 @@ import org.winterfell.slardar.license.core.LicenseFile;
 import org.winterfell.slardar.license.manager.config.SlardarLicenseProperties;
 import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;

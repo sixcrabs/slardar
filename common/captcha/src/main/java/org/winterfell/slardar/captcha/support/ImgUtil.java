@@ -1,12 +1,12 @@
 package org.winterfell.slardar.captcha.support;
 
-import cn.piesat.v.misc.hutool.mini.*;
-import cn.piesat.v.misc.hutool.mini.codec.Base64Util;
-import cn.piesat.v.misc.hutool.mini.convert.Convert;
-import cn.piesat.v.misc.hutool.mini.io.FileUtil;
-import cn.piesat.v.misc.hutool.mini.io.IORuntimeException;
-import cn.piesat.v.misc.hutool.mini.io.IoUtil;
-import cn.piesat.v.misc.hutool.mini.io.Resource;
+import org.winterfell.misc.hutool.mini.*;
+import org.winterfell.misc.hutool.mini.codec.Base64Util;
+import org.winterfell.misc.hutool.mini.convert.Convert;
+import org.winterfell.misc.hutool.mini.io.FileUtil;
+import org.winterfell.misc.hutool.mini.io.IORuntimeException;
+import org.winterfell.misc.hutool.mini.io.IoUtil;
+import org.winterfell.misc.hutool.mini.io.Resource;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
@@ -1895,7 +1895,7 @@ public class ImgUtil {
 			// rgb值
 			final List<String> rgb = StringUtil.split(colorName, ',');
 			if (3 == rgb.size()) {
-				final Integer r = cn.piesat.v.misc.hutool.mini.convert.Convert.toInt(rgb.get(0));
+				final Integer r = Convert.toInt(rgb.get(0));
 				final Integer g = Convert.toInt(rgb.get(1));
 				final Integer b = Convert.toInt(rgb.get(2));
 				if (!ArrayUtil.hasNull(r, g, b)) {

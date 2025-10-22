@@ -1,10 +1,11 @@
 package org.winterfell.slardar.captcha.generator;
 
-import cn.piesat.v.misc.hutool.mini.CharUtil;
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 
-import static cn.piesat.v.misc.hutool.mini.StringUtil.sub;
+import org.winterfell.misc.hutool.mini.CharUtil;
+import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
+
+import static org.winterfell.misc.hutool.mini.StringUtil.sub;
 
 /**
  * 数字计算验证码生成器

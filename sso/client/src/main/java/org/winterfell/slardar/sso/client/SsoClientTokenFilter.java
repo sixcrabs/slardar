@@ -1,7 +1,7 @@
 package org.winterfell.slardar.sso.client;
 
 import org.winterfell.slardar.core.SlardarSecurityHelper;
-import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.core.domain.Account;
 import org.winterfell.slardar.sso.client.config.SsoClientProperties;
 import org.winterfell.slardar.sso.client.config.client.RestApiResult;
 import org.winterfell.slardar.sso.client.config.client.SsoServerApiClient;

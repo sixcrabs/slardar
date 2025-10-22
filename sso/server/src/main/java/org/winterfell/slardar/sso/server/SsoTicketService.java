@@ -4,7 +4,7 @@ import cn.piesat.v.misc.hutool.mini.RandomUtil;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.sso.server.config.SsoServerProperties;
 import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 
 /**
  * <p>

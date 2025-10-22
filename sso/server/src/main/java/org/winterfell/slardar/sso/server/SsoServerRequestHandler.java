@@ -1,18 +1,18 @@
 package org.winterfell.slardar.sso.server;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.UserProfile;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.UserProfile;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.sso.server.config.SlardarSsoUserDetailsHandler;
 import org.winterfell.slardar.sso.server.config.SsoServerProperties;
 import org.winterfell.slardar.sso.server.support.SsoException;
 import org.winterfell.slardar.sso.server.support.SsoHandlerMapping;
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
-import org.winterfell.slardar.starter.SlardarUserDetails;
-import org.winterfell.slardar.starter.config.SlardarIgnoringCustomizer;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
+import org.winterfell.slardar.starter.config.customizer.SlardarIgnoringCustomizer;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
 
     private final SlardarAuthenticateService tokenService;
 
-    private final SlardarSpiContext context;
+    private final SlardarContext context;
 
     private final SsoTicketService ticketService;
 
@@ -63,7 +63,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
     private UserDetailsService userDetailsService;
 
     public SsoServerRequestHandler(SsoServerProperties serverProperties,
-                                   SlardarSpiContext context,
+                                   SlardarContext context,
                                    SsoTicketService ticketService) {
         this.serverProperties = serverProperties;
         this.tokenService = context.getBean(SlardarAuthenticateService.class);

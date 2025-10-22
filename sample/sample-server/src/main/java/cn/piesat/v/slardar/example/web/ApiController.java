@@ -1,9 +1,10 @@
 package cn.piesat.v.slardar.example.web;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
-import cn.piesat.v.misc.hutool.mini.RandomUtil;
-import cn.piesat.v.shared.as.advice.response.Response;
-import cn.piesat.v.shared.as.advice.response.ResponseFactory;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.winterfell.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.shared.as.advice.response.Response;
+import org.winterfell.shared.as.advice.response.ResponseFactory;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
 import org.winterfell.slardar.core.annotation.AuditLogger;
 import org.winterfell.slardar.core.annotation.SlardarAuthority;
@@ -41,6 +42,12 @@ public class ApiController {
     @SlardarIgnore
     public String getName() {
         return RandomUtil.randomString(18);
+    }
+
+    @GetMapping("/guessMe")
+    @SlardarIgnore
+    public String testExt(@RequestParam Integer money, @RequestParam(required = false) boolean bonus) {
+        return (bonus ? money * 10 : money) > RandomUtil.randomInt(0, 100) ? "success" : "fail";
     }
 
     @GetMapping("/admin/demo")
