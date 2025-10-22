@@ -1,12 +1,17 @@
 package org.winterfell.slardar.starter.support;
 
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.captcha.ICaptcha;
+import org.winterfell.slardar.captcha.generator.CodeGenerator;
+import org.winterfell.slardar.captcha.generator.MathGenerator;
 import org.winterfell.slardar.captcha.generator.RandomGenerator;
+import org.winterfell.slardar.captcha.impl.AbstractCaptcha;
+import org.winterfell.slardar.captcha.impl.GifCaptcha;
+import org.winterfell.slardar.captcha.CaptchaUtil;
 import org.winterfell.slardar.captcha.impl.LineCaptcha;
-import org.winterfell.slardar.captcha.support.CaptchaUtil;
 import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
-import org.winterfell.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -49,16 +54,15 @@ public class CaptchaComponent {
      * @return
      */
     public CaptchaPayload generate(int width, int height, String sessionId) {
-        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(width, height);
-        // TODO: 这里支持多种验证码选项 留给 SPI 配置参数控制
-        RandomGenerator randomGenerator = new RandomGenerator(settings.getRandomBase(), settings.getLength());
-//        MathGenerator mathGenerator = new MathGenerator(1);
-        lineCaptcha.setGenerator(randomGenerator);
+        AbstractCaptcha captcha = settings.isGif() ? CaptchaUtil.createGifCaptcha(width, height) : CaptchaUtil.createLineCaptcha(width, height);
+        CodeGenerator codeGenerator = settings.getCodeType().equalsIgnoreCase("math") ? new MathGenerator(1) :
+                new RandomGenerator(settings.getRandomBase(), settings.getCodeLength());
+        captcha.setGenerator(codeGenerator);
         //  验证码值
-        String code = lineCaptcha.getCode();
+        String code = captcha.getCode();
         CaptchaPayload payload = new CaptchaPayload();
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            lineCaptcha.write(baos);
+            captcha.write(baos);
             boolean saved = keyStore.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), code, settings.getExpiration());
             if (saved) {
                 payload.setCode(code)

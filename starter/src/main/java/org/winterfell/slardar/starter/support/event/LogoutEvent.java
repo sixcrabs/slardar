@@ -1,6 +1,6 @@
 package org.winterfell.slardar.starter.support.event;
 
-import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.core.domain.Account;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package org.winterfell.slardar.starter.handler;
 
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;

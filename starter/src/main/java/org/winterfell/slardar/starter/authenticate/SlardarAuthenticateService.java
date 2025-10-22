@@ -1,15 +1,15 @@
-package org.winterfell.slardar.starter;
+package org.winterfell.slardar.starter.authenticate;
 
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import org.winterfell.slardar.starter.support.HttpServletUtil;
 import org.winterfell.slardar.starter.support.LoginConcurrentPolicy;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import org.slf4j.Logger;

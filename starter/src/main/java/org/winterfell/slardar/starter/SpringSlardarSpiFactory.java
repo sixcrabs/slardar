@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import org.winterfell.slardar.spi.captcha.SlardarCaptchaGenerator;
@@ -34,7 +34,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
 
     public static final Logger logger = LoggerFactory.getLogger(SpringSlardarSpiFactory.class);
 
-    private final SlardarSpiContext spiContext;
+    private final SlardarContext spiContext;
 
     /**
      * crypto repo
@@ -49,7 +49,7 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
 
     private static final Map<String, SlardarKeyStore> KEY_STORE_REPO = new HashMap<>(1);
 
-    public SpringSlardarSpiFactory(SlardarSpiContext spiContext) {
+    public SpringSlardarSpiFactory(SlardarContext spiContext) {
         this.spiContext = spiContext;
     }
 

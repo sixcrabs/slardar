@@ -1,14 +1,14 @@
 package org.winterfell.slardar.starter.filter.request;
 
-import cn.piesat.v.misc.hutool.mini.thread.NamedThreadFactory;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.thread.NamedThreadFactory;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +69,10 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 
     public String[] getIgnoredUrls() {
         return ignoredUrls;
+    }
+
+    public List<AntPathRequestMatcher> getIgnoredPathRequestMatchers() {
+        return ignoredPathRequestMatchers;
     }
 
     public SlardarTokenRequiredFilter(String[] ignoredUrls) {
@@ -163,7 +167,7 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
         }
         if (tokenValidateEx != null) {
             log.error("Failed to parse token or user disabled. token:  {}, error: {}", authToken, tokenValidateEx.getLocalizedMessage());
-            forwardRequest(request, response, tokenValidateEx, "remoteLoginException", "/remoteLoginException");
+            sendError(request, response, HttpStatus.UNAUTHORIZED, tokenValidateEx);
         } else {
             try {
                 filterChain.doFilter(request, response);
@@ -173,22 +177,6 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
                 SecurityContextHolder.clearContext();
             }
         }
-    }
-
-    /**
-     * 转发
-     *
-     * @param request
-     * @param response
-     * @param e
-     * @param param
-     * @param url
-     * @throws ServletException
-     * @throws IOException
-     */
-    private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
-        request.setAttribute(param, e);
-        sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
     }
 
     @PreDestroy

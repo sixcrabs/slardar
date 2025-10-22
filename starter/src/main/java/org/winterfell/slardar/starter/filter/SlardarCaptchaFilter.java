@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter.filter;
 
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.CaptchaComponent;
 import com.google.common.util.concurrent.RateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,8 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     // 每秒10次
     private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
 
-    public SlardarCaptchaFilter() {
-        this.requestMatcher = new AntPathRequestMatcher("/captcha", HttpMethod.GET.name());
+    public SlardarCaptchaFilter(SlardarProperties properties) {
+        this.requestMatcher = new AntPathRequestMatcher(properties.getCaptcha().getUrl(), HttpMethod.GET.name());
     }
 
 
@@ -54,7 +55,6 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
                 response.sendError(429, "Too many requests");
                 return;
             }
-            // TODO: 支持多种可定制化方式 生成验证码
             CaptchaComponent.CaptchaPayload payload = captchaComponent.generate(getSessionId(request));
             try (OutputStream os = response.getOutputStream()) {
                 response.setHeader("Pragma", "no-cache");

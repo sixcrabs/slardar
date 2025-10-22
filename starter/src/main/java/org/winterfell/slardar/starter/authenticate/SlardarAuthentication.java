@@ -1,6 +1,5 @@
 package org.winterfell.slardar.starter.authenticate;
 
-import org.winterfell.slardar.starter.SlardarUserDetails;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 

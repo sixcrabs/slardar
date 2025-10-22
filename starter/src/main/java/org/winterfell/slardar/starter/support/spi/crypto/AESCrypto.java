@@ -1,14 +1,14 @@
 package org.winterfell.slardar.starter.support.spi.crypto;
 
-import cn.piesat.v.misc.hutool.mini.crypto.Mode;
-import cn.piesat.v.misc.hutool.mini.crypto.Padding;
-import cn.piesat.v.misc.hutool.mini.crypto.SecureUtil;
-import cn.piesat.v.misc.hutool.mini.crypto.symmetric.AES;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.crypto.Mode;
+import org.winterfell.misc.hutool.mini.crypto.Padding;
+import org.winterfell.misc.hutool.mini.crypto.SecureUtil;
+import org.winterfell.misc.hutool.mini.crypto.symmetric.AES;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.crypto.SlardarCrypto;
-import org.winterfell.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -52,7 +52,7 @@ public class AESCrypto implements SlardarCrypto {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         SlardarProperties.EncryptSetting encrypt = properties.getLogin().getEncrypt();
         String secretKey = encrypt.getMode().equalsIgnoreCase(MODE) ? encrypt.getSecretKey() : StringUtil.EMPTY;

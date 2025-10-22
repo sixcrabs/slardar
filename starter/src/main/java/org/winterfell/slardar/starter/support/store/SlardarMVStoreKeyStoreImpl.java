@@ -1,12 +1,12 @@
 package org.winterfell.slardar.starter.support.store;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
-import cn.piesat.v.misc.hutool.mini.thread.ThreadUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.thread.ThreadUtil;
+import org.winterfell.misc.timer.cron.DateTimeUtil;
+import org.winterfell.misc.timer.job.TimerJobs;
 import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.spi.SlardarSpiContext;
-import org.winterfell.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.timer.cron.DateTimeUtil;
-import cn.piesat.v.timer.job.TimerJobs;
+import org.winterfell.slardar.core.SlardarContext;
+import org.winterfell.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
@@ -64,7 +64,7 @@ public class SlardarMVStoreKeyStoreImpl extends AbstractKeyStoreImpl {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         String type = properties.getKeyStore().getType();
         if (NAME.equalsIgnoreCase(type)) {

@@ -3,7 +3,7 @@ package org.winterfell.slardar.starter.filter;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.HttpServletUtil;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import org.winterfell.slardar.starter.support.RequestWrapper;
@@ -85,8 +85,6 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
                 authenticationToken.setReqClientIp(HttpServletUtil.getRequestIpAddress(request));
                 // 调用特定的认证逻辑
                 return authenticateHandler.doAuthenticate(authenticationToken);
-            } catch (AuthenticationServiceException e) {
-                throw e;
             } catch (SlardarException | IOException e) {
                 logger.error("Authentication failed: {}", e.getMessage());
                 throw new AuthenticationServiceException(e.getLocalizedMessage());

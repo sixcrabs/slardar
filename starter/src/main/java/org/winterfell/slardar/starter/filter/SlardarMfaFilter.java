@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter.filter;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import org.winterfell.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import org.springframework.security.authentication.AuthenticationServiceException;

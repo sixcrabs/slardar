@@ -1,8 +1,8 @@
 package org.winterfell.slardar.starter.authenticate.handler;
 
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarSpiContext;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.starter.authenticate.handler.impl.DefaultSlardarAuthenticateHandlerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +23,13 @@ import java.util.ServiceLoader;
  */
 public class SlardarAuthenticateHandlerFactory implements InitializingBean, DisposableBean {
 
-    private final SlardarSpiContext slardarContext;
+    private final SlardarContext slardarContext;
 
     private static final Map<String, SlardarAuthenticateHandler> REPO = new HashMap<>(1);
 
     private static final Logger logger = LoggerFactory.getLogger(SlardarAuthenticateHandlerFactory.class);
 
-    public SlardarAuthenticateHandlerFactory(SlardarSpiContext slardarContext) {
+    public SlardarAuthenticateHandlerFactory(SlardarContext slardarContext) {
         this.slardarContext = slardarContext;
     }
 

@@ -1,9 +1,9 @@
-package org.winterfell.slardar.starter;
+package org.winterfell.slardar.starter.authenticate;
 
-import org.winterfell.slardar.core.provider.AccountProvider;
+import org.winterfell.slardar.starter.provider.AccountProvider;
 import org.winterfell.slardar.core.Constants;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.SlardarContext;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,8 +23,8 @@ public class SlardarUserDetailsServiceImpl implements UserDetailsService {
 
     private final AccountProvider accountProvider;
 
-    public SlardarUserDetailsServiceImpl(SlardarSpiContext slardarContext) {
-        this.accountProvider = slardarContext.getAccountProvider();
+    public SlardarUserDetailsServiceImpl(SlardarContext slardarContext) {
+        this.accountProvider = slardarContext.getBeanIfAvailable(AccountProvider.class);
     }
 
 

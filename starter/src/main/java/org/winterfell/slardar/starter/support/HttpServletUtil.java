@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter.support;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
-import cn.piesat.v.misc.hutool.mini.thread.ThreadUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.thread.ThreadUtil;
 import org.winterfell.slardar.core.SlardarException;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
@@ -187,7 +187,7 @@ public final class HttpServletUtil {
      */
     @SuppressWarnings("unchecked")
     public static Map<String, String> getParamsAsMap(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getParameterNames();
         if (null != names) {
             while (names.hasMoreElements()) {
@@ -294,7 +294,6 @@ public final class HttpServletUtil {
 
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, String> getHeaders(final HttpServletRequest request) {
         Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getHeaderNames();
@@ -328,6 +327,18 @@ public final class HttpServletUtil {
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * send error
+     * @param request
+     * @param response
+     * @param httpStatus
+     * @param ex
+     */
+    public static void sendError(HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus, Exception ex) {
+        request.setAttribute("X-error", ex.getLocalizedMessage());
+        sendJson(response, makeErrorResult(ex.getLocalizedMessage(), httpStatus.value()), httpStatus, request.getHeader("Origin"));
     }
 
     public static void sendJsonOk(HttpServletResponse response, Serializable result) {

@@ -1,9 +1,6 @@
 package org.winterfell.slardar.starter;
 
-import org.winterfell.slardar.core.provider.AccountProvider;
-import org.winterfell.slardar.core.AuditLogIngest;
-import org.winterfell.slardar.core.provider.ClientProvider;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
@@ -20,7 +17,7 @@ import java.util.Map;
  * @author alex
  * @version v1.0 2023/11/20
  */
-public class SpringSlardarSpiContextImpl implements SlardarSpiContext, ApplicationContextAware {
+public class SpringSlardarContextImpl implements SlardarContext, ApplicationContextAware {
 
     private ApplicationContext context;
 
@@ -59,26 +56,6 @@ public class SpringSlardarSpiContextImpl implements SlardarSpiContext, Applicati
         } catch (BeansException e) {
             return defaultValue;
         }
-    }
-
-    @Override
-    public AccountProvider getAccountProvider() {
-        return getBeanIfAvailable(AccountProvider.class);
-    }
-
-    /**
-     * get client provider impl
-     *
-     * @return
-     */
-    @Override
-    public ClientProvider getClientProvider() {
-        return getBeanIfAvailable(ClientProvider.class);
-    }
-
-    @Override
-    public AuditLogIngest getAuditLogIngest() {
-        return getBeanIfAvailable(AuditLogIngest.class);
     }
 
     @Override

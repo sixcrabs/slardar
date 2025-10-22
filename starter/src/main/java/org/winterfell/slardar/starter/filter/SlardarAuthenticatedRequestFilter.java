@@ -1,14 +1,14 @@
 package org.winterfell.slardar.starter.filter;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.starter.SlardarEventManager;
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.support.SecUtil;
 import org.winterfell.slardar.starter.support.event.LogoutEvent;
@@ -51,7 +51,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
 
     private final List<RequestMatcher> requestMatchers;
 
-    private final SlardarSpiContext context;
+    private final SlardarContext context;
 
     @Autowired
     private SlardarAuthenticateService authenticateService;
@@ -59,7 +59,7 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarSpiContext context) {
+    public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarContext context) {
         this.context = context;
         this.requestMatchers = Lists.newArrayList(new AntPathRequestMatcher(AUTH_USER_DETAILS_URL, HttpMethod.POST.name()),
                 new AntPathRequestMatcher(AUTH_LOGOUT_URL, HttpMethod.POST.name()));

@@ -1,12 +1,12 @@
 package org.winterfell.slardar.starter.support.event.listener;
 
-import org.winterfell.slardar.core.AuditLogIngest;
+import org.winterfell.slardar.starter.provider.AuditLogIngest;
 import org.winterfell.slardar.core.event.SlardarEventListener;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.AuditLog;
-import org.winterfell.slardar.core.entity.UserProfile;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.AuditLog;
+import org.winterfell.slardar.core.domain.UserProfile;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ public class LoginEventListener implements SlardarEventListener<LoginEvent> {
 
     private final AuditLogIngest auditLogIngest;
 
-    public LoginEventListener(SlardarSpiContext slardarContext) {
-        this.auditLogIngest = slardarContext.getAuditLogIngest();
+    public LoginEventListener(SlardarContext slardarContext) {
+        this.auditLogIngest = slardarContext.getBeanIfAvailable(AuditLogIngest.class);
     }
 
 

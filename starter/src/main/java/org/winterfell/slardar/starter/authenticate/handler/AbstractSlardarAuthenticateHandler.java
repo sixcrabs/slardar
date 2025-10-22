@@ -1,10 +1,10 @@
 package org.winterfell.slardar.starter.authenticate.handler;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.RequestWrapper;
 import org.winterfell.slardar.starter.support.SlardarAuthenticationException;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -24,7 +24,7 @@ import static org.winterfell.slardar.core.Constants.REALM_EMPTY;
  */
 public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthenticateHandler {
 
-    protected SlardarSpiContext context;
+    protected SlardarContext context;
 
     /**
      * set context
@@ -32,7 +32,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         this.context = context;
     }
 
@@ -46,7 +46,7 @@ public abstract class AbstractSlardarAuthenticateHandler implements SlardarAuthe
      */
     @Override
     public SlardarAuthentication doAuthenticate(SlardarAuthentication authentication) throws SlardarAuthenticationException {
-        // TBD: 多个 prehandler 都需要处理
+        // TBD: 多个 pre handler 都需要处理
         Collection<SlardarAuthenticatePreHandler> preHandlers = context.getBeans(SlardarAuthenticatePreHandler.class);
         if (preHandlers != null && !preHandlers.isEmpty()) {
             for (SlardarAuthenticatePreHandler preHandler : preHandlers) {

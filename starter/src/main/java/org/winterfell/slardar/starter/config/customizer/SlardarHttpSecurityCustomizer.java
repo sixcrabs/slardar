@@ -1,10 +1,10 @@
-package org.winterfell.slardar.starter.config;
+package org.winterfell.slardar.starter.config.customizer;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 /**
  * <p>
- * .
+ * 定制 http security
  * </p>
  *
  * @author Alex

@@ -1,13 +1,13 @@
 package org.winterfell.slardar.starter.support.spi;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.UserProfile;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.UserProfile;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.mfa.SlardarOtpDispatcher;
 import org.winterfell.slardar.spi.mfa.OtpDispatchResult;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class EmailOtpDispatcher implements SlardarOtpDispatcher {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         // 这里读取email 配置
         SlardarProperties properties = context.getBeanIfAvailable(SlardarProperties.class);
         SlardarProperties.MfaSetting mfa = properties.getMfa();

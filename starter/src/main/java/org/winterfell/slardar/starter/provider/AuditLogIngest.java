@@ -1,6 +1,6 @@
-package org.winterfell.slardar.core;
+package org.winterfell.slardar.starter.provider;
 
-import org.winterfell.slardar.core.entity.AuditLog;
+import org.winterfell.slardar.core.domain.AuditLog;
 
 /**
  * <p>

@@ -1,16 +1,16 @@
 package org.winterfell.slardar.starter.filter.request;
 
-import cn.piesat.v.timer.cron.DateTimeUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.timer.cron.DateTimeUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
-import org.winterfell.slardar.core.entity.Client;
-import org.winterfell.slardar.core.provider.ClientProvider;
+import org.winterfell.slardar.core.domain.Client;
+import org.winterfell.slardar.starter.provider.ClientProvider;
 import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.SignatureUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
@@ -29,8 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import static org.winterfell.slardar.starter.support.HttpServletUtil.makeErrorResult;
-import static org.winterfell.slardar.starter.support.HttpServletUtil.sendJson;
+import static org.winterfell.slardar.starter.support.HttpServletUtil.*;
 
 /**
  * <p>
@@ -42,7 +41,7 @@ import static org.winterfell.slardar.starter.support.HttpServletUtil.sendJson;
  */
 public class SlardarApiSignatureFilter extends OncePerRequestFilter {
 
-    private final SlardarSpiContext spiContext;
+    private final SlardarContext spiContext;
 
     private final SlardarProperties.ApiSignatureSetting apiSignatureSetting;
 
@@ -53,7 +52,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
      */
     private final List<AntPathRequestMatcher> requestMatchers = new ArrayList<>(1);
 
-    public SlardarApiSignatureFilter(SlardarSpiContext spiContext, SlardarSpiFactory spiFactory,
+    public SlardarApiSignatureFilter(SlardarContext spiContext, SlardarSpiFactory spiFactory,
                                      SlardarProperties slardarProperties) {
         this.spiContext = spiContext;
         this.apiSignatureSetting = slardarProperties.getSignature();
@@ -129,7 +128,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
             exception = new SlardarException("nonce 参数已存在, 请求非法！");
         }
         keyStore.setex(nonce, appKey, NONCE_STR_TIMEOUT_SECONDS);
-        ClientProvider clientProvider = spiContext.getClientProvider();
+        ClientProvider clientProvider = spiContext.getBeanIfAvailable(ClientProvider.class);
         if (Objects.isNull(clientProvider)) {
             exception = new SlardarException("ClientProvider 需要被实现");
         } else {
@@ -161,7 +160,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
             }
         }
         if (exception != null) {
-            forwardRequest(request, response, exception, "remoteLoginException", "/remoteLoginException");
+            sendError(request, response, HttpStatus.UNAUTHORIZED, exception);
         } else {
             chain.doFilter(request, response);
         }
@@ -172,19 +171,4 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
         return request.getHeader(headerKeyPrefix + headerName);
     }
 
-    /**
-     * 转发
-     *
-     * @param request
-     * @param response
-     * @param e
-     * @param param
-     * @param url
-     * @throws ServletException
-     * @throws IOException
-     */
-    private void forwardRequest(HttpServletRequest request, HttpServletResponse response, SlardarException e, String param, String url) throws ServletException, IOException {
-        request.setAttribute(param, e);
-        sendJson(response, makeErrorResult(e.getLocalizedMessage(), HttpStatus.UNAUTHORIZED.value()), HttpStatus.UNAUTHORIZED, request.getHeader("Origin"));
-    }
 }

@@ -1,6 +1,6 @@
 package org.winterfell.slardar.starter.support.event.listener;
 
-import org.winterfell.slardar.core.AuditLogIngest;
+import org.winterfell.slardar.starter.provider.AuditLogIngest;
 import org.winterfell.slardar.core.event.SlardarEventListener;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.starter.support.event.AuditLogEvent;

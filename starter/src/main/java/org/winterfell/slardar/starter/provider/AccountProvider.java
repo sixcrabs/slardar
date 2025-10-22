@@ -1,7 +1,7 @@
-package org.winterfell.slardar.core.provider;
+package org.winterfell.slardar.starter.provider;
 
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.entity.Account;
+import org.winterfell.slardar.core.domain.Account;
 
 /**
  * <p>

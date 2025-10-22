@@ -1,14 +1,14 @@
 package org.winterfell.slardar.starter.handler;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.MapUtil;
 import org.winterfell.slardar.core.Constants;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarSpiContext;
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
+import org.winterfell.slardar.core.SlardarContext;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
 import org.winterfell.slardar.starter.SlardarEventManager;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import org.winterfell.slardar.starter.authenticate.mfa.MfaVerifyRequiredException;
-import org.winterfell.slardar.starter.config.SlardarProperties;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.SlardarAuthenticationException;
 import org.winterfell.slardar.starter.support.event.LoginEvent;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ import static org.winterfell.slardar.starter.support.HttpServletUtil.*;
  */
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 
-    private final SlardarSpiContext slardarContext;
+    private final SlardarContext slardarContext;
 
     private final SlardarAuthenticateService authenticateService;
 
@@ -46,7 +46,7 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
 
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateFailedHandler.class);
 
-    public SlardarAuthenticateFailedHandler(SlardarSpiContext slardarContext, SlardarAuthenticateService authenticateService) {
+    public SlardarAuthenticateFailedHandler(SlardarContext slardarContext, SlardarAuthenticateService authenticateService) {
         this.slardarContext = slardarContext;
         this.authenticateService = authenticateService;
         this.properties = slardarContext.getBean(SlardarProperties.class);

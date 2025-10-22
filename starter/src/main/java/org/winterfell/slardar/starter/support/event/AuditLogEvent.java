@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter.support.event;
 
 import org.winterfell.slardar.core.event.SlardarEvent;
-import org.winterfell.slardar.core.entity.AuditLog;
+import org.winterfell.slardar.core.domain.AuditLog;
 
 /**
  * <p>

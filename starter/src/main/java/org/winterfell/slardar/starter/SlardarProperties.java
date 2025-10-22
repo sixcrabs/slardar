@@ -1,4 +1,4 @@
-package org.winterfell.slardar.starter.config;
+package org.winterfell.slardar.starter;
 
 import org.winterfell.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import org.winterfell.slardar.starter.support.spi.EmailOtpDispatcher;
@@ -15,9 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.winterfell.slardar.core.Constants.AUTH_LOGIN_URL;
-import static org.winterfell.slardar.core.Constants.AUTH_TOKEN_KEY;
 import static org.springframework.boot.web.servlet.server.Encoding.DEFAULT_CHARSET;
+import static org.winterfell.slardar.core.Constants.*;
 
 
 /**
@@ -292,14 +291,14 @@ public class SlardarProperties implements Serializable {
     public static class CaptchaSetting {
 
         /**
+         * 验证码 url
+         */
+        private String url = CAPTCHA_URL;
+
+        /**
          * 验证码过期时间 单位 秒,默认 5分钟过期
          */
         private long expiration = 300L;
-
-        /**
-         * 验证码长度
-         */
-        private int length = 4;
 
         /**
          * 随机字符串的基数 若都为数字 则生成的是数字验证码
@@ -307,14 +306,55 @@ public class SlardarProperties implements Serializable {
         private String randomBase = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
 
         /**
-         * 图片高度
+         * 验证码长度 type 为 random 时生效
          */
-        private int width = 160;
+        private int codeLength = 4;
+
+        /**
+         * 验证码类型
+         * random: 随机字符串
+         * math: 数学计算
+         */
+        private String codeType = "random";
+
+        /**
+         * 是否生成 gif，默认是静态png
+         */
+        private boolean gif;
 
         /**
          * 图片宽度
          */
+        private int width = 160;
+
+        /**
+         * 图片高度
+         */
         private int height = 64;
+
+        public String getCodeType() {
+            return codeType;
+        }
+
+        public void setCodeType(String codeType) {
+            this.codeType = codeType;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean isGif() {
+            return gif;
+        }
+
+        public void setGif(boolean gif) {
+            this.gif = gif;
+        }
 
         public long getExpiration() {
             return expiration;
@@ -325,12 +365,12 @@ public class SlardarProperties implements Serializable {
             return this;
         }
 
-        public int getLength() {
-            return length;
+        public int getCodeLength() {
+            return codeLength;
         }
 
-        public CaptchaSetting setLength(int length) {
-            this.length = length;
+        public CaptchaSetting setCodeLength(int codeLength) {
+            this.codeLength = codeLength;
             return this;
         }
 

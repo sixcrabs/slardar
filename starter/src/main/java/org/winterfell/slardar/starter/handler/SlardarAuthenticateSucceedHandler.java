@@ -3,12 +3,12 @@ package org.winterfell.slardar.starter.handler;
 import org.winterfell.slardar.core.AccountInfoDTO;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
 import org.winterfell.slardar.starter.SlardarEventManager;
-import org.winterfell.slardar.starter.SlardarAuthenticateService;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import org.winterfell.slardar.starter.support.event.LoginEvent;
@@ -63,7 +63,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
 
     private final SlardarAuthenticateService authenticateService;
 
-    private final SlardarSpiContext context;
+    private final SlardarContext context;
 
     private static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateSucceedHandler.class);
 
@@ -77,7 +77,7 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         globalObjectMapper.registerModule(javaTimeModule);
     }
 
-    public SlardarAuthenticateSucceedHandler(SlardarAuthenticateService authenticateService, SlardarSpiContext context) {
+    public SlardarAuthenticateSucceedHandler(SlardarAuthenticateService authenticateService, SlardarContext context) {
         this.authenticateService = authenticateService;
         this.context = context;
     }

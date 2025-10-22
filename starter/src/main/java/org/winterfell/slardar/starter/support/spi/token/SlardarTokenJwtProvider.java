@@ -1,9 +1,9 @@
 package org.winterfell.slardar.starter.support.spi.token;
 
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.misc.timer.cron.DateTimeUtil;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
-import org.winterfell.slardar.starter.config.SlardarProperties;
-import cn.piesat.v.timer.cron.DateTimeUtil;
+import org.winterfell.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
@@ -63,7 +63,7 @@ public class SlardarTokenJwtProvider implements SlardarTokenProvider {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         secret = context.getBean(SlardarProperties.class).getToken().getJwt().getSignKey();
         expiration = context.getBean(SlardarProperties.class).getToken().getTtl();
         allowedClockSkewSeconds = context.getBean(SlardarProperties.class).getToken().getJwt().getAllowedClockSkewSeconds();

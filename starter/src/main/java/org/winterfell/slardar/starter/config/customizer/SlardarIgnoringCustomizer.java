@@ -1,10 +1,10 @@
-package org.winterfell.slardar.starter.config;
+package org.winterfell.slardar.starter.config.customizer;
 
 import java.util.List;
 
 /**
  * <p>
- * .
+ * 定制 url 忽略
  * </p>
  *
  * @author Alex

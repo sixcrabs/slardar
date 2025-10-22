@@ -1,10 +1,10 @@
-package org.winterfell.slardar.starter;
+package org.winterfell.slardar.starter.authenticate;
 
 import org.winterfell.slardar.core.AccountStatus;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.Authority;
-import org.winterfell.slardar.core.entity.Role;
-import org.winterfell.slardar.core.entity.UserProfile;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.Authority;
+import org.winterfell.slardar.core.domain.Role;
+import org.winterfell.slardar.core.domain.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

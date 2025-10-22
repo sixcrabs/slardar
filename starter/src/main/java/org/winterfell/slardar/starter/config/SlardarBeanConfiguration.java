@@ -1,9 +1,12 @@
 package org.winterfell.slardar.starter.config;
 
-import cn.piesat.v.misc.hutool.mini.ArrayUtil;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.winterfell.misc.hutool.mini.ArrayUtil;
+import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.*;
+import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetailsServiceImpl;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
 import org.winterfell.slardar.starter.authenticate.mfa.SlardarMfaAuthService;
 import org.winterfell.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
@@ -37,7 +40,7 @@ import java.util.Arrays;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(SlardarProperties.class)
-@ComponentScan(basePackages = {"cn.piesat"})
+@ComponentScan(basePackages = {"org.winterfell"})
 public class SlardarBeanConfiguration {
 
 
@@ -78,13 +81,13 @@ public class SlardarBeanConfiguration {
     }
 
     @Bean
-    public SlardarSpiContext slardarSpiContext() {
-        return new SpringSlardarSpiContextImpl();
+    public SlardarContext slardarSpiContext() {
+        return new SpringSlardarContextImpl();
     }
 
 
     @Bean
-    public SlardarSpiFactory slardarSpiFactory(SlardarSpiContext spiContext) {
+    public SlardarSpiFactory slardarSpiFactory(SlardarContext spiContext) {
         return new SpringSlardarSpiFactory(spiContext);
     }
 
@@ -107,7 +110,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarSpiContext context) {
+    public SlardarAuthenticateHandlerFactory authenticateHandlerFactory(SlardarContext context) {
         return new SlardarAuthenticateHandlerFactory(context);
     }
 
@@ -118,7 +121,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarSpiContext context, SlardarAuthenticateService authenticateService) {
+    public SlardarAuthenticateFailedHandler authenticationFailureHandler(SlardarContext context, SlardarAuthenticateService authenticateService) {
         return new SlardarAuthenticateFailedHandler(context, authenticateService);
     }
 
@@ -129,7 +132,7 @@ public class SlardarBeanConfiguration {
      */
     @Bean
     public SlardarAuthenticateSucceedHandler authenticateSucceedHandler(SlardarAuthenticateService tokenService,
-                                                                        SlardarSpiContext context) {
+                                                                        SlardarContext context) {
         return new SlardarAuthenticateSucceedHandler(tokenService, context);
     }
 
@@ -162,7 +165,7 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarUserDetailsServiceImpl userDetailsService(SlardarSpiContext context) {
+    public SlardarUserDetailsServiceImpl userDetailsService(SlardarContext context) {
         return new SlardarUserDetailsServiceImpl(context);
     }
 
@@ -182,13 +185,13 @@ public class SlardarBeanConfiguration {
     @Bean
     @ConditionalOnProperty(name = "slardar.basic.enable")
     @DependsOn("authenticateService")
-    public SlardarBasicAuthFilter basicAuthFilter(SlardarProperties properties, SlardarSpiContext spiContext) {
+    public SlardarBasicAuthFilter basicAuthFilter(SlardarProperties properties, SlardarContext spiContext) {
         return new SlardarBasicAuthFilter(properties.getBasic().getFilterUrls(), spiContext);
     }
 
     @Bean
     @ConditionalOnProperty(name = "slardar.signature.enable")
-    public SlardarApiSignatureFilter apiSignatureFilter(SlardarProperties properties, SlardarSpiContext spiContext, SlardarSpiFactory spiFactory) {
+    public SlardarApiSignatureFilter apiSignatureFilter(SlardarProperties properties, SlardarContext spiContext, SlardarSpiFactory spiFactory) {
         return new SlardarApiSignatureFilter(spiContext, spiFactory, properties);
     }
 
@@ -209,7 +212,8 @@ public class SlardarBeanConfiguration {
         }
         String[] ignores = Arrays.copyOf(STATIC_RES_MATCHERS, STATIC_RES_MATCHERS.length + ignoresFromConfig.length);
         System.arraycopy(ignoresFromConfig, 0, ignores, STATIC_RES_MATCHERS.length, ignoresFromConfig.length);
-        ignores = ArrayUtil.append(ignores, "/oauth2/**", properties.getLogin().getUrl(), "/error", "/mfa-login");
+        ignores = ArrayUtil.append(ignores, "/oauth2/**", "/error", "/mfa-login",
+                properties.getLogin().getUrl(), properties.getCaptcha().getUrl());
         return new SlardarTokenRequiredFilter(ignores);
     }
 
@@ -222,7 +226,7 @@ public class SlardarBeanConfiguration {
      */
     @Bean
     @DependsOn("authenticateService")
-    public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarSpiContext context) {
+    public SlardarAuthenticatedRequestFilter userDetailsProcessingFilter(SlardarProperties properties, SlardarContext context) {
         return new SlardarAuthenticatedRequestFilter(properties, context);
     }
 
@@ -232,8 +236,8 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarCaptchaFilter slardarCaptchaFilter() {
-        return new SlardarCaptchaFilter();
+    public SlardarCaptchaFilter slardarCaptchaFilter(SlardarProperties properties) {
+        return new SlardarCaptchaFilter(properties);
     }
 
     /**
@@ -265,5 +269,13 @@ public class SlardarBeanConfiguration {
         //此处可添加别的规则,目前只设置 允许双 //
         firewall.setAllowUrlEncodedDoubleSlash(true);
         return firewall;
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(HttpFirewall httpFirewall) {
+        return (web) -> {
+            //url中允许使用双斜杠
+            web.httpFirewall(httpFirewall);
+        };
     }
 }

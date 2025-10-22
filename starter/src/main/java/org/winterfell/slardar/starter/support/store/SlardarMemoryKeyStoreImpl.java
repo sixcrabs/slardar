@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter.support.store;
 
 import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
 import com.google.auto.service.AutoService;
 
 import java.util.List;
@@ -130,7 +130,7 @@ public class SlardarMemoryKeyStoreImpl extends AbstractKeyStoreImpl {
      * @param context
      */
     @Override
-    public void initialize(SlardarSpiContext context) {
+    public void initialize(SlardarContext context) {
         // do nothing
     }
 

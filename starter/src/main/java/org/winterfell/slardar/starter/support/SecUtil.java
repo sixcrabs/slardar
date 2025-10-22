@@ -1,7 +1,7 @@
 package org.winterfell.slardar.starter.support;
 
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

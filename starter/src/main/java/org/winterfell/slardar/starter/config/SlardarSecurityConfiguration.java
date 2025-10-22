@@ -1,12 +1,18 @@
 package org.winterfell.slardar.starter.config;
 
-import cn.piesat.v.misc.hutool.mini.ReUtil;
-import cn.piesat.v.misc.hutool.mini.ReflectUtil;
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.core.annotation.Order;
+import org.winterfell.misc.hutool.mini.ReUtil;
+import org.winterfell.misc.hutool.mini.ReflectUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.annotation.SlardarAuthority;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
-import org.winterfell.slardar.spi.SlardarSpiContext;
+import org.winterfell.slardar.core.SlardarContext;
+import org.winterfell.slardar.starter.config.customizer.SlardarHttpSecurityCustomizer;
+import org.winterfell.slardar.starter.config.customizer.SlardarIgnoringCustomizer;
+import org.winterfell.slardar.starter.config.customizer.SlardarUrlRegistryCustomizer;
 import org.winterfell.slardar.starter.filter.SlardarAuthenticatedRequestFilter;
 import org.winterfell.slardar.starter.filter.SlardarCaptchaFilter;
 import org.winterfell.slardar.starter.filter.SlardarLoginFilter;
@@ -22,15 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
@@ -51,9 +54,8 @@ import java.util.Set;
  * @author Alex
  * @version v1.0 2024/12/18
  */
-@AutoConfiguration(after = SlardarBeanConfiguration.class)
+@AutoConfiguration(after = SlardarBeanConfiguration.class, before = SecurityAutoConfiguration.class)
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SlardarSecurityConfiguration {
 
 
@@ -65,9 +67,6 @@ public class SlardarSecurityConfiguration {
 
     @Autowired
     private SlardarAuthenticateFailedHandler authenticateFailedHandler;
-
-    @Autowired
-    private HttpFirewall httpFirewall;
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -84,8 +83,6 @@ public class SlardarSecurityConfiguration {
 
     private final SlardarMfaFilter mfaLoginFilter;
 
-    private final SlardarProperties properties;
-
     private final List<SlardarIgnoringCustomizer> ignoringCustomizerList;
 
     private final List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList;
@@ -93,10 +90,10 @@ public class SlardarSecurityConfiguration {
     private final List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers;
 
     public SlardarSecurityConfiguration(SlardarTokenRequiredFilter tokenRequiredFilter,
-                                        SlardarSpiContext slardarSpiContext,
+                                        SlardarContext slardarSpiContext,
                                         SlardarCaptchaFilter captchaFilter, SlardarLoginFilter loginFilter,
                                         SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
-                                        SlardarMfaFilter mfaLoginFilter, SlardarProperties properties,
+                                        SlardarMfaFilter mfaLoginFilter,
                                         List<SlardarIgnoringCustomizer> ignoringCustomizerList,
                                         List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList,
                                         List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers) {
@@ -106,7 +103,6 @@ public class SlardarSecurityConfiguration {
         this.loginFilter = loginFilter;
         this.authenticatedRequestFilter = authenticatedRequestFilter;
         this.mfaLoginFilter = mfaLoginFilter;
-        this.properties = properties;
         this.ignoringCustomizerList = ignoringCustomizerList;
         this.urlRegistryCustomizerList = urlRegistryCustomizerList;
         this.httpSecurityCustomizers = httpSecurityCustomizers;
@@ -124,6 +120,7 @@ public class SlardarSecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().cors()
                 .and()
+                .formLogin().disable()
                 .authorizeHttpRequests();
 
         // 使用 {@link SlardarIgnore} 注解的忽略
@@ -171,14 +168,6 @@ public class SlardarSecurityConfiguration {
             httpSecurityCustomizers.forEach(customizer -> customizer.customize(httpSecurity));
         }
         return httpSecurity.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> {
-            //url中允许使用双斜杠
-            web.httpFirewall(httpFirewall);
-        };
     }
 
     private void permitAllByAnno(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {

@@ -1,6 +1,6 @@
-package org.winterfell.slardar.core.provider;
+package org.winterfell.slardar.starter.provider;
 
-import org.winterfell.slardar.core.entity.Client;
+import org.winterfell.slardar.core.domain.Client;
 
 /**
  * <p>

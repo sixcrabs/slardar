@@ -1,4 +1,4 @@
-package org.winterfell.slardar.starter.config;
+package org.winterfell.slardar.starter.config.customizer;
 
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,10 +15,10 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
  * 用法:
  * <code>
  * <pre>
- * @Component
+ * `@Component`
  * public class MyRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer {
  *
- *  @Override
+ *  `@Override`
  *  public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry){
  *          // /admin 的url只能被 admin 角色访问
  *          registry.antMatchers("/api/admin/**").hasAnyRole("ADMIN","SYS_ADMIN");
