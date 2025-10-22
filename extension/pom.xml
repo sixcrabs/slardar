@@ -15,6 +15,7 @@
 
     <modules>
         <module>ext-ldap</module>
+        <module>ext-firewall</module>
     </modules>
 
     <dependencyManagement>

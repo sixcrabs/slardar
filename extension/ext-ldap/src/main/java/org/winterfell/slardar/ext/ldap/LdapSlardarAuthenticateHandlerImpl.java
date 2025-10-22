@@ -1,9 +1,9 @@
 package org.winterfell.slardar.ext.ldap;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
-import org.winterfell.slardar.core.entity.Account;
-import org.winterfell.slardar.core.entity.UserProfile;
-import org.winterfell.slardar.starter.SlardarUserDetails;
+import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.slardar.core.domain.Account;
+import org.winterfell.slardar.core.domain.UserProfile;
+import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
 import org.winterfell.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
