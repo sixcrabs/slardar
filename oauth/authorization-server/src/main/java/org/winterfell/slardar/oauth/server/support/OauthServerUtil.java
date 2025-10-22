@@ -1,6 +1,6 @@
 package org.winterfell.slardar.oauth.server.support;
 
-import cn.piesat.v.misc.hutool.mini.MapUtil;
+import org.winterfell.misc.hutool.mini.MapUtil;
 import org.winterfell.slardar.core.SlardarException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

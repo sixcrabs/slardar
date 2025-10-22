@@ -1,6 +1,6 @@
 package org.winterfell.slardar.oauth.server;
 
-import cn.piesat.v.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.oauth.server.config.OauthServerProperties;
 import org.winterfell.slardar.oauth.server.support.OauthConstants;
 import org.winterfell.slardar.oauth.server.support.OauthServerException;
