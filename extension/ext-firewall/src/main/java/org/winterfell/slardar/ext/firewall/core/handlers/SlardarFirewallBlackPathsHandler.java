@@ -35,7 +35,7 @@ public class SlardarFirewallBlackPathsHandler extends AbstractSlardarFirewallHan
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, SlardarContext context, Object params) throws SlardarException {
         String requestPath = request.getRequestURI();
-        for (String item : this.setting.getBlackPaths()) {
+        for (String item : this.setting.getPaths()) {
             if (requestPath.equals(item)) {
                 throw new SlardarException("[slardar-firewall] invalid request：" + requestPath, requestPath);
             }
@@ -44,9 +44,9 @@ public class SlardarFirewallBlackPathsHandler extends AbstractSlardarFirewallHan
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    @ConfigurationProperties(prefix = "slardar.firewall.black-paths")
+    @ConfigurationProperties(prefix = "slardar.firewall.black-path")
     public static class Setting extends AbstractSlardarFirewallHandler.Setting {
 
-        private String[] blackPaths = new String[0];
+        private String[] paths = new String[0];
     }
 }

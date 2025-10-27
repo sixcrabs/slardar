@@ -55,6 +55,12 @@ slardar:
     headers:
       enabled: true
       forbidden-names: 'X-my,X-time'
+    black-path:
+      enabled: true
+      paths: /api/open/**
+    hosts:
+      enabled: true
+      allowed-hosts: localhost,127.0.0.1
 
 
 

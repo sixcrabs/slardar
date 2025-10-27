@@ -60,7 +60,7 @@ public class SlardarFirewallFilter extends OncePerRequestFilter {
         }
         // 添加 spring 容器内的自定义实现
         Collection<SlardarFirewallHandler> handlers = context.getBeans(SlardarFirewallHandler.class);
-        handlers.forEach(SlardarFirewallHandlerContainer.getInstance()::addHandler);
+        handlers.stream().filter(SlardarFirewallHandler::isEnabled).forEach(SlardarFirewallHandlerContainer.getInstance()::addHandler);
     }
 
     /**

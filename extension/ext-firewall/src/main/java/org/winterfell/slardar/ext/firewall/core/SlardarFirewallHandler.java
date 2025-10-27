@@ -26,4 +26,12 @@ public interface SlardarFirewallHandler {
      * @param params 预留扩展参数
      */
     void execute(HttpServletRequest request, HttpServletResponse response, SlardarContext context, Object params) throws SlardarException;
+
+    /**
+     * 是否启用该 handler 默认true
+     * @return
+     */
+    default boolean isEnabled() {
+        return true;
+    }
 }

@@ -33,9 +33,20 @@ public class MyFirewallHandler implements SlardarFirewallHandler {
         Enumeration<String> parameterNames = request.getParameterNames();
         while (parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
-            if (parameterName.contains("bonus")) {
-                throw new SlardarException("参数key中包含敏感词!");
+            if (parameterName.contains("xss")) {
+                throw new SlardarException("参数中包含敏感词!");
             }
         }
+    }
+
+    /**
+     * 是否启用该 handler 默认true
+     *
+     * @return
+     */
+    @Override
+    public boolean isEnabled() {
+        // false : 不启用
+        return false;
     }
 }
