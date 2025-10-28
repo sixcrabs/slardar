@@ -14,7 +14,6 @@
         <module>extension</module>
         <module>common</module>
         <module>oauth</module>
-        <module>license</module>
     </modules>
     <packaging>pom</packaging>
 
