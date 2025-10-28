@@ -33,7 +33,7 @@
 
 ```xml
 <dependency>
-    <groupId>cn.piesat.v</groupId>
+    <groupId>org.winterfell</groupId>
     <artifactId>slardar-starter</artifactId>
     <version>${latest.version}</version>
 </dependency>
