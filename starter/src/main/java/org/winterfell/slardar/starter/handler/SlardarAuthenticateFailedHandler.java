@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,7 +88,6 @@ public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHa
         sendJson(response, resp, status, request.getHeader("Origin"));
     }
 
-    @Nonnull
     private HttpStatus getHttpStatus(AuthenticationException e) {
         HttpStatus status = (e instanceof AuthenticationServiceException || e instanceof UsernameNotFoundException
                 || e instanceof SlardarAuthenticationException) ?

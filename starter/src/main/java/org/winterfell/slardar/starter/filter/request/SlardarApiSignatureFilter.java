@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter.filter.request;
 
+import org.jetbrains.annotations.NotNull;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.misc.timer.cron.DateTimeUtil;
 import org.winterfell.slardar.core.SlardarException;
@@ -16,7 +17,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Nonnull;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -82,7 +82,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
      * @throws ServletException in case of errors
      */
     @Override
-    protected boolean shouldNotFilter(@Nonnull HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
         return requestMatchers.stream().noneMatch(matcher -> matcher.matcher(request).isMatch());
     }
 
