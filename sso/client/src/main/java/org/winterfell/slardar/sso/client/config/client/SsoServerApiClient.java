@@ -1,6 +1,6 @@
 package org.winterfell.slardar.sso.client.config.client;
 
-import cn.piesat.v.remote.mrc.MrClient;
+import org.winterfell.misc.remote.mrc.MrClient;
 import org.winterfell.slardar.core.domain.Account;
 import retrofit2.http.Header;
 import retrofit2.http.POST;

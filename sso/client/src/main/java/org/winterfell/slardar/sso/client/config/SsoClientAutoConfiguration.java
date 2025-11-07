@@ -1,6 +1,6 @@
 package org.winterfell.slardar.sso.client.config;
 
-import cn.piesat.v.remote.mrc.EnableMrClients;
+import org.winterfell.misc.remote.mrc.EnableMrClients;
 import org.winterfell.slardar.sso.client.SsoClientRequestFilter;
 import org.winterfell.slardar.sso.client.SsoClientRequestHandler;
 import org.winterfell.slardar.sso.client.config.client.SsoServerApiClient;
