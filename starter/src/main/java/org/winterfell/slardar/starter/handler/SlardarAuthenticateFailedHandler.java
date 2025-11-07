@@ -32,7 +32,7 @@ import static org.winterfell.slardar.starter.support.HttpServletUtil.*;
  * 认证失败 handler
  *
  * @author JiajieZhang
- * @date 2022/9/23
+ * @version 2022/9/23
  * @description token失效时，自定义返回结果
  */
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {

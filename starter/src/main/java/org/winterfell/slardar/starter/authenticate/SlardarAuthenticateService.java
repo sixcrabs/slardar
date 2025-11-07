@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -235,7 +234,7 @@ public class SlardarAuthenticateService {
      *
      * @param tokenValue token 值
      */
-    public void setTokenValueIntoServlet(String tokenValue, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response) {
+    public void setTokenValueIntoServlet(String tokenValue, @NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         if (StringUtil.isBlank(tokenValue)) {
             return;
         }
