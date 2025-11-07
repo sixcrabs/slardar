@@ -11,13 +11,11 @@ slardar:
     type: jwt
     separator: _MY_
   key-store:
-    type: redis
-    uri: redis://localhost/0
-    setting:
-      foo: bar
+    type: memory # token 存储使用内存模式 仅限演示
+#    uri: redis://localhost/0
   login:
     post-only: false
-    captcha-enabled: true
+    captcha-enabled: false
     encrypt:
       enabled: false
       mode: mystical #使用自定义的加解密实现
@@ -58,16 +56,12 @@ slardar:
       enabled: true
       allowed-hosts: localhost,127.0.0.1
 
-
-
 spring:
   #  main:
   #    allow-bean-definition-overriding: true
   application:
     name: slardar-server-demo
 
-
-openapi:
-  cors: true
-  info:
-    version: 1.0.0
+application:
+  openapi:
+    cors: true
