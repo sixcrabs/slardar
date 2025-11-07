@@ -1,9 +1,5 @@
 server:
   port: 9600
-#skv:
-#  type: redis
-#  uri: redis://localhost/0
-#  uri: redis://ENC(9edd86251a930c8172b0cc1d2f590a96788c2f04ebb62a24e456d11fb74a6249)@124.70.42.95:8379/7
 
 slardar:
   #  ldap:
@@ -43,8 +39,8 @@ slardar:
     email:
       host: smtp.163.com
       port: 25
-      username: yxfacw@163.com
-      password: ZYAHAOPEZGKGLABK
+      username: xxxx@163.com
+      password: ZYAHAOPEZGKGLABK1
   # 验证码相关配置
   captcha:
     code-type: random
