@@ -62,11 +62,9 @@ public class SlardarSecurityConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(SlardarSecurityConfiguration.class);
 
 
-    @Autowired
-    private SlardarAccessDeniedHandler accessDeniedHandler;
+    private final SlardarAccessDeniedHandler accessDeniedHandler;
 
-    @Autowired
-    private SlardarAuthenticateFailedHandler authenticateFailedHandler;
+    private final SlardarAuthenticateFailedHandler authenticateFailedHandler;
 
     @Resource
     private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -89,7 +87,9 @@ public class SlardarSecurityConfiguration {
 
     private final List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers;
 
-    public SlardarSecurityConfiguration(SlardarTokenRequiredFilter tokenRequiredFilter,
+    public SlardarSecurityConfiguration(SlardarAccessDeniedHandler accessDeniedHandler,
+                                        SlardarAuthenticateFailedHandler authenticateFailedHandler,
+                                        SlardarTokenRequiredFilter tokenRequiredFilter,
                                         SlardarContext slardarSpiContext,
                                         SlardarCaptchaFilter captchaFilter, SlardarLoginFilter loginFilter,
                                         SlardarAuthenticatedRequestFilter authenticatedRequestFilter,
@@ -97,6 +97,8 @@ public class SlardarSecurityConfiguration {
                                         List<SlardarIgnoringCustomizer> ignoringCustomizerList,
                                         List<SlardarUrlRegistryCustomizer> urlRegistryCustomizerList,
                                         List<SlardarHttpSecurityCustomizer> httpSecurityCustomizers) {
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.authenticateFailedHandler = authenticateFailedHandler;
         this.tokenRequiredFilter = tokenRequiredFilter;
         this.basicAuthFilter = slardarSpiContext.getBeanIfAvailable(SlardarBasicAuthFilter.class);
         this.captchaFilter = captchaFilter;
@@ -227,6 +229,9 @@ public class SlardarSecurityConfiguration {
             HandlerMethod handlerMethod = methodEntry.getValue();
             if (handlerMethod.hasMethodAnnotation(SlardarAuthority.class)) {
                 SlardarAuthority annotation = handlerMethod.getMethodAnnotation(SlardarAuthority.class);
+                if (annotation == null) {
+                    continue;
+                }
                 Set<String> patternValues = methodEntry.getKey().getPatternsCondition() != null ? methodEntry.getKey().getPatternsCondition().getPatterns() : methodEntry.getKey().getPatternValues();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 try {

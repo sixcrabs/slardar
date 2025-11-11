@@ -6,9 +6,7 @@ import org.winterfell.slardar.captcha.generator.CodeGenerator;
 import org.winterfell.slardar.captcha.generator.MathGenerator;
 import org.winterfell.slardar.captcha.generator.RandomGenerator;
 import org.winterfell.slardar.captcha.impl.AbstractCaptcha;
-import org.winterfell.slardar.captcha.impl.GifCaptcha;
 import org.winterfell.slardar.captcha.CaptchaUtil;
-import org.winterfell.slardar.captcha.impl.LineCaptcha;
 import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.SlardarProperties;
@@ -19,6 +17,8 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+
+import static org.winterfell.slardar.core.Constants.KEY_PREFIX_CAPTCHA;
 
 /**
  * <p>
@@ -34,8 +34,6 @@ public class CaptchaComponent {
     private final SlardarKeyStore keyStore;
 
     private final SlardarProperties.CaptchaSetting settings;
-
-    public static final String CAPTCHA_KEY_PREFIX = "CaptchaCode_";
 
     public static final Logger log = LoggerFactory.getLogger(CaptchaComponent.class);
 
@@ -58,12 +56,11 @@ public class CaptchaComponent {
         CodeGenerator codeGenerator = settings.getCodeType().equalsIgnoreCase("math") ? new MathGenerator(1) :
                 new RandomGenerator(settings.getRandomBase(), settings.getCodeLength());
         captcha.setGenerator(codeGenerator);
-        //  验证码值
         String code = captcha.getCode();
         CaptchaPayload payload = new CaptchaPayload();
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             captcha.write(baos);
-            boolean saved = keyStore.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), code, settings.getExpiration());
+            boolean saved = keyStore.setex(KEY_PREFIX_CAPTCHA.concat(sessionId), code, settings.getExpiration());
             if (saved) {
                 payload.setCode(code)
                         .setImgBytes(baos.toByteArray())
@@ -93,14 +90,14 @@ public class CaptchaComponent {
      * @return
      */
     public boolean verify(String sessionId, String code) {
-        String captchaCode = keyStore.get(CAPTCHA_KEY_PREFIX.concat(sessionId));
+        String captchaCode = keyStore.get(KEY_PREFIX_CAPTCHA.concat(sessionId));
         if (StringUtil.isBlank(captchaCode)) {
             // 已过期或不存在
             return false;
         }
         boolean b = code.equalsIgnoreCase(captchaCode);
         // 立即过期
-        keyStore.setex(CAPTCHA_KEY_PREFIX.concat(sessionId), "", 1L);
+        keyStore.setex(KEY_PREFIX_CAPTCHA.concat(sessionId), "", 1L);
         return b;
     }
 

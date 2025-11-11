@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.winterfell.slardar.core.Constants.BEARER;
+import static org.winterfell.slardar.core.Constants.KEY_PREFIX_TOKEN;
 import static org.winterfell.slardar.starter.support.LoginConcurrentPolicy.mutex;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 
@@ -49,8 +50,6 @@ public class SlardarAuthenticateService {
     private final SlardarProperties slardarProperties;
 
     private final SlardarSpiFactory spiFactory;
-
-    private static final String TOKEN_KEY_PREFIX = "slardar_token";
 
     private final Joiner keyJoiner;
 
@@ -194,7 +193,7 @@ public class SlardarAuthenticateService {
      * @return
      */
     public void withdrawTokensByUserAndDevice(@NonNull String username, @NonNull LoginDeviceType deviceType) {
-        String prefix = keyJoiner.join(TOKEN_KEY_PREFIX, deviceType.name(), username);
+        String prefix = keyJoiner.join(KEY_PREFIX_TOKEN, deviceType.name(), username);
         List<String> keysSelected = keyStore.keys(prefix);
         keysSelected.forEach(keyStore::remove);
     }
@@ -277,7 +276,7 @@ public class SlardarAuthenticateService {
      * @return eg: `slardar_token_PC_user_012222`
      */
     private String generateTokenKey(String userKey, LoginDeviceType deviceType) {
-        return keyJoiner.join(TOKEN_KEY_PREFIX, deviceType.name(), userKey);
+        return keyJoiner.join(KEY_PREFIX_TOKEN, deviceType.name(), userKey);
     }
 
     /**

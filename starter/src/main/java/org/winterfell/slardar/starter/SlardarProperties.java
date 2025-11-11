@@ -22,6 +22,7 @@ import static org.winterfell.slardar.core.Constants.*;
 /**
  * <p>
  * 配置信息
+ * - cluster: true 开启集群模式，此时 keystore 必须使用 redis 存储
  * </p>
  *
  * @author alex
@@ -29,6 +30,11 @@ import static org.winterfell.slardar.core.Constants.*;
  */
 @ConfigurationProperties(prefix = "slardar")
 public class SlardarProperties implements Serializable {
+
+    /**
+     * 是否集群模式
+     */
+    private boolean cluster;
 
     /**
      * basic auth 配置
@@ -70,6 +76,15 @@ public class SlardarProperties implements Serializable {
      */
     private KeyStoreProperties keyStore = new KeyStoreProperties();
 
+
+    public boolean isCluster() {
+        return cluster;
+    }
+
+    public SlardarProperties setCluster(boolean cluster) {
+        this.cluster = cluster;
+        return this;
+    }
 
     public KeyStoreProperties getKeyStore() {
         return keyStore;

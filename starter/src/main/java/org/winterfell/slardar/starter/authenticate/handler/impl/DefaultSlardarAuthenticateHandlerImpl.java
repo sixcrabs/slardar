@@ -52,7 +52,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
 
     public static final String NAME = "default";
 
-    private static final String LOCKED_KEY = "locked_";
+    private static final String LOCKED_KEY = "slardar:locked_";
 
     private static final Map<String, Integer> FAILED_ATTEMPTS_REPO = new WeakHashMap<>(1);
 

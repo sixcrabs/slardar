@@ -12,6 +12,10 @@ import java.util.Collection;
  */
 public interface SlardarContext {
 
+    /**
+     *  initialize
+     */
+    void initialize();
 
     /**
      * get bean

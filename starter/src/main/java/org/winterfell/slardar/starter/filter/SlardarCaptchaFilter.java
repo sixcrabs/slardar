@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
+import org.winterfell.slardar.starter.support.SimpleRateLimiter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -37,7 +38,7 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     private CaptchaComponent captchaComponent;
 
     // 每秒10次
-    private static final RateLimiter RATE_LIMITER = RateLimiter.create(10);
+    private static final SimpleRateLimiter RATE_LIMITER = new SimpleRateLimiter(10);
 
     public SlardarCaptchaFilter(SlardarProperties properties) {
         this.requestMatcher = new AntPathRequestMatcher(properties.getCaptcha().getUrl(), HttpMethod.GET.name());

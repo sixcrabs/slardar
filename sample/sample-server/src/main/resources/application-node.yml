@@ -1,13 +1,7 @@
 server:
-  port: 9600
+  port: 9601
 
 slardar:
-  #  ldap:
-  #    url: ldap://124.221.177.135:389
-  #    base: dc=test,dc=cn
-  token:
-    type: jwt
-    separator: _MY_
   key-store:
     type: redis # token 存储使用内存模式 仅限演示
     uri: redis://localhost/0
@@ -21,38 +15,12 @@ slardar:
     failed-lock-duration: 2m   # 失败锁定时间
     login-failed-http-status: 200 # 登录失败返回的状态码200 默认是 500
   ignores: /login,/sso-login,/mfa-login
-  basic:
-    enable: false
-    # 配置的地址通过 basic auth 方式认证
-    filter-urls: /api/name/**
-  signature:
-    enable: true
-    filter-urls: /api/open/**
-    header-key-prefix: 'Xk-'
-  mfa:
-    enabled: false
-    otp-mode: email
-    email:
-      host: smtp.163.com
-      port: 25
-      username: xxxx@163.com
-      password: ZYAHAOPEZGKGLABK1
   # 验证码相关配置
   captcha:
     code-type: random
     code-length: 6
     gif: true
     width: 200
-  firewall:
-    headers:
-      enabled: true
-      forbidden-names: 'X-my,X-time'
-    black-path:
-      enabled: true
-      paths: /api/open/**
-#    hosts:
-#      enabled: true
-#      allowed-hosts: localhost,127.0.0.1
   cluster: true # 是否集群模式
 
 spring:
@@ -63,6 +31,4 @@ spring:
 
 application:
   openapi:
-    info:
-      title: 示例 API 应用
     cors: true

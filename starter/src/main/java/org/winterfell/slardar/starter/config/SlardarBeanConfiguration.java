@@ -80,17 +80,15 @@ public class SlardarBeanConfiguration {
         return new SlardarEventManager();
     }
 
-    @Bean
-    public SlardarContext slardarSpiContext() {
-        return new SpringSlardarContextImpl();
+    @Bean(initMethod = "initialize")
+    public SlardarContext slardarSpiContext(SlardarProperties properties) {
+        return new SpringSlardarContextImpl(properties);
     }
-
 
     @Bean
     public SlardarSpiFactory slardarSpiFactory(SlardarContext spiContext) {
         return new SpringSlardarSpiFactory(spiContext);
     }
-
 
     /**
      * 注入认证处理 service

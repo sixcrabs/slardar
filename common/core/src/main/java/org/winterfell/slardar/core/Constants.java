@@ -78,4 +78,8 @@ public final class Constants {
 
     public static final String TOKEN_REQUIRED = "token is required";
     public static final String TOKEN_EXPIRED = "token has been expired";
+
+    public static final String KEY_PREFIX_CAPTCHA = "slardar:captcha:";
+    public static final String KEY_PREFIX_TOKEN = "slardar:token:";
+
 }
