@@ -1,6 +1,5 @@
 package org.winterfell.slardar.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +24,6 @@ public final class Constants {
     public static final String AUTH_LOGIN_URL = "/login";
 
     /**
-     * 默认登出地址
-     */
-    public static final String AUTH_LOGOUT_URL = "/logout";
-
-    /**
      * 默认 验证码地址
      */
     public static final String CAPTCHA_URL = "/captcha";
@@ -37,7 +31,17 @@ public final class Constants {
     /**
      * 提供rest 方式获取用户详情的url
      */
-    public static final String AUTH_USER_DETAILS_URL = "/userdetails";
+    public static final String AUTH_PROFILE_FETCH_URL = "/profile";
+
+    /**
+     * 默认登出地址
+     */
+    public static final String AUTH_LOGOUT_URL = "/logout";
+
+    /**
+     * 修改密码
+     */
+    public static final String USER_CHANGE_PWD_URL = "/changePwd";
 
     /**
      * 默认 token key

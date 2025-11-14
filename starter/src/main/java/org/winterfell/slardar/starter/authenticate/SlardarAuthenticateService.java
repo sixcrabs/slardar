@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter.authenticate;
 
+import com.google.common.collect.Lists;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
@@ -27,6 +28,8 @@ import static org.winterfell.slardar.core.Constants.BEARER;
 import static org.winterfell.slardar.core.Constants.KEY_PREFIX_TOKEN;
 import static org.winterfell.slardar.starter.support.LoginConcurrentPolicy.mutex;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
+import static org.winterfell.slardar.starter.support.LoginDeviceType.APP;
+import static org.winterfell.slardar.starter.support.LoginDeviceType.PC;
 
 
 /**
@@ -146,6 +149,16 @@ public class SlardarAuthenticateService {
         } else {
             log.warn("相关token已失效");
         }
+        return true;
+    }
+
+    /**
+     * 注销所有 token （多端）
+     * @param tokenValue
+     * @return
+     */
+    public boolean withdrawToken(String tokenValue) {
+        Lists.newArrayList(PC, APP).forEach(deviceType -> withdrawToken(tokenValue, deviceType));
         return true;
     }
 

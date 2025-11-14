@@ -156,7 +156,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
                 throw new SlardarAuthenticationException("Your account has been locked due to login failed too many times", accountName);
             }
         }
-        SlardarUserDetails userDetails = null;
+        SlardarUserDetails userDetails;
         try {
             userDetails = userDetailsService.loadUserByAccount(accountName, authentication.getRealm());
         } catch (UsernameNotFoundException e) {

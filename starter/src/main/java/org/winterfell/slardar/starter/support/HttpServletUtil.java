@@ -341,6 +341,16 @@ public final class HttpServletUtil {
         sendJson(response, makeErrorResult(ex.getLocalizedMessage(), httpStatus.value()), httpStatus, request.getHeader("Origin"));
     }
 
+    public static void sendError(HttpServletRequest request, HttpServletResponse response, String ex) {
+        request.setAttribute("X-error", ex);
+        sendJson(response, makeErrorResult(ex, HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR, request.getHeader("Origin"));
+    }
+
+    public static void sendError(HttpServletRequest request, HttpServletResponse response, HttpStatus httpStatus, String ex) {
+        request.setAttribute("X-error", ex);
+        sendJson(response, makeErrorResult(ex, httpStatus.value()), httpStatus, request.getHeader("Origin"));
+    }
+
     public static void sendJsonOk(HttpServletResponse response, Serializable result) {
         sendJson(response, result, HttpStatus.OK, "");
     }

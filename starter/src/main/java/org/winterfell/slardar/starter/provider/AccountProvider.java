@@ -15,6 +15,7 @@ public interface AccountProvider {
 
     /**
      * find by name (and realm)
+     *
      * @param accountName
      * @param realm
      * @return
@@ -23,8 +24,22 @@ public interface AccountProvider {
 
     /**
      * find by openid (pk)
+     *
      * @param openId
      * @return
      */
     Account findByOpenId(String openId) throws SlardarException;
+
+    /**
+     * set password
+     *
+     * @param accountName 账户名
+     * @param newPwd      明文新密码
+     * @param realm       域
+     * @return
+     * @throws SlardarException
+     */
+    default boolean setPwd(String accountName, String newPwd, String realm) throws SlardarException {
+        return false;
+    }
 }

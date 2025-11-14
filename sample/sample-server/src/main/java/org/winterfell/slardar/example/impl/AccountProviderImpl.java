@@ -38,7 +38,6 @@ public class AccountProviderImpl implements AccountProvider {
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     static {
-
         UserProfile profile = new UserProfile()
                 .setAddress(RandomUtil.randomString(5))
                 .setName("张三")
@@ -109,5 +108,21 @@ public class AccountProviderImpl implements AccountProvider {
     @Override
     public Account findByOpenId(String openId) throws SlardarException {
         throw new SlardarException("Unsupported");
+    }
+
+    /**
+     * set password
+     *
+     * @param accountName 账户名
+     * @param newPwd      明文新密码
+     * @param realm       域
+     * @return
+     * @throws SlardarException
+     */
+    @Override
+    public boolean setPwd(String accountName, String newPwd, String realm) throws SlardarException {
+        Account account = findByName(accountName, realm);
+        account.setPassword(ENCODER.encode(newPwd));
+        return true;
     }
 }

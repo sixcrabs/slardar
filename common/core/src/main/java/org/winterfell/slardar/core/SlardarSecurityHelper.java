@@ -135,9 +135,8 @@ public final class SlardarSecurityHelper {
             return authenticated;
         }
 
-        public SecurityContext setAuthenticated(boolean authenticated) {
+        public void setAuthenticated(boolean authenticated) {
             this.authenticated = authenticated;
-            return this;
         }
 
         public Account getAccount() {

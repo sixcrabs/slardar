@@ -22,8 +22,6 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
      */
     private final String accountName;
 
-//    private final String openId;
-
     /**
      * 密码
      */
@@ -65,6 +63,12 @@ public class SlardarAuthentication extends AbstractAuthenticationToken {
         this.userDetails = details;
         this.accountName = principal;
         this.authType = authType;
+    }
+
+    public SlardarAuthentication(String principal, SlardarUserDetails details) {
+        super(Objects.isNull(details) ? null : details.getAuthorities());
+        this.accountName = principal;
+        this.userDetails = details;
     }
 
     public SlardarAuthentication(SlardarUserDetails details) {
