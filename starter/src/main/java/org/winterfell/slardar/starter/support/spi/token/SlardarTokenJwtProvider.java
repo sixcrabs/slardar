@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter.support.spi.token;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.winterfell.misc.timer.cron.DateTimeUtil;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
@@ -9,9 +10,14 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,12 +121,21 @@ public class SlardarTokenJwtProvider implements SlardarTokenProvider {
      * 生成token
      */
     private String provide(Map<String, Object> claims, Date expiration) {
+        // 确保密钥长度满足HS512要求（至少64字节）
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+
+        // 如果密钥太短，进行扩展
+        if (keyBytes.length < 64) {
+            // 使用更长的哈希算法或重复填充
+            keyBytes = Arrays.copyOf(DigestUtils.sha512(secret), 64);
+        }
+        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .compressWith(CompressionCodecs.DEFLATE)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

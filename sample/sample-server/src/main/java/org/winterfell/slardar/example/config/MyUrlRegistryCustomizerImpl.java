@@ -24,6 +24,6 @@ public class MyUrlRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer
     @Override
     public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         // /admin 的url只能被 admin 角色访问
-        registry.antMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYS_ADMIN");
+        registry.requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SYS_ADMIN");
     }
 }

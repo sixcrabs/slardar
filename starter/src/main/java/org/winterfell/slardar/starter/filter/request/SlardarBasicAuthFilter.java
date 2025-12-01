@@ -4,7 +4,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
@@ -22,7 +24,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -56,14 +57,14 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
     public SlardarBasicAuthFilter(String[] filterUrls, SlardarContext spiContext) {
         this.spiContext = spiContext;
         if (filterUrls != null && filterUrls.length > 0) {
-            Arrays.stream(filterUrls).forEach(url -> requiredPathRequestMatchers.add(new AntPathRequestMatcher(url)));
+            Arrays.stream(filterUrls).forEach(url -> requiredPathRequestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(url)));
         }
     }
 
     /**
      * 需要匹配 BasicAuth 的请求路径
      */
-    private final List<AntPathRequestMatcher> requiredPathRequestMatchers = new ArrayList<>(1);
+    private final List<PathPatternRequestMatcher> requiredPathRequestMatchers = new ArrayList<>(1);
 
 
     /**
@@ -86,7 +87,8 @@ public class SlardarBasicAuthFilter extends OncePerRequestFilter {
      * @see SlardarIgnore
      */
     public void addUrlPattern(String antPattern, String method) {
-        requiredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));
+        requiredPathRequestMatchers.add(StringUtil.isBlank(method) ? PathPatternRequestMatcher.withDefaults().matcher(antPattern) :
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.valueOf(method), antPattern));
     }
 
     /**

@@ -6,12 +6,12 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.CaptchaComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 import org.winterfell.slardar.starter.support.SimpleRateLimiter;
@@ -40,7 +40,7 @@ public class SlardarCaptchaFilter extends GenericFilterBean {
     private static final SimpleRateLimiter RATE_LIMITER = new SimpleRateLimiter(10);
 
     public SlardarCaptchaFilter(SlardarProperties properties) {
-        this.requestMatcher = new AntPathRequestMatcher(properties.getCaptcha().getUrl(), HttpMethod.GET.name());
+        this.requestMatcher = PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.GET, properties.getCaptcha().getUrl());
     }
 
 

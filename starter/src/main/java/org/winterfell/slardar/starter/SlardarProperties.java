@@ -727,6 +727,7 @@ public class SlardarProperties implements Serializable {
          * in seconds
          * 有效期(单位秒) 默认一天
          */
+        @Setter
         private Long ttl = 24 * 60 * 60L;
 
         /**
@@ -775,37 +776,27 @@ public class SlardarProperties implements Serializable {
             return ttl;
         }
 
-        public void setTtl(Long ttl) {
-            this.ttl = ttl;
-        }
     }
 
     /**
      * jwt 参数设置
      */
+    @Getter
     public static class JwtSetting {
 
         /**
          * jwt 签名 key
          */
-        private String signKey = "slardar_security";
+        private String signKey = "slardar-security-is-maybe-best";
 
         /**
          * 允许的时间差 秒数 默认 60
          */
         private Long allowedClockSkewSeconds = 60L;
 
-        public Long getAllowedClockSkewSeconds() {
-            return allowedClockSkewSeconds;
-        }
-
         public JwtSetting setAllowedClockSkewSeconds(Long allowedClockSkewSeconds) {
             this.allowedClockSkewSeconds = allowedClockSkewSeconds;
             return this;
-        }
-
-        public String getSignKey() {
-            return signKey;
         }
 
         public JwtSetting setSignKey(String signKey) {

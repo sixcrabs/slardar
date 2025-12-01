@@ -2,6 +2,7 @@ package org.winterfell.slardar.starter.filter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
@@ -48,7 +49,7 @@ public class SlardarLoginFilter extends AbstractAuthenticationProcessingFilter {
                               AuthenticationFailureHandler authenticationFailureHandler,
                               AuthenticationSuccessHandler authenticationSuccessHandler,
                               SlardarAuthenticateHandlerFactory authenticateHandlerFactory) {
-        super(new AntPathRequestMatcher(securityProperties.getLogin().getUrl()));
+        super(PathPatternRequestMatcher.withDefaults().matcher(securityProperties.getLogin().getUrl()));
         this.postOnly = securityProperties.getLogin().isPostOnly();
         this.authenticateHandlerFactory = authenticateHandlerFactory;
         setAuthenticationManager(authentication -> null);

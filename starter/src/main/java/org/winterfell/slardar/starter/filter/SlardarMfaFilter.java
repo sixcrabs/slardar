@@ -3,6 +3,7 @@ package org.winterfell.slardar.starter.filter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
@@ -13,7 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.io.IOException;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class SlardarMfaFilter extends AbstractAuthenticationProcessingFilter {
     public SlardarMfaFilter(SlardarMfaAuthService mfaAuthService,
                             AuthenticationFailureHandler authenticationFailureHandler,
                             AuthenticationSuccessHandler authenticationSuccessHandler) {
-        super(new AntPathRequestMatcher("/mfa-login"));
+        super(PathPatternRequestMatcher.withDefaults().matcher("/mfa-login"));
         this.mfaAuthService = mfaAuthService;
         setAuthenticationManager(authentication -> null);
         setAuthenticationSuccessHandler(authenticationSuccessHandler);

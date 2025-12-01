@@ -5,6 +5,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.misc.hutool.mini.thread.NamedThreadFactory;
 import org.winterfell.slardar.core.SlardarException;
@@ -21,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -62,26 +64,20 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
     /**
      * 忽略的url pattern
      */
+    @Getter
     private final String[] ignoredUrls;
 
-    private final List<AntPathRequestMatcher> ignoredPathRequestMatchers = new ArrayList<>(1);
+    @Getter
+    private final List<PathPatternRequestMatcher> ignoredPathRequestMatchers = new ArrayList<>(1);
 
-
-    public String[] getIgnoredUrls() {
-        return ignoredUrls;
-    }
-
-    public List<AntPathRequestMatcher> getIgnoredPathRequestMatchers() {
-        return ignoredPathRequestMatchers;
-    }
 
     public SlardarTokenRequiredFilter(String[] ignoredUrls) {
         this.ignoredUrls = ignoredUrls;
         if (ignoredUrls != null && ignoredUrls.length > 0) {
-            Arrays.stream(ignoredUrls).forEach(url -> ignoredPathRequestMatchers.add(new AntPathRequestMatcher(url)));
+            Arrays.stream(ignoredUrls).forEach(url -> ignoredPathRequestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(url)));
         }
         // 忽略 /logout
-        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(AUTH_LOGOUT_URL));
+        ignoredPathRequestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(AUTH_LOGOUT_URL));
     }
 
     /**
@@ -107,7 +103,8 @@ public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
      * @see SlardarIgnore
      */
     public void addIgnoreUrlPattern(String antPattern, String method) {
-        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));
+        ignoredPathRequestMatchers.add(StringUtil.isBlank(method) ? PathPatternRequestMatcher.withDefaults().matcher(antPattern) :
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.valueOf(method), antPattern));
     }
 
     /**

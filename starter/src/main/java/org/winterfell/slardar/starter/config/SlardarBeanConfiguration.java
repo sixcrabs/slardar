@@ -2,6 +2,7 @@ package org.winterfell.slardar.starter.config;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.winterfell.misc.hutool.mini.ArrayUtil;
+import org.winterfell.misc.keystore.KeyStoreProperties;
 import org.winterfell.misc.keystore.RedisKeyStoreImpl;
 import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.misc.keystore.SimpleKeyStoreFactory;
@@ -42,7 +43,7 @@ import java.util.Arrays;
  * @version v1.0 2023/3/13
  */
 @AutoConfiguration
-@EnableConfigurationProperties(SlardarProperties.class)
+@EnableConfigurationProperties({SlardarProperties.class})
 @ComponentScan(basePackages = {"org.winterfell"})
 public class SlardarBeanConfiguration {
 

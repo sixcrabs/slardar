@@ -1,10 +1,11 @@
 package org.winterfell.slardar.example.web;
 
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.winterfell.misc.hutool.mini.MapUtil;
 import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.shared.as.advice.response.Response;
-import org.winterfell.shared.as.advice.response.ResponseFactory;
+import org.winterfell.next.shared.as.advice.response.Response;
+import org.winterfell.next.shared.as.advice.response.ResponseFactory;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
 import org.winterfell.slardar.core.annotation.AuditLogger;
 import org.winterfell.slardar.core.annotation.SlardarAuthority;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
 
