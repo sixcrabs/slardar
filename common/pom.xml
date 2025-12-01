@@ -5,13 +5,12 @@
     <parent>
         <groupId>org.winterfell</groupId>
         <artifactId>slardar-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>slardar-common-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.7.0-SNAPSHOT</version>
 
     <modules>
         <module>core</module>

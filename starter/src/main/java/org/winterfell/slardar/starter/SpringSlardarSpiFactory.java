@@ -12,8 +12,6 @@ import org.winterfell.slardar.starter.handler.SlardarDefaultAuthenticateResultAd
 import org.winterfell.slardar.starter.support.spi.EmailOtpDispatcher;
 import org.winterfell.slardar.starter.support.spi.crypto.AESCrypto;
 import org.winterfell.slardar.starter.support.spi.token.SlardarTokenJwtProvider;
-import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.starter.support.store.SlardarMemoryKeyStoreImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -46,8 +44,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
     private static final Map<String, SlardarTokenProvider> TOKEN_REPO = new HashMap<>(1);
 
     private static final Map<String, SlardarAuthenticateResultAdapter> RESULT_HANDLER_REPO = new HashMap<>(1);
-
-    private static final Map<String, SlardarKeyStore> KEY_STORE_REPO = new HashMap<>(1);
 
     public SpringSlardarSpiFactory(SlardarContext spiContext) {
         this.spiContext = spiContext;
@@ -82,21 +78,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
         return RESULT_HANDLER_REPO.computeIfAbsent(name.toUpperCase(), k -> {
             logger.warn("未找到 [{}] 对应的AuthenticateResultHandler实现类, 采用默认的实现", name);
             return RESULT_HANDLER_REPO.get(SlardarDefaultAuthenticateResultAdapter.NAME);
-        });
-    }
-
-    /**
-     * 根据配置寻找合适的 keystore 实现
-     *
-     * @param name
-     * @return
-     * @throws SlardarException
-     */
-    @Override
-    public SlardarKeyStore findKeyStore(String name) {
-        return KEY_STORE_REPO.computeIfAbsent(name.toUpperCase(), k -> {
-            logger.warn("未找到 [{}] 对应的KeyStore实现类, 采用默认的实现", name);
-            return KEY_STORE_REPO.get(SlardarMemoryKeyStoreImpl.NAME);
         });
     }
 
@@ -151,12 +132,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
             }
             logger.info("[slardar] 已加载 [{}] 个认证结果处理组件", RESULT_HANDLER_REPO.size());
 
-            ServiceLoader<SlardarKeyStore> keyStores = ServiceLoader.load(SlardarKeyStore.class);
-            for (SlardarKeyStore keyStore : keyStores) {
-                keyStore.initialize(this.spiContext);
-                KEY_STORE_REPO.put(keyStore.name().toUpperCase(), keyStore);
-            }
-            logger.info("[slardar] 已加载 [{}] 个 kv 存储组件", KEY_STORE_REPO.size());
         } catch (Exception e) {
             logger.error("[slardar] spi load error {}", e.getLocalizedMessage());
         }

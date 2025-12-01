@@ -2,12 +2,12 @@ package org.winterfell.slardar.starter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.winterfell.misc.keystore.RedisKeyStoreImpl;
 import org.winterfell.slardar.core.SlardarContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.winterfell.slardar.starter.support.store.SlardarRedisKeyStoreImpl;
 
 import java.util.Collection;
 import java.util.Map;
@@ -40,7 +40,7 @@ public class SpringSlardarContextImpl implements SlardarContext, ApplicationCont
         boolean cluster = properties.isCluster();
         if (cluster) {
             // 检测 keystore 的配置必须是 redis
-            boolean isRedis = SlardarRedisKeyStoreImpl.NAME.equalsIgnoreCase(properties.getKeyStore().getType());
+            boolean isRedis = RedisKeyStoreImpl.NAME.equalsIgnoreCase(properties.getKeyStore().getType());
             if (!isRedis) {
                 throw new RuntimeException("[slardar] must use `redis` as keystore when cluster mode is on");
             }

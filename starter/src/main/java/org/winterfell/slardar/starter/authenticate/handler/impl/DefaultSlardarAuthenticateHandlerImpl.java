@@ -1,11 +1,11 @@
 package org.winterfell.slardar.starter.authenticate.handler.impl;
 
 import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.misc.timer.TimerManager;
 import org.winterfell.misc.timer.job.TimerJobs;
 import org.winterfell.slardar.core.Constants;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.spi.crypto.SlardarCrypto;
@@ -56,7 +56,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
 
     private static final Map<String, Integer> FAILED_ATTEMPTS_REPO = new WeakHashMap<>(1);
 
-    private SlardarKeyStore keyStore;
+    private SimpleKeyStore keyStore;
 
     private Integer maxAttempts = 5;
 
@@ -75,8 +75,7 @@ public class DefaultSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthen
     @Override
     public void initialize(SlardarContext context) {
         super.initialize(context);
-        SlardarSpiFactory spiFactory = context.getBean(SlardarSpiFactory.class);
-        keyStore = spiFactory.findKeyStore(getProperties().getKeyStore().getType());
+        keyStore = context.getBean(SimpleKeyStore.class);
         maxAttempts = getProperties().getLogin().getMaxAttemptsBeforeLocked();
         // 定时器
         TimerManager timerManager = new TimerManager();

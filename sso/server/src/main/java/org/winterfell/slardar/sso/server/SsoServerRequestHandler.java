@@ -1,5 +1,8 @@
 package org.winterfell.slardar.sso.server;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.winterfell.misc.hutool.mini.MapUtil;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
@@ -23,9 +26,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -160,7 +160,7 @@ public class SsoServerRequestHandler implements SlardarIgnoringCustomizer, Slard
                         } catch (SsoException e) {
                             throw new RuntimeException(e);
                         }
-                    }).collect(Collectors.toList());
+                    }).toList();
                     if (!list.isEmpty()) {
                         sendJson(response, makeResult(list.get(list.size() - 1), HttpStatus.OK.value()), HttpStatus.OK);
                     } else {

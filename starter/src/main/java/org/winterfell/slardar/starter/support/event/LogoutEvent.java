@@ -1,8 +1,8 @@
 package org.winterfell.slardar.starter.support.event;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.winterfell.slardar.core.domain.Account;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
@@ -19,7 +19,7 @@ public class LogoutEvent extends BaseSlardarEvent<LogoutEvent.Payload>{
         super(data);
     }
 
-    public LogoutEvent(Account account,HttpServletRequest request) {
+    public LogoutEvent(Account account, HttpServletRequest request) {
         super(new Payload().setAccount(account).setRequest(request));
     }
 

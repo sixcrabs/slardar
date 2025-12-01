@@ -1,8 +1,8 @@
 package org.winterfell.slardar.starter.authenticate.mfa;
 
 import org.winterfell.misc.hutool.mini.RandomUtil;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.spi.mfa.SlardarOtpDispatcher;
 import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
@@ -30,7 +30,7 @@ public class SlardarMfaAuthService {
 
     private final SlardarProperties slardarProperties;
 
-    private final SlardarKeyStore keyStore;
+    private final SimpleKeyStore keyStore;
 
     /**
      * 有效期 秒 默认 5分钟
@@ -39,10 +39,10 @@ public class SlardarMfaAuthService {
 
     private SlardarOtpDispatcher dispatcher;
 
-    public SlardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
+    public SlardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties, SimpleKeyStore keyStore) {
         this.spiFactory = spiFactory;
         this.slardarProperties = slardarProperties;
-        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
+        this.keyStore = keyStore;
         init();
     }
 

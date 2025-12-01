@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter;
 
+import jakarta.annotation.PreDestroy;
 import org.winterfell.slardar.core.event.SlardarEvent;
 import org.winterfell.slardar.core.event.SlardarEventListener;
 import org.winterfell.slardar.core.SlardarException;
@@ -8,7 +9,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;

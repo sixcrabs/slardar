@@ -1,5 +1,7 @@
 package org.winterfell.slardar.starter.filter;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
 import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandlerFactory;
@@ -18,8 +20,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 

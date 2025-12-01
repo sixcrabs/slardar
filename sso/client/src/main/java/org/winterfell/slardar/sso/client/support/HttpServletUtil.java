@@ -1,5 +1,10 @@
 package org.winterfell.slardar.sso.client.support;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.winterfell.slardar.core.SlardarException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -9,11 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -180,7 +180,7 @@ public final class HttpServletUtil {
      */
     @SuppressWarnings("unchecked")
     public static Map<String, String> getParamsAsMap(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getParameterNames();
         if (null != names) {
             while (names.hasMoreElements()) {
@@ -200,7 +200,7 @@ public final class HttpServletUtil {
      */
     @SuppressWarnings("unchecked")
     public static Map<String, String> getHeadersAsMap(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getHeaderNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
@@ -255,7 +255,7 @@ public final class HttpServletUtil {
 
     @SuppressWarnings("unchecked")
     public static Map<String, String> getRequestParam(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getParameterNames();
         if (null != names) {
             while (names.hasMoreElements()) {
@@ -269,7 +269,7 @@ public final class HttpServletUtil {
 
     @SuppressWarnings("unchecked")
     public static Map<String, String> getHeaders(final HttpServletRequest request) {
-        Map<String, String> res = new HashMap(1);
+        Map<String, String> res = new HashMap<>(1);
         Enumeration<String> names = request.getHeaderNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();

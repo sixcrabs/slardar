@@ -1,8 +1,11 @@
 package org.winterfell.slardar.starter.authenticate;
 
 import com.google.common.collect.Lists;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.slardar.spi.SlardarKeyStore;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
@@ -18,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -60,12 +61,12 @@ public class SlardarAuthenticateService {
 
     public static final Logger log = LoggerFactory.getLogger(SlardarAuthenticateService.class);
 
-    private final SlardarKeyStore keyStore;
+    @Resource
+    private SimpleKeyStore keyStore;
 
     public SlardarAuthenticateService(SlardarProperties slardarProperties, SlardarSpiFactory spiFactory) {
         this.slardarProperties = slardarProperties;
         this.spiFactory = spiFactory;
-        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
         this.keyJoiner = Joiner.on(slardarProperties.getToken().getSeparator());
         this.keySplitter = Splitter.on(slardarProperties.getToken().getSeparator());
     }

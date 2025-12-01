@@ -1,5 +1,8 @@
 package org.winterfell.slardar.sso.client;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
 import org.winterfell.slardar.sso.client.config.SsoClientProperties;
 import org.winterfell.slardar.sso.client.config.client.RestApiResult;
@@ -7,14 +10,9 @@ import org.winterfell.slardar.sso.client.config.client.SsoServerApiClient;
 import org.winterfell.slardar.sso.client.support.HttpServletUtil;
 import org.winterfell.slardar.sso.client.support.SsoClientHandlerMapping;
 import org.winterfell.slardar.sso.client.support.SsoException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.winterfell.slardar.sso.client.support.HttpServletUtil.*;
 
@@ -27,9 +25,6 @@ import static org.winterfell.slardar.sso.client.support.HttpServletUtil.*;
  * @version v1.0 2023/3/30
  */
 public class SsoClientRequestHandler {
-
-    private static final Logger log = LoggerFactory.getLogger(SsoClientRequestHandler.class);
-
 
     private final SsoClientProperties clientProperties;
 

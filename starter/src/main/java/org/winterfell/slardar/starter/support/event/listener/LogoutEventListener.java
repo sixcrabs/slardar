@@ -1,5 +1,6 @@
 package org.winterfell.slardar.starter.support.event.listener;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.winterfell.slardar.starter.provider.AuditLogIngest;
 import org.winterfell.slardar.core.event.SlardarEventListener;
 import org.winterfell.slardar.core.SlardarException;
@@ -10,7 +11,6 @@ import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

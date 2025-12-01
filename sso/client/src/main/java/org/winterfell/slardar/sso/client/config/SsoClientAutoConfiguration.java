@@ -1,5 +1,6 @@
 package org.winterfell.slardar.sso.client.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.winterfell.misc.remote.mrc.EnableMrClients;
 import org.winterfell.slardar.sso.client.SsoClientRequestFilter;
 import org.winterfell.slardar.sso.client.SsoClientRequestHandler;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Alex
  * @version v1.0 2023/3/22
  */
-@Configuration
+@AutoConfiguration
 @EnableMrClients(clients = SsoServerApiClient.class)
 @EnableConfigurationProperties(SsoClientProperties.class)
 public class SsoClientAutoConfiguration {

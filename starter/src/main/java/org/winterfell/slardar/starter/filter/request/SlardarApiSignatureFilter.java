@@ -1,13 +1,19 @@
 package org.winterfell.slardar.starter.filter.request;
 
-import org.jetbrains.annotations.NotNull;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.misc.hutool.mini.StringUtil;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.misc.timer.cron.DateTimeUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
 import org.winterfell.slardar.core.domain.Client;
 import org.winterfell.slardar.starter.provider.ClientProvider;
-import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.SlardarProperties;
@@ -17,10 +23,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -45,21 +47,21 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
 
     private final SlardarProperties.ApiSignatureSetting apiSignatureSetting;
 
-    private final SlardarKeyStore keyStore;
+    private final SimpleKeyStore keyStore;
 
     /**
      * 执行过滤的请求匹配器
      */
-    private final List<AntPathRequestMatcher> requestMatchers = new ArrayList<>(1);
+    private final List<PathPatternRequestMatcher> requestMatchers = new ArrayList<>(1);
 
     public SlardarApiSignatureFilter(SlardarContext spiContext, SlardarSpiFactory spiFactory,
                                      SlardarProperties slardarProperties) {
         this.spiContext = spiContext;
         this.apiSignatureSetting = slardarProperties.getSignature();
-        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
+        this.keyStore = spiContext.getBean(SimpleKeyStore.class);
         String[] filterUrls = apiSignatureSetting.getFilterUrls();
         if (filterUrls != null && filterUrls.length > 0) {
-            Arrays.stream(filterUrls).forEach(url -> requestMatchers.add(new AntPathRequestMatcher(url)));
+            Arrays.stream(filterUrls).forEach(url -> requestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(url)));
         }
     }
 
@@ -71,7 +73,8 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
      * @see SlardarIgnore
      */
     public void addUrlPattern(String antPattern, String method) {
-        requestMatchers.add(new AntPathRequestMatcher(antPattern, StringUtil.isBlank(method) ? null : method));
+        requestMatchers.add(StringUtil.isBlank(method) ? PathPatternRequestMatcher.withDefaults().matcher(antPattern) :
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.valueOf(method), antPattern));
     }
 
     /**
@@ -82,7 +85,7 @@ public class SlardarApiSignatureFilter extends OncePerRequestFilter {
      * @throws ServletException in case of errors
      */
     @Override
-    protected boolean shouldNotFilter(@NotNull HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) throws ServletException {
         return requestMatchers.stream().noneMatch(matcher -> matcher.matcher(request).isMatch());
     }
 

@@ -2,6 +2,9 @@ package org.winterfell.slardar.starter.config;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.winterfell.misc.hutool.mini.ArrayUtil;
+import org.winterfell.misc.keystore.RedisKeyStoreImpl;
+import org.winterfell.misc.keystore.SimpleKeyStore;
+import org.winterfell.misc.keystore.SimpleKeyStoreFactory;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.*;
@@ -90,6 +93,11 @@ public class SlardarBeanConfiguration {
         return new SpringSlardarSpiFactory(spiContext);
     }
 
+    @Bean
+    public SimpleKeyStore simpleKeyStore(SlardarProperties properties) {
+        return SimpleKeyStoreFactory.getInstance().getKeyStore(properties.getKeyStore());
+    }
+
     /**
      * 注入认证处理 service
      *
@@ -152,8 +160,9 @@ public class SlardarBeanConfiguration {
      * @return
      */
     @Bean
-    public SlardarMfaAuthService slardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
-        return new SlardarMfaAuthService(spiFactory, slardarProperties);
+    public SlardarMfaAuthService slardarMfaAuthService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties,
+                                                       SimpleKeyStore simpleKeyStore) {
+        return new SlardarMfaAuthService(spiFactory, slardarProperties, simpleKeyStore);
     }
 
     /**

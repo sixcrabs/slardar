@@ -1,5 +1,8 @@
 package org.winterfell.slardar.sso.server.web;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.HttpServletUtil;
@@ -8,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.winterfell.slardar.sso.server.support.SsoConstants.SSO_LOGIN_VIEW_URL;
 

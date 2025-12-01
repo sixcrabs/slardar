@@ -1,6 +1,7 @@
 package org.winterfell.slardar.sso.server.support;
 
 
+import lombok.Getter;
 import org.winterfell.misc.hutool.mini.MapUtil;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import static org.winterfell.slardar.sso.server.support.SsoConstants.GSON;
  * @author Alex
  * @version v1.0 2023/3/22
  */
+@Getter
 public class SsoException extends Exception {
 
     private int code;
@@ -53,10 +55,6 @@ public class SsoException extends Exception {
 
     public String getCauseMessage() {
         return this.getCause() != null ? this.getCause().getLocalizedMessage() : super.getMessage();
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public SsoException setCode(int code) {

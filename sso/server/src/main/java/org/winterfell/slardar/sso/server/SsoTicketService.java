@@ -1,10 +1,8 @@
 package org.winterfell.slardar.sso.server;
 
 import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.spi.SlardarSpiFactory;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.sso.server.config.SsoServerProperties;
-import org.winterfell.slardar.spi.SlardarKeyStore;
-import org.winterfell.slardar.starter.SlardarProperties;
 
 /**
  * <p>
@@ -18,13 +16,13 @@ import org.winterfell.slardar.starter.SlardarProperties;
  */
 public class SsoTicketService {
 
-    private final SlardarKeyStore keyStore;
+    private final SimpleKeyStore keyStore;
 
     private final SsoServerProperties.TicketSetting ticketSetting;
 
-    public SsoTicketService(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties, SsoServerProperties serverProperties) {
+    public SsoTicketService(SimpleKeyStore keyStore, SsoServerProperties serverProperties) {
+        this.keyStore = keyStore;
         this.ticketSetting = serverProperties.getTicket();
-        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
     }
 
     /**

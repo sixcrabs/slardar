@@ -50,14 +50,6 @@ public interface SlardarSpiFactory {
     SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name);
 
     /**
-     * 根据配置的名称找到对应的 keystore 实现
-     * @param name
-     * @return
-     * @throws SlardarException
-     */
-    SlardarKeyStore findKeyStore(String name);
-
-    /**
      * TODO: 备用
      * @param name
      * @return

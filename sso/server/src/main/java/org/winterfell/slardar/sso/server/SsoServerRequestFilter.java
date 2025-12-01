@@ -1,16 +1,16 @@
 package org.winterfell.slardar.sso.server;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.slardar.sso.server.config.SsoServerProperties;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -28,7 +28,7 @@ public class SsoServerRequestFilter extends GenericFilterBean {
     private final SsoServerRequestHandler requestHandler;
 
     public SsoServerRequestFilter(SsoServerProperties properties, SsoServerRequestHandler requestHandler) {
-        this.requestMatcher = new AntPathRequestMatcher(properties.getSsoAntUrlPattern());
+        this.requestMatcher = PathPatternRequestMatcher.withDefaults().matcher(properties.getSsoAntUrlPattern());
         this.requestHandler = requestHandler;
     }
 

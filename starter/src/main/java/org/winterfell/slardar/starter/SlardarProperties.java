@@ -1,5 +1,8 @@
 package org.winterfell.slardar.starter;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.winterfell.misc.keystore.KeyStoreProperties;
 import org.winterfell.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
 import org.winterfell.slardar.starter.support.spi.EmailOtpDispatcher;
 import org.winterfell.slardar.starter.support.LoginConcurrentPolicy;
@@ -28,6 +31,7 @@ import static org.winterfell.slardar.core.Constants.*;
  * @author alex
  * @version v1.0 2022/9/26
  */
+@Getter
 @ConfigurationProperties(prefix = "slardar")
 public class SlardarProperties implements Serializable {
 
@@ -74,28 +78,13 @@ public class SlardarProperties implements Serializable {
     /**
      * token等键值存储配置，默认采用 内存
      */
+    @Setter
     private KeyStoreProperties keyStore = new KeyStoreProperties();
 
-
-    public boolean isCluster() {
-        return cluster;
-    }
 
     public SlardarProperties setCluster(boolean cluster) {
         this.cluster = cluster;
         return this;
-    }
-
-    public KeyStoreProperties getKeyStore() {
-        return keyStore;
-    }
-
-    public void setKeyStore(KeyStoreProperties keyStore) {
-        this.keyStore = keyStore;
-    }
-
-    public BasicAuthSetting getBasic() {
-        return basic;
     }
 
     public SlardarProperties setBasic(BasicAuthSetting basic) {
@@ -103,17 +92,9 @@ public class SlardarProperties implements Serializable {
         return this;
     }
 
-    public ApiSignatureSetting getSignature() {
-        return signature;
-    }
-
     public SlardarProperties setSignature(ApiSignatureSetting signature) {
         this.signature = signature;
         return this;
-    }
-
-    public MfaSetting getMfa() {
-        return mfa;
     }
 
     public SlardarProperties setMfa(MfaSetting mfa) {
@@ -121,17 +102,9 @@ public class SlardarProperties implements Serializable {
         return this;
     }
 
-    public TokenSetting getToken() {
-        return token;
-    }
-
     public SlardarProperties setToken(TokenSetting token) {
         this.token = token;
         return this;
-    }
-
-    public LoginSetting getLogin() {
-        return login;
     }
 
     public SlardarProperties setLogin(LoginSetting login) {
@@ -139,17 +112,9 @@ public class SlardarProperties implements Serializable {
         return this;
     }
 
-    public CaptchaSetting getCaptcha() {
-        return captcha;
-    }
-
     public SlardarProperties setCaptcha(CaptchaSetting captcha) {
         this.captcha = captcha;
         return this;
-    }
-
-    public String[] getIgnores() {
-        return ignores;
     }
 
     public SlardarProperties setIgnores(String[] ignores) {
@@ -157,57 +122,10 @@ public class SlardarProperties implements Serializable {
         return this;
     }
 
-    public static class KeyStoreProperties {
-
-        /**
-         * memory
-         * mapdb
-         * mvstore
-         * redis
-         */
-        private String type = "memory";
-
-        /**
-         * 设置 redis 连接uri / mapdb 指定db文件路径
-         */
-        private String uri;
-
-        /**
-         * 其他一些自定义设置
-         */
-        private Map<String, Object> setting = Collections.emptyMap();
-
-        public String getType() {
-            return type;
-        }
-
-        public KeyStoreProperties setType(String type) {
-            this.type = type;
-            return this;
-        }
-
-        public String getUri() {
-            return uri;
-        }
-
-        public KeyStoreProperties setUri(String uri) {
-            this.uri = uri;
-            return this;
-        }
-
-        public Map<String, Object> getSetting() {
-            return setting;
-        }
-
-        public KeyStoreProperties setSetting(Map<String, Object> setting) {
-            this.setting = setting;
-            return this;
-        }
-    }
-
     /**
      * api 签名认证参数设置
      */
+    @Getter
     public static class ApiSignatureSetting {
         /**
          * 是否开启 api 签名认证 默认关闭
@@ -230,17 +148,9 @@ public class SlardarProperties implements Serializable {
         private String[] filterUrls = new String[]{};
 
 
-        public String getHeaderKeyPrefix() {
-            return headerKeyPrefix;
-        }
-
         public ApiSignatureSetting setHeaderKeyPrefix(String headerKeyPrefix) {
             this.headerKeyPrefix = headerKeyPrefix;
             return this;
-        }
-
-        public boolean isEnable() {
-            return enable;
         }
 
         public ApiSignatureSetting setEnable(boolean enable) {
@@ -248,17 +158,9 @@ public class SlardarProperties implements Serializable {
             return this;
         }
 
-        public String[] getFilterUrls() {
-            return filterUrls;
-        }
-
         public ApiSignatureSetting setFilterUrls(String[] filterUrls) {
             this.filterUrls = filterUrls;
             return this;
-        }
-
-        public long getNonceTimeoutSeconds() {
-            return nonceTimeoutSeconds;
         }
 
         public void setNonceTimeoutSeconds(long nonceTimeoutSeconds) {

@@ -1,8 +1,15 @@
 package org.winterfell.slardar.starter.filter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.slardar.core.SlardarException;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
@@ -18,23 +25,15 @@ import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.provider.AccountProvider;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.support.SecUtil;
-import org.winterfell.slardar.starter.support.SlardarAuthenticationException;
 import org.winterfell.slardar.starter.support.event.LogoutEvent;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -81,9 +80,9 @@ public class SlardarAuthenticatedRequestFilter extends GenericFilterBean {
     public SlardarAuthenticatedRequestFilter(SlardarProperties properties, SlardarContext context) {
         this.context = context;
         this.requestMatchers = Lists.newArrayList(
-                new AntPathRequestMatcher(AUTH_PROFILE_FETCH_URL, HttpMethod.POST.name()),
-                new AntPathRequestMatcher(AUTH_LOGOUT_URL, HttpMethod.POST.name()),
-                new AntPathRequestMatcher(USER_CHANGE_PWD_URL, HttpMethod.POST.name()));
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, AUTH_PROFILE_FETCH_URL),
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, AUTH_LOGOUT_URL),
+                PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, USER_CHANGE_PWD_URL));
         this.properties = properties;
     }
 

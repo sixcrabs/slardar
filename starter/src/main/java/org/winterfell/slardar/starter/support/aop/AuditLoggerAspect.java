@@ -1,5 +1,7 @@
 package org.winterfell.slardar.starter.support.aop;
 
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.winterfell.slardar.core.annotation.AuditLogger;
 import org.winterfell.slardar.core.Constants;
 import org.winterfell.slardar.core.SlardarSecurityHelper;
@@ -20,8 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.Objects;

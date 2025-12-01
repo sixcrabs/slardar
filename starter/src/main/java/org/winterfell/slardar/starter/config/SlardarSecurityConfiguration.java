@@ -1,8 +1,12 @@
 package org.winterfell.slardar.starter.config;
 
+import jakarta.annotation.Resource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.winterfell.misc.hutool.mini.ReUtil;
 import org.winterfell.misc.hutool.mini.ReflectUtil;
 import org.winterfell.misc.hutool.mini.StringUtil;
@@ -40,7 +44,6 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -114,47 +117,40 @@ public class SlardarSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry = httpSecurity.exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(authenticateFailedHandler)
-                .and().csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().cors()
-                .and()
-                .formLogin().disable()
-                .authorizeHttpRequests();
+        httpSecurity.exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticateFailedHandler))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .headers(headers -> headers.cacheControl(cache -> {
+                }))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .authorizeHttpRequests(registry -> {
+                    // 使用 {@link SlardarIgnore} 注解的忽略
+                    permitAllByAnno(registry);
+                    // 应用定制扩展ignore url
+                    if (this.ignoringCustomizerList != null) {
+                        List<String> patterns = new ArrayList<>(1);
+                        for (SlardarIgnoringCustomizer ignoringCustomizer : ignoringCustomizerList) {
+                            ignoringCustomizer.customize(patterns);
+                        }
+                        registry.requestMatchers(patterns.toArray(new String[0])).permitAll();
+                        patterns.forEach(p -> tokenRequiredFilter.addIgnoreUrlPattern(p, null));
+                    }
+                    // 读取所有ignore的url并 permitAll
+                    registry.requestMatchers(tokenRequiredFilter.getIgnoredUrls()).permitAll();
+                    // 应用扩展
+                    if (urlRegistryCustomizerList != null) {
+                        urlRegistryCustomizerList.forEach(registryCustomizer -> registryCustomizer.customize(registry));
+                    }
+                    // 注解
+                    urlRegistryByAnnotation(registry);
+                    registry.requestMatchers(HttpMethod.OPTIONS)
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated();
+                });
 
-        // 使用 {@link SlardarIgnore} 注解的忽略
-        permitAllByAnno(registry);
-        // 应用定制扩展ignore url
-        if (this.ignoringCustomizerList != null) {
-            List<String> patterns = new ArrayList<>(1);
-            for (SlardarIgnoringCustomizer ignoringCustomizer : ignoringCustomizerList) {
-                ignoringCustomizer.customize(patterns);
-            }
-            registry.antMatchers(patterns.toArray(new String[0])).permitAll();
-            patterns.forEach(p -> tokenRequiredFilter.addIgnoreUrlPattern(p, null));
-        }
-        // 读取所有ignore的url并 permitAll
-        registry.antMatchers(tokenRequiredFilter.getIgnoredUrls()).permitAll();
-
-        // 应用扩展
-        if (urlRegistryCustomizerList != null) {
-            urlRegistryCustomizerList.forEach(registryCustomizer -> registryCustomizer.customize(registry));
-        }
-        // 注解
-        urlRegistryByAnnotation(registry);
-
-        registry.antMatchers(HttpMethod.OPTIONS)
-                .permitAll()
-                .anyRequest()
-                .authenticated();
-
-        //禁用缓存
-        httpSecurity.headers().cacheControl();
-        // 禁用 iframe 策略
-        httpSecurity.headers().frameOptions().disable();
         // 自定义 logout 处理
         httpSecurity.logout(logoutConfigurer -> logoutConfigurer.logoutUrl("/logout_spring"));
         // 设置filter
@@ -180,11 +176,11 @@ public class SlardarSecurityConfiguration {
                 Set<String> patternValues = methodEntry.getKey().getPatternsCondition() != null ? methodEntry.getKey().getPatternsCondition().getPatterns() : methodEntry.getKey().getPatternValues();
                 Set<RequestMethod> methods = methodEntry.getKey().getMethodsCondition().getMethods();
                 if (CollectionUtils.isEmpty(methods)) {
-                    registry.antMatchers(patternValues.toArray(new String[0])).permitAll();
+                    registry.requestMatchers(patternValues.toArray(new String[0])).permitAll();
                     patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, null));
                 } else {
                     for (RequestMethod method : methods) {
-                        registry.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0])).permitAll();
+                        registry.requestMatchers(HttpMethod.valueOf(method.name()), patternValues.toArray(new String[0])).permitAll();
                         patternValues.forEach(pattern -> tokenRequiredFilter.addIgnoreUrlPattern(pattern, method.name()));
                     }
                 }
@@ -237,10 +233,10 @@ public class SlardarSecurityConfiguration {
                 try {
                     if (CollectionUtils.isEmpty(methods)) {
                         // 没有指定method
-                        setAuthorizedUrl(registry.antMatchers(patternValues.toArray(new String[0])), annotation.value());
+                        setAuthorizedUrl(registry.requestMatchers(patternValues.toArray(new String[0])), annotation.value());
                     } else {
                         for (RequestMethod method : methods) {
-                            setAuthorizedUrl(registry.antMatchers(HttpMethod.resolve(method.name()), patternValues.toArray(new String[0])),
+                            setAuthorizedUrl(registry.requestMatchers(HttpMethod.valueOf(method.name()), patternValues.toArray(new String[0])),
                                     annotation.value());
                         }
                     }

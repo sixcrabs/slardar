@@ -1,13 +1,14 @@
 package org.winterfell.slardar.starter.support;
 
+import jakarta.annotation.Resource;
+import lombok.Getter;
 import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.slardar.captcha.ICaptcha;
+import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.captcha.generator.CodeGenerator;
 import org.winterfell.slardar.captcha.generator.MathGenerator;
 import org.winterfell.slardar.captcha.generator.RandomGenerator;
 import org.winterfell.slardar.captcha.impl.AbstractCaptcha;
 import org.winterfell.slardar.captcha.CaptchaUtil;
-import org.winterfell.slardar.spi.SlardarKeyStore;
 import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.SlardarProperties;
 import org.slf4j.Logger;
@@ -31,14 +32,14 @@ import static org.winterfell.slardar.core.Constants.KEY_PREFIX_CAPTCHA;
 @Component
 public class CaptchaComponent {
 
-    private final SlardarKeyStore keyStore;
+    private final SimpleKeyStore keyStore;
 
     private final SlardarProperties.CaptchaSetting settings;
 
     public static final Logger log = LoggerFactory.getLogger(CaptchaComponent.class);
 
-    public CaptchaComponent(SlardarSpiFactory spiFactory, SlardarProperties slardarProperties) {
-        this.keyStore = spiFactory.findKeyStore(slardarProperties.getKeyStore().getType());
+    public CaptchaComponent(SimpleKeyStore keyStore, SlardarProperties slardarProperties) {
+        this.keyStore = keyStore;
         this.settings = slardarProperties.getCaptcha();
     }
 
@@ -102,6 +103,7 @@ public class CaptchaComponent {
     }
 
 
+    @Getter
     public static class CaptchaPayload implements Serializable {
 
         private String sessionId;
@@ -110,26 +112,14 @@ public class CaptchaComponent {
 
         private byte[] imgBytes;
 
-        public String getSessionId() {
-            return sessionId;
-        }
-
         public CaptchaPayload setSessionId(String sessionId) {
             this.sessionId = sessionId;
             return this;
         }
 
-        public String getCode() {
-            return code;
-        }
-
         public CaptchaPayload setCode(String code) {
             this.code = code;
             return this;
-        }
-
-        public byte[] getImgBytes() {
-            return imgBytes;
         }
 
         public CaptchaPayload setImgBytes(byte[] imgBytes) {
