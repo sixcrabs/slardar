@@ -19,19 +19,19 @@ import java.util.Properties;
  */
 public class LdapUtils {
 
-    private static  final Logger _logger = LoggerFactory.getLogger(LdapUtils.class);
+    private static final Logger _logger = LoggerFactory.getLogger(LdapUtils.class);
 
-    public class Product{
-        public static final  String ActiveDirectory		= "ActiveDirectory";
-        public static final  String OpenLDAP			= "OpenLDAP";
-        public static final  String StandardLDAP		= "StandardLDAP";
+    public record Product() {
+        public static final String ActiveDirectory = "ActiveDirectory";
+        public static final String OpenLDAP = "OpenLDAP";
+        public static final String StandardLDAP = "StandardLDAP";
     }
 
 
-    public static final  String propertyBaseDN = "baseDN";
-    public static final  String propertyDomain = "domain";
-    public static final  String propertyTrustStore = "trustStore";
-    public static final  String propertyTrustStorePassword = "trustStorePassword";
+    public static final String propertyBaseDN = "baseDN";
+    public static final String propertyDomain = "domain";
+    public static final String propertyTrustStore = "trustStore";
+    public static final String propertyTrustStorePassword = "trustStorePassword";
 
     protected DirContext ctx;
     protected String baseDN;
@@ -83,8 +83,8 @@ public class LdapUtils {
     }
 
     protected DirContext InitialDirContext(Properties properties) throws Exception {
-        if(ctx == null) {
-            ctx =createDirContext(properties);
+        if (ctx == null) {
+            ctx = createDirContext(properties);
         }
         return ctx;
     }
@@ -104,9 +104,9 @@ public class LdapUtils {
 
     protected void initEnvironment() {
         // LDAP
-        if(props == null) {
-            _logger.debug("PROVIDER_URL {}" , providerUrl);
-            _logger.debug("SECURITY_PRINCIPAL {}" , principal);
+        if (props == null) {
+            _logger.debug("PROVIDER_URL {}", providerUrl);
+            _logger.debug("SECURITY_PRINCIPAL {}", principal);
             //no log credentials
             //_logger.trace("SECURITY_CREDENTIALS {}" , credentials);
             props = new Properties();
@@ -284,13 +284,13 @@ public class LdapUtils {
     }
 
     public static String getAttrStringValue(Attributes attrs, String elem) {
-        StringBuffer  values = new StringBuffer("");
+        StringBuffer values = new StringBuffer("");
         try {
             if (attrs.get(elem) != null) {
                 for (int i = 0; i < attrs.get(elem).size(); i++) {
-                    if(i == 0) {
+                    if (i == 0) {
                         values.append(attrs.get(elem).get(i).toString());
-                    }else {
+                    } else {
                         values.append(" , ").append(attrs.get(elem).get(i).toString());
                     }
                 }
@@ -303,13 +303,13 @@ public class LdapUtils {
     }
 
     public static String getAttrStringValue(Attribute attr) {
-        StringBuffer  values = new StringBuffer("");
+        StringBuffer values = new StringBuffer("");
         try {
             if (attr != null) {
                 for (int i = 0; i < attr.size(); i++) {
-                    if(i == 0) {
+                    if (i == 0) {
                         values.append(attr.get(i).toString());
-                    }else {
+                    } else {
                         values.append(" , ").append(attr.get(i).toString());
                     }
                 }
@@ -321,11 +321,11 @@ public class LdapUtils {
         return values.toString();
     }
 
-    public static String getAttributeStringValue(String attribute , HashMap<String,Attribute> attributeMap) throws NamingException {
-        attribute= attribute.toLowerCase();
-        if(null != attributeMap.get(attribute)  && null != attributeMap.get(attribute).get()) {
+    public static String getAttributeStringValue(String attribute, HashMap<String, Attribute> attributeMap) throws NamingException {
+        attribute = attribute.toLowerCase();
+        if (null != attributeMap.get(attribute) && null != attributeMap.get(attribute).get()) {
             return attributeMap.get(attribute).get().toString();
-        }else {
+        } else {
             return "";
         }
     }

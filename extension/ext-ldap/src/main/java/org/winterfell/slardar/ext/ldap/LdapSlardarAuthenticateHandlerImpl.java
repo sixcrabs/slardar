@@ -45,14 +45,6 @@ public class LdapSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthentic
     }
 
     /**
-     * do destroy
-     */
-    @Override
-    public void destroy() {
-
-    }
-
-    /**
      * 处理认证请求
      *
      * @param requestWrapper

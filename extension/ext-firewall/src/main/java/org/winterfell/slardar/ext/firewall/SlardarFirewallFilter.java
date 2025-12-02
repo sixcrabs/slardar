@@ -1,6 +1,11 @@
 package org.winterfell.slardar.ext.firewall;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.winterfell.slardar.core.SlardarContext;
@@ -10,12 +15,7 @@ import org.winterfell.slardar.ext.firewall.core.SlardarFirewallHandler;
 import org.winterfell.slardar.ext.firewall.core.handlers.SlardarFirewallHeadersHandler;
 import org.winterfell.slardar.ext.firewall.core.handlers.SlardarFirewallHostsHandler;
 import org.winterfell.slardar.starter.config.SlardarBeanConfiguration;
-import org.winterfell.slardar.starter.filter.request.SlardarTokenRequiredFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class SlardarFirewallFilter extends OncePerRequestFilter {
 
     private final SlardarContext context;
 
-    private final List<AntPathRequestMatcher> ignoredPathRequestMatchers = new ArrayList<>(1);
+    private final List<PathPatternRequestMatcher> ignoredPathRequestMatchers = new ArrayList<>(1);
 
     public SlardarFirewallFilter(SlardarContext context) {
         this.context = context;
@@ -45,8 +45,8 @@ public class SlardarFirewallFilter extends OncePerRequestFilter {
     }
 
     private void init() {
-        ignoredPathRequestMatchers.add(new AntPathRequestMatcher(AUTH_LOGIN_URL));
-        Arrays.stream(SlardarBeanConfiguration.STATIC_RES_MATCHERS).forEach(url-> ignoredPathRequestMatchers.add(new AntPathRequestMatcher(url)));
+        ignoredPathRequestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(AUTH_LOGIN_URL));
+        Arrays.stream(SlardarBeanConfiguration.STATIC_RES_MATCHERS).forEach(url-> ignoredPathRequestMatchers.add(PathPatternRequestMatcher.withDefaults().matcher(url)));
         // 添加已有的防火墙handler 到容器中
         SlardarFirewallProperties properties = context.getBean(SlardarFirewallProperties.class);
         if(properties.getBlackPath().isEnabled()) {

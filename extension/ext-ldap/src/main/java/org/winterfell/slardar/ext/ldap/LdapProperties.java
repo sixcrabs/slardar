@@ -1,5 +1,6 @@
 package org.winterfell.slardar.ext.ldap;
 
+import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.ObjectUtils;
 
@@ -14,6 +15,7 @@ import java.util.Map;
  * @author Alex
  * @version v1.0 2023/8/24
  */
+@Getter
 @ConfigurationProperties(prefix = "slardar.ldap")
 public class LdapProperties {
 
@@ -39,26 +41,14 @@ public class LdapProperties {
     }
 
 
-    public int getPort() {
-        return port;
-    }
-
     public LdapProperties setPort(int port) {
         this.port = port;
         return this;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public LdapProperties setUrl(String url) {
         this.url = url;
         return this;
-    }
-
-    public String getBase() {
-        return base;
     }
 
     public LdapProperties setBase(String base) {
@@ -67,17 +57,9 @@ public class LdapProperties {
     }
 
 
-    public Boolean getAnonymousReadOnly() {
-        return anonymousReadOnly;
-    }
-
     public LdapProperties setAnonymousReadOnly(Boolean anonymousReadOnly) {
         this.anonymousReadOnly = anonymousReadOnly;
         return this;
-    }
-
-    public Map<String, String> getBaseEnvironment() {
-        return baseEnvironment;
     }
 
 }

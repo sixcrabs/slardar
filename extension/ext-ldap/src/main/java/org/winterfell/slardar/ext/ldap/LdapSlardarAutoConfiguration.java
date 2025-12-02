@@ -1,7 +1,7 @@
 package org.winterfell.slardar.ext.ldap;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @version v1.0 2023/8/24
  */
 @EnableConfigurationProperties(LdapProperties.class)
-@Configuration
+@AutoConfiguration
 public class LdapSlardarAutoConfiguration {
 
 }

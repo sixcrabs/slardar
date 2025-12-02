@@ -1,13 +1,13 @@
 package org.winterfell.slardar.ext.firewall.core.handlers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.core.SlardarException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>

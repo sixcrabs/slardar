@@ -13,7 +13,7 @@
         <module>starter</module>
         <module>sample</module>
         <module>sso</module>
-<!--        <module>extension</module>-->
+        <module>extension</module>
         <module>common</module>
     </modules>
 

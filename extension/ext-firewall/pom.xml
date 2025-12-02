@@ -12,23 +12,17 @@
     <artifactId>slardar-ext-firewall</artifactId>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.winterfell</groupId>-->
-<!--            <artifactId>slardar-core</artifactId>-->
-<!--            <version>${slardar.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.winterfell</groupId>-->
-<!--            <artifactId>slardar-spi</artifactId>-->
-<!--            <version>${slardar.version}</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>slardar-starter</artifactId>
             <version>${slardar.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Lombok -->

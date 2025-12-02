@@ -123,7 +123,6 @@ public class SlardarTokenJwtProvider implements SlardarTokenProvider {
     private String provide(Map<String, Object> claims, Date expiration) {
         // 确保密钥长度满足HS512要求（至少64字节）
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
-
         // 如果密钥太短，进行扩展
         if (keyBytes.length < 64) {
             // 使用更长的哈希算法或重复填充
@@ -175,16 +174,22 @@ public class SlardarTokenJwtProvider implements SlardarTokenProvider {
      * 从token中获取jwt的负载
      */
     private Claims getClaimsFromToken(String token) {
-        Claims claims = null;
         try {
-            claims = Jwts.parser()
-                    .setSigningKey(secret)
+            // 确保使用与签名相同的密钥格式
+            byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+            if (keyBytes.length < 64) {
+                keyBytes = Arrays.copyOf(DigestUtils.sha512(secret), 64);
+            }
+            SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
                     .setAllowedClockSkewSeconds(allowedClockSkewSeconds)
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (Exception e) {
             log.error("JWT格式验证失败: {}", e.getLocalizedMessage());
+            return null;
         }
-        return claims;
     }
 }

@@ -16,18 +16,14 @@
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>slardar-starter</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>slardar-core</artifactId>
+            <version>${slardar.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>slardar-spi</artifactId>
-            <version>1.7.0-SNAPSHOT</version>
+            <version>${slardar.version}</version>
         </dependency>
 
         <dependency>
@@ -35,17 +31,6 @@
             <artifactId>hutool-mini</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.0.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
 
