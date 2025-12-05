@@ -13,7 +13,8 @@
     <artifactId>slardar-oauth-parent</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>authorization-server</module>
+        <module>oauth-server</module>
+        <module>oauth-client</module>
     </modules>
 
     <properties>

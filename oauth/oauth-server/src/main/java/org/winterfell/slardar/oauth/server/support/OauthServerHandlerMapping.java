@@ -22,7 +22,7 @@ public enum OauthServerHandlerMapping {
     client_token,
 
     // 用户详情
-    userdetails,
+    profile,
     userDetails,
 
 

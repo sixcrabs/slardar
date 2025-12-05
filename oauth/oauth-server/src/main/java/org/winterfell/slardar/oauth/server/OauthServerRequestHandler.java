@@ -60,7 +60,7 @@ public class OauthServerRequestHandler implements SlardarIgnoringCustomizer {
                     break;
                 case client_token:
                     break;
-                case userdetails:
+                case profile:
                 case userDetails:
                     break;
             }
