@@ -3,8 +3,7 @@
 ## structure
 
 - oauth-server: oauth2 授权服务封装
-- resource-server: 资源服务器
-- oauth-client: oauth 客户端封装，用于对接各类 oauth2 认证（包含第三方的微博、qq等平台）
+- oauth-client: oauth 客户端封装，用于对接各类 oauth2 认证（包含第三方的微博、gitee、qq等平台）
 
 slardar 框架支持 oauth2.1 标准的认证授权.
 
@@ -21,7 +20,7 @@ slardar 框架支持 oauth2.1 标准的认证授权.
 
 <dependency>
     <groupId>org.winterfell</groupId>
-    <artifactId>slardar-oauth2-server</artifactId>
+    <artifactId>slardar-oauth-server</artifactId>
     <version>1.0.0</version>
 </dependency>
 
