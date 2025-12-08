@@ -1,5 +1,6 @@
 package org.winterfell.slardar.oauth.client.impl;
 
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.ToString;
@@ -9,7 +10,9 @@ import org.winterfell.slardar.oauth.client.OAuthException;
 import org.winterfell.slardar.oauth.client.OAuthUser;
 import org.winterfell.slardar.oauth.client.token.OAuthBaseToken;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.winterfell.slardar.oauth.client.support.OAuthUtil.*;
 
@@ -43,7 +46,7 @@ public class GiteeOAuthClient extends AbstractOAuthClient<GiteeOAuthClient.OAuth
         return OAuthGiteeToken.builder()
                 .accessToken(response.get("access_token").getAsString())
                 .refreshToken(response.get("refresh_token").getAsString())
-                .scope(response.get("scope").getAsString())
+                .scopes(response.get("scope").isJsonNull() ? Collections.emptyList() : Lists.newArrayList(response.get("scope").getAsString().split(" ")))
                 .tokenType(response.get("token_type").getAsString())
                 .expireIn(response.get("expires_in").getAsInt())
                 .build();
@@ -89,7 +92,7 @@ public class GiteeOAuthClient extends AbstractOAuthClient<GiteeOAuthClient.OAuth
 
     @SuperBuilder
     public static class OAuthGiteeToken extends OAuthBaseToken {
-        private String scope;
+        private List<String> scopes;
         private String tokenType;
         private String refreshToken;
     }
