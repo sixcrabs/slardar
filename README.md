@@ -3,6 +3,11 @@
 
 基于 Spring Security 框架封装定义了 4A (Authentication、Authorization、Account、Audit) 相关的接口和逻辑流程，应用服务可以快速具有`4A`等能力。
 
+## 分支说明
+
+- master： 主分支，支持 springboot 2.x 
+- springboot3: 支持 springboot3 + jdk 17
+
 ## 特性
 
 - 基于 spring security 实现认证和权限控制
