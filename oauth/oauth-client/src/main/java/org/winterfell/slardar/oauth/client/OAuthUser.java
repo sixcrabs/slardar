@@ -1,6 +1,7 @@
 package org.winterfell.slardar.oauth.client;
 
 import com.google.gson.JsonObject;
+import lombok.Builder;
 import lombok.Data;
 import org.winterfell.slardar.oauth.client.token.OAuthToken;
 
@@ -14,6 +15,7 @@ import org.winterfell.slardar.oauth.client.token.OAuthToken;
  * @since 2025/12/5
  */
 @Data
+@Builder
 public class OAuthUser {
 
     /**

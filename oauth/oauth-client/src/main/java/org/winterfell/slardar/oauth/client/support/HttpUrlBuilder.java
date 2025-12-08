@@ -56,7 +56,6 @@ public class HttpUrlBuilder {
         }
         String valueAsString = (value != null ? value.toString() : null);
         this.params.put(key, valueAsString);
-
         return this;
     }
 

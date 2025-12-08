@@ -1,6 +1,6 @@
 package org.winterfell.slardar.oauth.client;
 
-import org.winterfell.slardar.oauth.client.result.OAuthNoneResult;
+import org.winterfell.slardar.oauth.client.result.OAuthEmptyResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResultStatus;
 import org.winterfell.slardar.oauth.client.token.OAuthToken;
@@ -52,7 +52,7 @@ public interface OAuthClient<T extends OAuthToken> {
      * @return 撤销 成功/失败
      * @throws OAuthException
      */
-    default OAuthNoneResult revoke(T token) throws OAuthException {
+    default OAuthResult<Void> revoke(T token) throws OAuthException {
         throw new OAuthException(OAuthResultStatus.UNSUPPORTED);
     }
 

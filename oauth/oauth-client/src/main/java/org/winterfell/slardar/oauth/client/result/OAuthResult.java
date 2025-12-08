@@ -1,8 +1,10 @@
 package org.winterfell.slardar.oauth.client.result;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.winterfell.slardar.oauth.client.OAuthException;
 
 import java.io.Serializable;
 
@@ -17,6 +19,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OAuthResult<T> implements Serializable {
 
     /**
@@ -33,4 +36,31 @@ public class OAuthResult<T> implements Serializable {
      * 授权响应数据
      */
     private T data;
+
+    public static <T> OAuthResult<T> success(T data) {
+        return OAuthResult.<T>builder().code(OAuthResultStatus.SUCCESS.getCode()).data(data).build();
+    }
+
+    public static <T> OAuthResult<T> success() {
+        return OAuthResult.<T>builder().code(OAuthResultStatus.SUCCESS.getCode()).msg(OAuthResultStatus.SUCCESS.getMsg()).data(null).build();
+    }
+
+    public static <T> OAuthResult<T> error(int code, String msg) {
+        return OAuthResult.<T>builder().code(code).msg(msg).build();
+    }
+
+    public static <T> OAuthResult<T> error(String msg) {
+        return OAuthResult.<T>builder().code(OAuthResultStatus.FAILURE.getCode()).msg(msg).build();
+    }
+
+    public static <T> OAuthResult<T> error(Exception exception) {
+        if (exception instanceof OAuthException) {
+            return OAuthResult.<T>builder()
+                    .code(((OAuthException) exception).getErrorCode())
+                    .msg(((OAuthException) exception).getErrorMsg()).build();
+        } else
+            return OAuthResult.<T>builder()
+                    .code(OAuthResultStatus.FAILURE.getCode())
+                    .msg(exception.getMessage()).build();
+    }
 }

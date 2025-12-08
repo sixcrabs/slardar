@@ -1,13 +1,14 @@
 package org.winterfell.slardar.oauth.client.impl;
 
 import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.winterfell.misc.hutool.mini.RandomUtil;
 import org.winterfell.misc.hutool.mini.StringUtil;
 import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.oauth.client.OAuthClient;
 import org.winterfell.slardar.oauth.client.OAuthException;
 import org.winterfell.slardar.oauth.client.OAuthUser;
-import org.winterfell.slardar.oauth.client.result.OAuthNoneResult;
+import org.winterfell.slardar.oauth.client.result.OAuthEmptyResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResultStatus;
 import org.winterfell.slardar.oauth.client.support.HttpUrlBuilder;
@@ -24,6 +25,7 @@ import java.util.List;
  * @author Alex
  * @since 2025/12/5
  */
+@Slf4j
 @SuperBuilder
 public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements OAuthClient<T> {
 
@@ -50,12 +52,12 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
     public String getAuthorizeUrl() throws OAuthException {
         // state 用于避免 csrf 攻击
         String state = createState();
-        return HttpUrlBuilder.fromBaseUrl(config.getAuthorizeUrl())
+        HttpUrlBuilder builder = HttpUrlBuilder.fromBaseUrl(config.getAuthorizeUrl())
                 .queryParam("response_type", "code")
                 .queryParam("client_id", clientId)
                 .queryParam("redirect_uri", redirectUri)
-                .queryParam("state", state)
-                .build();
+                .queryParam("state", state);
+        return builder.build();
     }
 
     /**
@@ -74,13 +76,13 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
     public OAuthResult<OAuthUser> login(String code, String state) throws OAuthException {
         try {
             preCheckCode(code);
-            this.getAccessToken(code);
-            AuthToken authToken = this.getAccessToken(authCallback);
-            AuthUser user = this.getUserInfo(authToken);
-            return AuthResponse.<AuthUser>builder().code(AuthResponseStatus.SUCCESS.getCode()).data(user).build();
+            preCheckState(state);
+            T accessToken = this.getAccessToken(code);
+            OAuthUser useProfile = this.getUseProfile(accessToken);
+            return OAuthResult.success(useProfile);
         } catch (Exception e) {
-            Log.error("Failed to login with oauth authorization.", e);
-            return this.responseError(e);
+            log.error("Failed to login with oauth authorization.", e);
+            return OAuthResult.error(e);
         }
     }
 
@@ -111,7 +113,7 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
      * @throws OAuthException
      */
     @Override
-    public OAuthNoneResult revoke(T token) throws OAuthException {
+    public OAuthResult<Void> revoke(T token) throws OAuthException {
         return OAuthClient.super.revoke(token);
     }
 
@@ -130,7 +132,7 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
     /**
      * 自定义平台可覆盖此方法
      *
-     * @param code  授权码code值
+     * @param code 授权码code值
      */
     protected void preCheckCode(String code) {
         if (StringUtil.isEmpty(code)) {
@@ -140,6 +142,7 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
 
     /**
      * 自定义平台可覆盖此方法
+     *
      * @param state state 值
      */
     protected void preCheckState(String state) {

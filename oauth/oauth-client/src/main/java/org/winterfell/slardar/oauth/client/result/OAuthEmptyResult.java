@@ -8,5 +8,5 @@ package org.winterfell.slardar.oauth.client.result;
  * @author Alex
  * @since 2025/12/5
  */
-public class OAuthNoneResult extends OAuthResult<Void>{
+public class OAuthEmptyResult extends OAuthResult<Void>{
 }

@@ -1,7 +1,7 @@
 package org.winterfell.slardar.oauth.client;
 
 import org.junit.jupiter.api.Test;
-import org.winterfell.slardar.oauth.client.result.OAuthNoneResult;
+import org.winterfell.slardar.oauth.client.result.OAuthEmptyResult;
 
 /**
  * <p>
@@ -15,7 +15,7 @@ class OAuthNoneResultTest {
 
     @Test
     void name() {
-        OAuthNoneResult noneResult = new OAuthNoneResult();
+        OAuthEmptyResult noneResult = new OAuthEmptyResult();
         noneResult.setCode(500);
         noneResult.setMsg("none");
     }
