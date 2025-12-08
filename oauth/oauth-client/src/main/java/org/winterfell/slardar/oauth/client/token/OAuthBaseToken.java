@@ -1,7 +1,7 @@
 package org.winterfell.slardar.oauth.client.token;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
@@ -12,7 +12,7 @@ import lombok.Data;
  * @since 2025/12/5
  */
 @Data
-@Builder
+@SuperBuilder
 public class OAuthBaseToken implements OAuthToken {
 
     private String accessToken;

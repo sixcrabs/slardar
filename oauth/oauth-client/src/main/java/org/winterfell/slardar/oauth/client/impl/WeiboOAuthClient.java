@@ -40,18 +40,6 @@ public class WeiboOAuthClient extends AbstractOAuthClient<OAuthBaseToken> {
     }
 
     /**
-     * 获取授权跳转url, 需要加上 scopes 参数
-     *
-     * @return
-     * @throws OAuthException
-     */
-    @Override
-    public String getAuthorizeUrl() throws OAuthException {
-        return HttpUrlBuilder.fromBaseUrl(super.getAuthorizeUrl()
-                .concat("&scope=".concat( String.join(",", super.scopes)))).build();
-    }
-
-    /**
      * 获取 access token
      * 子类需要实现该方法
      *
@@ -61,7 +49,7 @@ public class WeiboOAuthClient extends AbstractOAuthClient<OAuthBaseToken> {
      */
     @Override
     public OAuthBaseToken getAccessToken(String code) throws OAuthException {
-        JsonObject response = postAndParse(accessTokenUrl(code), null);
+        JsonObject response = postAndParse(accessTokenUrl(code), null, null);
         if (response.has("error")) {
             throw new OAuthException(response.get("error_description").getAsString());
         }

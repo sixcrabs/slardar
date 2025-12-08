@@ -19,6 +19,6 @@ public class OAuthServerInfo {
     private String accessTokenUrl;
     private String userInfoUrl;
     private String revokeUrl;
-    private String refreshUrl;
+    private String refreshTokenUrl;
 
 }

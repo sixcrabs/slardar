@@ -8,7 +8,6 @@ import org.winterfell.misc.keystore.SimpleKeyStore;
 import org.winterfell.slardar.oauth.client.OAuthClient;
 import org.winterfell.slardar.oauth.client.OAuthException;
 import org.winterfell.slardar.oauth.client.OAuthUser;
-import org.winterfell.slardar.oauth.client.result.OAuthEmptyResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResult;
 import org.winterfell.slardar.oauth.client.result.OAuthResultStatus;
 import org.winterfell.slardar.oauth.client.support.HttpUrlBuilder;
@@ -57,6 +56,9 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
                 .queryParam("client_id", clientId)
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("state", state);
+        if (scopes != null && !scopes.isEmpty()) {
+            builder.queryParam("scope", String.join(",", scopes));
+        }
         return builder.build();
     }
 
@@ -152,6 +154,8 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
         if (!keyStore.has(state)) {
             throw new OAuthException(OAuthResultStatus.ILLEGAL_STATE);
         }
+        // 验证后 立即失效
+        keyStore.remove(state);
     }
 
     /**
@@ -177,7 +181,7 @@ public abstract class AbstractOAuthClient<T extends OAuthBaseToken> implements O
      * @return 返回获取accessToken的url
      */
     protected String refreshTokenUrl(String refreshToken) {
-        return HttpUrlBuilder.fromBaseUrl(config.getRefreshUrl())
+        return HttpUrlBuilder.fromBaseUrl(config.getRefreshTokenUrl())
                 .queryParam("client_id", clientId)
                 .queryParam("client_secret", clientSecret)
                 .queryParam("refresh_token", refreshToken)
