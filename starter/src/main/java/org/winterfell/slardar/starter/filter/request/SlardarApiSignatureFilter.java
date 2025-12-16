@@ -19,7 +19,6 @@ import org.winterfell.slardar.spi.SlardarSpiFactory;
 import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.support.SignatureUtil;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
