@@ -17,6 +17,7 @@
         <module>ext-ldap</module>
         <module>ext-firewall</module>
         <module>ext-license</module>
+        <module>ext-apisix</module>
     </modules>
 
     <dependencyManagement>
