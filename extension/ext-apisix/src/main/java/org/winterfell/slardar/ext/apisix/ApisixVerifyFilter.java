@@ -112,6 +112,8 @@ public class ApisixVerifyFilter extends GenericFilterBean implements SlardarIgno
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
+        response.setHeader("X-User-ID", userDetails.getAccount().getId());
+        response.setHeader("X-User-Name", userDetails.getUsername());
         try {
             response.getWriter().print(message);
             response.getWriter().flush();
