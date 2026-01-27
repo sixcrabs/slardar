@@ -11,17 +11,6 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 - master： 主分支，支持 springboot 2.x 
 - springboot3: 支持 springboot3 + jdk 17
 
-## 特性
-
-- 基于 `spring security` 实现认证和权限控制
-- 支持 `SSO` 单点登录
-- 支持 `MFA` 多因素认证
-- 支持 `Oauth2` 服务端和客户端实现
-- 支持登录加密、验证码等
-- 支持`LDAP`等用户联合认证体系
-- 支持集成方通过`SPI`方式进行自定义扩展
-- 同时兼容 springboot2.x & 3.x
-- ...
 
 ## 版本更新
 
