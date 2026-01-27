@@ -1,7 +1,10 @@
 
-# Slardar
+# Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + 内置接口
 
-基于 Spring Security 框架封装定义了 4A (Authentication、Authorization、Account、Audit) 相关的接口和逻辑流程，应用服务可以快速具有`4A`等能力。
+spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、接口防火墙、安全审计等，开箱即用秒接入，兼容 springboot2.x & 3.x
+
+简单、统一、扩展方便！
+
 
 ## 分支说明
 
