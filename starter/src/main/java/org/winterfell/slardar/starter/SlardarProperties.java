@@ -1,6 +1,7 @@
 package org.winterfell.slardar.starter;
 
 import org.winterfell.slardar.starter.handler.SlardarDefaultAuthenticateResultAdapter;
+import org.winterfell.slardar.starter.support.LoginResultFmt;
 import org.winterfell.slardar.starter.support.spi.EmailOtpDispatcher;
 import org.winterfell.slardar.starter.support.LoginConcurrentPolicy;
 import org.winterfell.slardar.starter.support.spi.token.SlardarTokenJwtProvider;
@@ -428,6 +429,11 @@ public class SlardarProperties implements Serializable {
         private String resultHandlerType = SlardarDefaultAuthenticateResultAdapter.NAME;
 
         /**
+         * 认证结果返回 默认简单格式（只有必要字段）
+         */
+        private LoginResultFmt loginResultFmt = LoginResultFmt.simplified;
+
+        /**
          * 登录的 url
          */
         private String url = AUTH_LOGIN_URL;
@@ -481,6 +487,15 @@ public class SlardarProperties implements Serializable {
 
         public LoginSetting setLoginFailedHttpStatus(int loginFailedHttpStatus) {
             this.loginFailedHttpStatus = loginFailedHttpStatus;
+            return this;
+        }
+
+        public LoginResultFmt getLoginResultFmt() {
+            return loginResultFmt;
+        }
+
+        public LoginSetting setLoginResultFmt(LoginResultFmt loginResultFmt) {
+            this.loginResultFmt = loginResultFmt;
             return this;
         }
 

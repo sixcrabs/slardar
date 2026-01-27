@@ -7,10 +7,12 @@ import org.winterfell.slardar.core.domain.Account;
 import org.winterfell.slardar.core.SlardarContext;
 import org.winterfell.slardar.spi.token.SlardarTokenProvider;
 import org.winterfell.slardar.starter.SlardarEventManager;
+import org.winterfell.slardar.starter.SlardarProperties;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthenticateService;
 import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
 import org.winterfell.slardar.starter.support.LoginDeviceType;
 import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
+import org.winterfell.slardar.starter.support.LoginResultFmt;
 import org.winterfell.slardar.starter.support.event.LoginEvent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -113,16 +115,22 @@ public class SlardarAuthenticateSucceedHandler implements AuthenticationSuccessH
         // store token value
         authenticateService.setTokenValueIntoServlet(tokenSlardarToken.getTokenValue(), request, response);
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-        AccountInfoDTO accountInfoDTO = new AccountInfoDTO()
-                .setAccountName(account.getName())
+        LoginResultFmt loginResultFmt = context.getBeanIfAvailable(SlardarProperties.class).getLogin().getLoginResultFmt();
+        AccountInfoDTO accountInfoDTO = LoginResultFmt.simplified.equals(loginResultFmt) ? new AccountInfoDTO()
+                .setToken(tokenSlardarToken.getTokenValue())
                 .setAccountExpired(account.isExpired())
                 .setAccountLocked(account.isLocked())
-                .setToken(tokenSlardarToken.getTokenValue())
-                .setTokenExpiresAt(tokenSlardarToken.getExpiresAt())
-                .setAccountPwdValidRemainDays(account.getPwdValidRemainDays())
-                .setAuthorities(AuthorityUtils.authorityListToSet(authorities))
-                .setUserProfile(account.getUserProfile())
-                .setOpenId(account.getOpenId());
+                .setAccountName(account.getName()) :
+                new AccountInfoDTO()
+                        .setAccountName(account.getName())
+                        .setAccountExpired(account.isExpired())
+                        .setAccountLocked(account.isLocked())
+                        .setToken(tokenSlardarToken.getTokenValue())
+                        .setTokenExpiresAt(tokenSlardarToken.getExpiresAt())
+                        .setAccountPwdValidRemainDays(account.getPwdValidRemainDays())
+                        .setAuthorities(AuthorityUtils.authorityListToSet(authorities))
+                        .setUserProfile(account.getUserProfile())
+                        .setOpenId(account.getOpenId());
         globalObjectMapper.writeValue(response.getWriter(), authenticateService.getAuthResultHandler().authSucceedResult(accountInfoDTO));
         clearAuthenticationAttributes(request);
         try {

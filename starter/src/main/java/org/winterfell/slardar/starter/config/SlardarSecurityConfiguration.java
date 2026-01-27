@@ -1,8 +1,7 @@
 package org.winterfell.slardar.starter.config;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.core.annotation.Order;
+import org.springframework.context.annotation.ComponentScan;
 import org.winterfell.misc.hutool.mini.ReUtil;
 import org.winterfell.misc.hutool.mini.ReflectUtil;
 import org.winterfell.misc.hutool.mini.StringUtil;
@@ -24,7 +23,6 @@ import org.winterfell.slardar.starter.handler.SlardarAuthenticateFailedHandler;
 import org.winterfell.slardar.starter.support.SecUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -56,6 +54,7 @@ import java.util.Set;
  */
 @AutoConfiguration(after = SlardarBeanConfiguration.class, before = SecurityAutoConfiguration.class)
 @EnableWebSecurity
+@ComponentScan(basePackages = {"org.winterfell"})
 public class SlardarSecurityConfiguration {
 
 
