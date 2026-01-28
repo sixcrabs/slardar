@@ -18,9 +18,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @version v1.0 2023/3/14
  */
 @SpringBootApplication(scanBasePackages = "org.winterfell")
-public class SlardarServerApp {
+public class SlardarSampleServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(SlardarServerApp.class, args);
+        SpringApplication.run(SlardarSampleServer.class, args);
     }
 }

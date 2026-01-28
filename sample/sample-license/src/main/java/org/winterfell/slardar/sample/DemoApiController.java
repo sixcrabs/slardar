@@ -1,11 +1,14 @@
 package org.winterfell.slardar.sample;
 
-import cn.piesat.v.shared.as.response.Resp;
+import org.winterfell.shared.as.advice.response.Response;
+import org.winterfell.shared.as.advice.response.ResponseFactory;
 import org.winterfell.slardar.core.annotation.SlardarIgnore;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -21,9 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "示例Api")
 public class DemoApiController {
 
+    @Resource
+    private ResponseFactory responseFactory;
+
     @GetMapping("/hi")
     @SlardarIgnore
-    public Resp sayHi() {
-        return Resp.of("Hello, Slardar");
+    public Response<String> sayHi() {
+        return responseFactory.createSuccess("Hello, Slardar");
     }
 }

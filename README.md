@@ -8,13 +8,21 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 
 ## 分支说明
 
-- master： 主分支，支持 springboot 2.x 
-- springboot3: 支持 springboot3 + jdk 17
+- master：     主分支，支持 `springboot 2.x` + `jdk 8`
+- springboot3: 支持 `springboot3` + `jdk 17`
 
 
 ## 版本更新
 
 最新版本: `1.7.0-SNAPSHOT`
+
+```xml
+<dependency>
+    <groupId>org.winterfell</groupId>
+    <artifactId>slardar-starter</artifactId>
+    <version>${latest.version}</version>
+</dependency>
+```
 
 ### 1.7.0-SNAPSHOT
 - 更新升级内部依赖包的版本号
@@ -27,16 +35,10 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 - 重写了 `keystore` 模块，支持多种存储方式(memory/mapdb/mvstore/redis), 在轻量的单体服务中，可以不必依赖redis，采用内部存储即可
 - 修复一些 bug
 
-## 快速使用
+## 登录 + JWT
 ### 引入依赖
 
-```xml
-<dependency>
-    <groupId>org.winterfell</groupId>
-    <artifactId>slardar-starter</artifactId>
-    <version>${latest.version}</version>
-</dependency>
-```
+
 
 ### 实现接口
 `Slardar` 定义好了认证和权限控制的流程和步骤，需要集成方实现提供账户的 bean，slardar 会在恰当的时机调用获取到账户信息

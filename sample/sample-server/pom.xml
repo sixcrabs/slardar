@@ -5,7 +5,7 @@
     <parent>
         <artifactId>slardar-sample-parent</artifactId>
         <groupId>org.winterfell</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -15,38 +15,36 @@
 
     <dependencies>
 
-<!--        <dependency>-->
-<!--            <groupId>org.winterfell</groupId>-->
-<!--            <artifactId>slardar-sso-server-starter</artifactId>-->
-<!--            <version>${sso.version}</version>-->
-<!--        </dependency>-->
-
-        <!--apisix 验证插件功能验证 -->
-        <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>slardar-ext-apisix</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
+        <!--        <dependency>-->
+        <!--            <groupId>org.winterfell</groupId>-->
+        <!--            <artifactId>slardar-sso-server-starter</artifactId>-->
+        <!--            <version>${sso.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>slardar-starter</artifactId>
             <version>${slardar.version}</version>
         </dependency>
 
+        <!--apisix 验证插件功能验证 -->
+        <dependency>
+            <groupId>org.winterfell</groupId>
+            <artifactId>slardar-ext-apisix</artifactId>
+            <version>${slardar.ext.version}</version>
+        </dependency>
 
 
         <!-- 防火墙拦截功能验证 -->
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>slardar-ext-firewall</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${slardar.ext.version}</version>
         </dependency>
 
         <!--        <dependency>-->
-        <!--            <groupId>cn.piesat.v</groupId>-->
+        <!--              <groupId>org.winterfell</groupId>-->
         <!--            <artifactId>slardar-ext-ldap</artifactId>-->
-        <!--            <version>1.0.0-SNAPSHOT</version>-->
+        <!--            <version>${slardar.ext.version}</version>-->
         <!--        </dependency>-->
 
         <dependency>
