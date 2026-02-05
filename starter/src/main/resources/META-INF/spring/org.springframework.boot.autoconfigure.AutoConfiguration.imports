@@ -1,2 +1,2 @@
-org.winterfell.slardar.starter.config.SlardarBeanConfiguration
-org.winterfell.slardar.starter.config.SlardarSecurityConfiguration
+io.github.sixcrabs.slardar.starter.config.SlardarBeanConfiguration
+io.github.sixcrabs.slardar.starter.config.SlardarSecurityConfiguration

@@ -1,1 +1,1 @@
-org.winterfell.slardar.sso.server.config.SsoServerAutoConfiguration
+io.github.sixcrabs.slardar.sso.server.config.SsoServerAutoConfiguration

@@ -1,7 +1,7 @@
 package org.winterfell.slardar.example.event;
 
-import org.winterfell.slardar.core.event.SlardarEvent;
-import org.winterfell.slardar.core.domain.AuditLog;
+import io.github.sixcrabs.slardar.core.event.SlardarEvent;
+import io.github.sixcrabs.slardar.core.domain.AuditLog;
 
 /**
  * <p>

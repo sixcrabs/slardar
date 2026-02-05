@@ -1,13 +1,13 @@
 package org.winterfell.slardar.example.impl;
 
 import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.starter.provider.AccountProvider;
-import org.winterfell.slardar.core.AccountStatus;
-import org.winterfell.slardar.core.domain.Account;
-import org.winterfell.slardar.core.domain.Authority;
-import org.winterfell.slardar.core.domain.Role;
-import org.winterfell.slardar.core.domain.UserProfile;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.starter.provider.AccountProvider;
+import io.github.sixcrabs.slardar.core.AccountStatus;
+import io.github.sixcrabs.slardar.core.domain.Account;
+import io.github.sixcrabs.slardar.core.domain.Authority;
+import io.github.sixcrabs.slardar.core.domain.Role;
+import io.github.sixcrabs.slardar.core.domain.UserProfile;
 import com.google.common.collect.Lists;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

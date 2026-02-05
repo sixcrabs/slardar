@@ -18,7 +18,7 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 
 ```xml
 <dependency>
-    <groupId>org.winterfell</groupId>
+    <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-starter</artifactId>
     <version>${latest.version}</version>
 </dependency>

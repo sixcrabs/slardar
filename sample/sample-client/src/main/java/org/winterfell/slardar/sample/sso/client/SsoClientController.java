@@ -1,6 +1,6 @@
 package org.winterfell.slardar.sample.sso.client;
 
-import org.winterfell.slardar.core.SlardarSecurityHelper;
+import io.github.sixcrabs.slardar.core.SlardarSecurityHelper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

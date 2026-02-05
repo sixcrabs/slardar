@@ -1,6 +1,6 @@
 package org.winterfell.slardar.example.config;
 
-import org.winterfell.slardar.starter.config.customizer.SlardarIgnoringCustomizer;
+import io.github.sixcrabs.slardar.starter.config.customizer.SlardarIgnoringCustomizer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

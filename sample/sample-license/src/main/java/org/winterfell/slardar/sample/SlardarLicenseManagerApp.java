@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author Alex
  * @since 2025/9/22
  */
-@SpringBootApplication(scanBasePackages = {"cn.piesat", "org.winterfell"})
+@SpringBootApplication(scanBasePackages = {"cn.piesat", "io.github.sixcrabs"})
 public class SlardarLicenseManagerApp {
     public static void main(String[] args) {
         SpringApplication.run(SlardarLicenseManagerApp.class, args);

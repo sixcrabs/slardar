@@ -1,8 +1,8 @@
 package org.winterfell.slardar.example.event;
 
-import org.winterfell.slardar.core.event.SlardarEventListener;
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.starter.support.event.LoginEvent;
+import io.github.sixcrabs.slardar.core.event.SlardarEventListener;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.starter.support.event.LoginEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

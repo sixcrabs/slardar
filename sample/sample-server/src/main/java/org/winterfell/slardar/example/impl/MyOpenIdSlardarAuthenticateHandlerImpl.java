@@ -1,13 +1,13 @@
 package org.winterfell.slardar.example.impl;
 
 import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.slardar.core.Constants;
-import org.winterfell.slardar.starter.authenticate.SlardarUserDetails;
-import org.winterfell.slardar.starter.authenticate.SlardarUserDetailsServiceImpl;
-import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
-import org.winterfell.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
-import org.winterfell.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
-import org.winterfell.slardar.starter.support.RequestWrapper;
+import io.github.sixcrabs.slardar.core.Constants;
+import io.github.sixcrabs.slardar.starter.authenticate.SlardarUserDetails;
+import io.github.sixcrabs.slardar.starter.authenticate.SlardarUserDetailsServiceImpl;
+import io.github.sixcrabs.slardar.starter.authenticate.SlardarAuthentication;
+import io.github.sixcrabs.slardar.starter.authenticate.handler.AbstractSlardarAuthenticateHandler;
+import io.github.sixcrabs.slardar.starter.authenticate.handler.SlardarAuthenticateHandler;
+import io.github.sixcrabs.slardar.starter.support.RequestWrapper;
 import com.google.auto.service.AutoService;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;

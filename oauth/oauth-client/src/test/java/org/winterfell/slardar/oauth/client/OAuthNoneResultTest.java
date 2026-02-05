@@ -1,7 +1,7 @@
 package org.winterfell.slardar.oauth.client;
 
 import org.junit.jupiter.api.Test;
-import org.winterfell.slardar.oauth.client.result.OAuthEmptyResult;
+import io.github.sixcrabs.slardar.oauth.client.result.OAuthEmptyResult;
 
 /**
  * <p>

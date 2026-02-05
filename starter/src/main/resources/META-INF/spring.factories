@@ -1,5 +1,5 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- org.winterfell.slardar.starter.config.SlardarBeanConfiguration,\
-  org.winterfell.slardar.starter.config.SlardarSecurityConfiguration
+ io.github.sixcrabs.slardar.starter.config.SlardarBeanConfiguration,\
+  io.github.sixcrabs.slardar.starter.config.SlardarSecurityConfiguration
 #spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration

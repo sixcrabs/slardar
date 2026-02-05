@@ -1,6 +1,6 @@
 package org.winterfell.slardar.example;
 
-import org.winterfell.slardar.starter.support.Base64;
+import io.github.sixcrabs.slardar.starter.support.Base64;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

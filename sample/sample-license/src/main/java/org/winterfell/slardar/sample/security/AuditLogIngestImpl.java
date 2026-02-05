@@ -1,7 +1,7 @@
 package org.winterfell.slardar.sample.security;
 
-import org.winterfell.slardar.starter.provider.AuditLogIngest;
-import org.winterfell.slardar.core.domain.AuditLog;
+import io.github.sixcrabs.slardar.starter.provider.AuditLogIngest;
+import io.github.sixcrabs.slardar.core.domain.AuditLog;
 import org.springframework.stereotype.Component;
 
 /**

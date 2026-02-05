@@ -1,8 +1,8 @@
 package org.winterfell.slardar.sample.security;
 
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.domain.Account;
-import org.winterfell.slardar.starter.provider.AccountProvider;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.core.domain.Account;
+import io.github.sixcrabs.slardar.starter.provider.AccountProvider;
 import org.springframework.stereotype.Component;
 
 /**

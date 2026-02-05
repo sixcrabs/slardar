@@ -1,9 +1,9 @@
 package org.winterfell.slardar.example.config;
 
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
-import org.winterfell.slardar.starter.support.LoginDeviceType;
-import org.winterfell.slardar.starter.authenticate.SlardarAuthentication;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.starter.authenticate.SlardarAuthenticatePreHandler;
+import io.github.sixcrabs.slardar.starter.support.LoginDeviceType;
+import io.github.sixcrabs.slardar.starter.authenticate.SlardarAuthentication;
 import org.springframework.stereotype.Component;
 
 /**

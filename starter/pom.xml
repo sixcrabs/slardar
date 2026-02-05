@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.winterfell</groupId>
+        <groupId>io.github.sixcrabs</groupId>
         <artifactId>slardar-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.7.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <version>1.7.0</version>
+    <version>1.7.0-SNAPSHOT</version>
     <artifactId>slardar-starter</artifactId>
     <packaging>jar</packaging>
 
@@ -26,19 +26,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.winterfell</groupId>
+            <groupId>io.github.sixcrabs</groupId>
             <artifactId>slardar-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
+            <groupId>io.github.sixcrabs</groupId>
             <artifactId>slardar-spi</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
+            <groupId>io.github.sixcrabs</groupId>
             <artifactId>slardar-captcha</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -1,9 +1,9 @@
 package org.winterfell.slardar.example.config;
 
 import org.winterfell.misc.hutool.mini.MapUtil;
-import org.winterfell.slardar.core.AccountInfoDTO;
-import org.winterfell.slardar.core.SlardarContext;
-import org.winterfell.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
+import io.github.sixcrabs.slardar.core.AccountInfoDTO;
+import io.github.sixcrabs.slardar.core.SlardarContext;
+import io.github.sixcrabs.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
 import com.google.auto.service.AutoService;
 
 import java.util.HashMap;

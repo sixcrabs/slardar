@@ -7,8 +7,8 @@
 package org.winterfell.slardar.example.impl;
 
 import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.slardar.core.SlardarContext;
-import org.winterfell.slardar.spi.token.SlardarTokenProvider;
+import io.github.sixcrabs.slardar.core.SlardarContext;
+import io.github.sixcrabs.slardar.spi.token.SlardarTokenProvider;
 import com.google.auto.service.AutoService;
 
 import java.time.LocalDateTime;

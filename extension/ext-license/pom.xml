@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.winterfell</groupId>
+        <groupId>io.github.sixcrabs</groupId>
         <artifactId>slardar-extension-parent</artifactId>
-        <version>1.7.0</version>
+        <version>1.7.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>slardar-ext-license</artifactId>

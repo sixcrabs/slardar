@@ -2,9 +2,9 @@ package org.winterfell.slardar.example.config;
 
 import org.winterfell.misc.hutool.mini.codec.Base64Decoder;
 import org.winterfell.misc.hutool.mini.codec.Base64Encoder;
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.SlardarContext;
-import org.winterfell.slardar.spi.crypto.SlardarCrypto;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.core.SlardarContext;
+import io.github.sixcrabs.slardar.spi.crypto.SlardarCrypto;
 import com.google.auto.service.AutoService;
 
 /**

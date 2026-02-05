@@ -1,9 +1,9 @@
 package org.winterfell.slardar.example.event;
 
-import org.winterfell.slardar.core.event.SlardarEventListener;
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.core.domain.Account;
-import org.winterfell.slardar.starter.support.event.LogoutEvent;
+import io.github.sixcrabs.slardar.core.event.SlardarEventListener;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.core.domain.Account;
+import io.github.sixcrabs.slardar.starter.support.event.LogoutEvent;
 import org.springframework.stereotype.Component;
 
 /**

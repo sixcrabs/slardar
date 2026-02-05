@@ -1,1 +1,1 @@
-org.winterfell.slardar.sso.client.config.SsoClientAutoConfiguration
+io.github.sixcrabs.slardar.sso.client.config.SsoClientAutoConfiguration

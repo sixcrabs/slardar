@@ -1,9 +1,9 @@
 package org.winterfell.slardar.example.ext;
 
 import org.springframework.stereotype.Component;
-import org.winterfell.slardar.core.SlardarContext;
-import org.winterfell.slardar.core.SlardarException;
-import org.winterfell.slardar.ext.firewall.core.SlardarFirewallHandler;
+import io.github.sixcrabs.slardar.core.SlardarContext;
+import io.github.sixcrabs.slardar.core.SlardarException;
+import io.github.sixcrabs.slardar.ext.firewall.SlardarFirewallHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
