@@ -6,16 +6,46 @@
     <parent>
         <groupId>io.github.sixcrabs</groupId>
         <artifactId>slardar-common-parent</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0</version>
     </parent>
 
+    <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-captcha</artifactId>
+    <version>1.7.0</version>
+
+    <name>${project.artifactId}</name>
+    <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API</description>
+    <url>https://github.com/sixcrabs/slardar</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Alex</name>
+            <email>parselife@gmail.com</email>
+            <roles>
+                <role>Project Manager</role>
+                <role>Architect</role>
+            </roles>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git://github.com/sixcrabs/slardar.git</connection>
+        <developerConnection>scm:git:ssh://github.com/sixcrabs/slardar.git</developerConnection>
+        <url>https://github.com/sixcrabs/slardar</url>
+    </scm>
 
 
     <dependencies>
         <dependency>
             <groupId>org.winterfell</groupId>
             <artifactId>hutool-mini</artifactId>
+            <version>1.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

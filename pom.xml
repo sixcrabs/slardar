@@ -6,7 +6,7 @@
 
     <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-parent</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0</version>
     <modules>
         <module>starter</module>
         <module>sample</module>
@@ -26,9 +26,9 @@
         <spring.boot.version>2.7.18</spring.boot.version>
         <spring.cloud.version>2021.0.4</spring.cloud.version>
         <spring.cloud.alibaba.version>2021.0.4.0</spring.cloud.alibaba.version>
-        <slardar.version>1.7.0-SNAPSHOT</slardar.version>
-        <slardar.ext.version>1.7.0-SNAPSHOT</slardar.ext.version>
-        <slardar.sso.version>1.7.0-SNAPSHOT</slardar.sso.version>
+        <slardar.version>1.7.0</slardar.version>
+        <slardar.ext.version>1.7.0</slardar.ext.version>
+        <slardar.sso.version>1.7.0</slardar.sso.version>
     </properties>
 
     <name>Slardar</name>
@@ -46,26 +46,19 @@
     <developers>
         <developer>
             <name>Alex</name>
-            <email>yxfacw@163.com</email>
+            <email>parselife@gmail.com</email>
+            <roles>
+                <role>Project Manager</role>
+                <role>Architect</role>
+            </roles>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://gitee.com/parselife/slardar.git</connection>
-        <developerConnection>scm:git:ssh://gitee.com/parselife/slardar.git</developerConnection>
-        <url>https://gitee.com/parselife/slardar/tree/master</url>
+        <connection>scm:git:git://github.com/sixcrabs/slardar.git</connection>
+        <developerConnection>scm:git:ssh://github.com/sixcrabs/slardar.git</developerConnection>
+        <url>https://github.com/sixcrabs/slardar</url>
     </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -114,13 +107,23 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!--   central发布插件    -->
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>sixcrabs</publishingServerId>
+<!--                        <tokenAuth>true</tokenAuth>-->
+                    </configuration>
+                </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                     <configuration>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
-                        <!--                        <release>${java.version}</release>-->
                     </configuration>
                 </plugin>
                 <plugin>
@@ -150,6 +153,27 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase> <!-- 通常绑定在 verify 阶段 -->
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+<!--                    <configuration>-->
+<!--                        &lt;!&ndash; 关键：避免因 macOS 终端环境导致的交互问题 &ndash;&gt;-->
+<!--                        <gpgArguments>-->
+<!--                            <arg>&#45;&#45;pinentry-mode</arg>-->
+<!--                            <arg>loopback</arg>-->
+<!--                        </gpgArguments>-->
+<!--                    </configuration>-->
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -252,6 +276,40 @@
 
     <profiles>
         <profile>
+            <id>deploy-sixcrabs</id>
+            <build>
+                <plugins>
+                    <!--   central发布插件    -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <!-- Javadoc 插件-->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalOptions>
+                                <option>--module-path</option>
+                                <option>${project.build.outputDirectory}</option>
+                            </additionalOptions>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>build-fat-jar</id>
             <build>
                 <plugins>
@@ -277,10 +335,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                     </plugin>
-                    <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    </plugin>
+<!--                    <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                    </plugin>-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>

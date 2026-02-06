@@ -20,7 +20,7 @@ slardar:
     max-attempts-before-locked: 30 # 最大尝试次数
     failed-lock-duration: 2m   # 失败锁定时间
     login-failed-http-status: 200 # 登录失败返回的状态码200 默认是 500
-    login-result-fmt: completed
+    login-result-fmt: simplified
   ignores: /login,/sso-login,/mfa-login
   basic:
     enable: false

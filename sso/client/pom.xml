@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.sixcrabs</groupId>
         <artifactId>slardar-sso-parent</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.0</version>
     </parent>
 
     <artifactId>slardar-sso-client-starter</artifactId>

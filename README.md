@@ -1,5 +1,5 @@
 
-# Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + 内置接口
+# Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API
 
 spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、接口防火墙、安全审计等，开箱即用秒接入，兼容 springboot2.x & 3.x
 
@@ -14,7 +14,9 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 
 ## 版本更新
 
-最新版本: `1.7.0-SNAPSHOT`
+最新版本: 
+- `1.7.0-SNAPSHOT` : springboot 2.x + jdk 8
+- `2.0.0-SNAPSHOT`: springboot 3.x + jdk 17
 
 ```xml
 <dependency>

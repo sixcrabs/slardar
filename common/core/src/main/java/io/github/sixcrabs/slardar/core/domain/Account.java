@@ -66,7 +66,6 @@ public class Account extends BaseRealmEntity<String> implements Cloneable {
     /**
      * 是否可用
      *
-     * @return
      */
     public boolean isAccessible() {
         return AccountStatus.accessible.equals(this.status);

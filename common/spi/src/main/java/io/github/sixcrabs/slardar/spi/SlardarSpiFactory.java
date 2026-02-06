@@ -21,7 +21,6 @@ public interface SlardarSpiFactory {
      * 寻找正确的加密实现
      * @param name
      * @return
-     * @throws SlardarException
      */
     SlardarCrypto findCrypto(String name);
 
@@ -29,7 +28,6 @@ public interface SlardarSpiFactory {
      * 寻找正确的 otp 发送器实现
      * @param name
      * @return
-     * @throws SlardarException
      */
     SlardarOtpDispatcher findOtpDispatcher(String name);
 
@@ -37,7 +35,6 @@ public interface SlardarSpiFactory {
      * 寻找正确的 token provider 实现
      * @param name
      * @return
-     * @throws SlardarException
      */
     SlardarTokenProvider findTokenProvider(String name);
 
@@ -45,23 +42,18 @@ public interface SlardarSpiFactory {
      * 寻找正确的认证结果适配器实现
      * @param name
      * @return
-     * @throws SlardarException
      */
     SlardarAuthenticateResultAdapter findAuthenticateResultHandler(String name);
 
     /**
      * 根据配置的名称找到对应的 keystore 实现
      * @param name
-     * @return
-     * @throws SlardarException
      */
     SlardarKeyStore findKeyStore(String name);
 
     /**
      * TODO: 备用
      * @param name
-     * @return
-     * @throws SlardarException
      */
     SlardarCaptchaGenerator findCaptchaGenerator(String name);
 
