@@ -125,22 +125,6 @@ public class Base64 {
         this(0, CHUNK_SEPARATOR, false);
     }
 
-    /**
-     * Creates a Base64 codec used for decoding (all modes) and encoding in URL-unsafe mode. <p> When encoding the line
-     * length and line separator are given in the constructor, and the encoding table is STANDARD_ENCODE_TABLE. </p> <p>
-     * Line lengths that aren't multiples of 4 will still essentially end up being multiples of 4 in the encoded data.
-     * </p> <p> When decoding all variants are supported. </p>
-     *
-     * @param lineLength    Each line of encoded data will be at most of the given length (rounded down to nearest
-     *                      multiple of 4). If lineLength <= 0, then the output will not be divided into lines (chunks).
-     *                      Ignored when decoding.
-     * @param lineSeparator Each line of encoded data will end with this sequence of bytes.
-     * @param urlSafe       Instead of emitting '+' and '/' we emit '-' and '_' respectively. urlSafe is only applied to
-     *                      encode operations. Decoding seamlessly handles both modes.
-     * @throws IllegalArgumentException The provided lineSeparator included some base64 characters. That's not going to
-     *                                  work!
-     * @since 1.4
-     */
     public Base64(int lineLength, byte[] lineSeparator, boolean urlSafe) {
         chunkSeparatorLength = lineSeparator == null ? 0 : lineSeparator.length;
         unencodedBlockSize = BYTES_PER_UNENCODED_BLOCK;

@@ -1,6 +1,5 @@
 package io.github.sixcrabs.slardar.starter.handler;
 
-import org.winterfell.misc.hutool.mini.MapUtil;
 import io.github.sixcrabs.slardar.core.Constants;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.SlardarContext;
@@ -11,6 +10,7 @@ import io.github.sixcrabs.slardar.starter.authenticate.mfa.MfaVerifyRequiredExce
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
 import io.github.sixcrabs.slardar.starter.support.SlardarAuthenticationException;
 import io.github.sixcrabs.slardar.starter.support.event.LoginEvent;
+import io.github.sixcrabs.winterfell.mini.MapUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,6 @@ import static io.github.sixcrabs.slardar.starter.support.HttpServletUtil.*;
  *
  * @author JiajieZhang
  * @version 2022/9/23
- * @description token失效时，自定义返回结果
  */
 public class SlardarAuthenticateFailedHandler implements AuthenticationFailureHandler, AuthenticationEntryPoint {
 

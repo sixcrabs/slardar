@@ -1,10 +1,10 @@
 package io.github.sixcrabs.slardar.starter.config;
 
+import io.github.sixcrabs.winterfell.mini.ReUtil;
+import io.github.sixcrabs.winterfell.mini.ReflectUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.winterfell.misc.hutool.mini.ReUtil;
-import org.winterfell.misc.hutool.mini.ReflectUtil;
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.annotation.SlardarAuthority;
 import io.github.sixcrabs.slardar.core.annotation.SlardarIgnore;

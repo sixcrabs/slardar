@@ -47,14 +47,12 @@ import static io.github.sixcrabs.slardar.starter.support.HttpServletUtil.isFromM
 import static io.github.sixcrabs.slardar.starter.support.SecUtil.getAccount;
 
 /**
- * <p>
  * 认证成功 handler
  * <ul>
  *     <li> 写入 jwt value</li>
  *     <li>更新用户审计信息（如：记录用户登录时刻等）</li>
  *     <li>其他</li>
  * </ul>
- * </p>
  *
  * @author alex
  * @version v1.0 2022/9/26

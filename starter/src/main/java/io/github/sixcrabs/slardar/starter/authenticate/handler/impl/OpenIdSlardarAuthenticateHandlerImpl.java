@@ -1,6 +1,5 @@
 package io.github.sixcrabs.slardar.starter.authenticate.handler.impl;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.core.Constants;
 import io.github.sixcrabs.slardar.starter.authenticate.SlardarUserDetails;
 import io.github.sixcrabs.slardar.starter.authenticate.SlardarUserDetailsServiceImpl;
@@ -10,6 +9,7 @@ import io.github.sixcrabs.slardar.starter.authenticate.handler.SlardarAuthentica
 import io.github.sixcrabs.slardar.starter.support.RequestWrapper;
 import io.github.sixcrabs.slardar.starter.support.SlardarAuthenticationException;
 import com.google.auto.service.AutoService;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

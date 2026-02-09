@@ -1,7 +1,5 @@
 package io.github.sixcrabs.slardar.starter.filter.request;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.misc.hutool.mini.thread.NamedThreadFactory;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.SlardarSecurityHelper;
 import io.github.sixcrabs.slardar.core.annotation.SlardarIgnore;
@@ -9,6 +7,8 @@ import io.github.sixcrabs.slardar.starter.authenticate.SlardarAuthenticateServic
 import io.github.sixcrabs.slardar.starter.authenticate.SlardarUserDetails;
 import io.github.sixcrabs.slardar.starter.support.LoginDeviceType;
 import io.github.sixcrabs.slardar.starter.authenticate.SlardarAuthentication;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
+import io.github.sixcrabs.winterfell.mini.thread.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,6 @@ import static io.github.sixcrabs.slardar.starter.support.HttpServletUtil.*;
  * 拦截所有请求
  *
  * @author JiajieZhang
- * @date 2022/9/23
- * @description token过滤器
  */
 public class SlardarTokenRequiredFilter extends OncePerRequestFilter {
 

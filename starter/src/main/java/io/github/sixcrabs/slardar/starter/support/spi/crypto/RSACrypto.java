@@ -1,14 +1,14 @@
 package io.github.sixcrabs.slardar.starter.support.spi.crypto;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.misc.hutool.mini.crypto.SecureUtil;
-import org.winterfell.misc.hutool.mini.crypto.asymmetric.KeyType;
-import org.winterfell.misc.hutool.mini.crypto.asymmetric.RSA;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.SlardarContext;
 import io.github.sixcrabs.slardar.spi.crypto.SlardarCrypto;
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
+import io.github.sixcrabs.winterfell.mini.crypto.SecureUtil;
+import io.github.sixcrabs.winterfell.mini.crypto.asymmetric.KeyType;
+import io.github.sixcrabs.winterfell.mini.crypto.asymmetric.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

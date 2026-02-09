@@ -1,11 +1,11 @@
 package io.github.sixcrabs.slardar.starter.support.spi.crypto;
 
+import io.github.sixcrabs.winterfell.mini.crypto.CipherMode;
+import io.github.sixcrabs.winterfell.mini.crypto.Mode;
+import io.github.sixcrabs.winterfell.mini.crypto.Padding;
+import io.github.sixcrabs.winterfell.mini.crypto.SecureUtil;
+import io.github.sixcrabs.winterfell.mini.crypto.symmetric.AES;
 import org.junit.jupiter.api.Test;
-import org.winterfell.misc.hutool.mini.crypto.CipherMode;
-import org.winterfell.misc.hutool.mini.crypto.Mode;
-import org.winterfell.misc.hutool.mini.crypto.Padding;
-import org.winterfell.misc.hutool.mini.crypto.SecureUtil;
-import org.winterfell.misc.hutool.mini.crypto.symmetric.AES;
 
 /**
  * <p>

@@ -10,23 +10,19 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
  * eg:
  * - hasRole('ADMIN')
  * - permitAll()
- * </p>
  * <p>
  * 用法:
  * <code>
- * <pre>
  * `@Component`
  * public class MyRegistryCustomizerImpl implements SlardarUrlRegistryCustomizer {
  *
  *  `@Override`
- *  public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry){
+ *  public void customize(AuthorizeHttpRequestsConfigurer&lt;HttpSecurity&gt;.AuthorizationManagerRequestMatcherRegistry registry){
  *          // /admin 的url只能被 admin 角色访问
  *          registry.antMatchers("/api/admin/**").hasAnyRole("ADMIN","SYS_ADMIN");
  *      }
  * }
- *     </pre>
  * </code>
- * </p>
  *
  * @author alex
  * @version v1.0 2023/3/26

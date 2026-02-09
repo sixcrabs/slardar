@@ -62,10 +62,7 @@ public final class SignatureUtil {
      * <p>
      * 转为大写后为：
      * <pre>/V1/COMMON/GETREGIONS892113432730D7BBAF1914E8BA60E9C922D58A8C82021-04-27 12:36:205667A9DD9990497AA9E6D655FAC573B5</pre>
-     * </p>
      * 使用SecretKey进行HmacSha1计算，得到签名值
-     *
-     * </p>
      *
      * @param appKey       app key
      * @param secretKey    secret key

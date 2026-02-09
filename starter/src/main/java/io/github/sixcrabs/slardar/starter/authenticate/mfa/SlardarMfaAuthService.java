@@ -1,6 +1,5 @@
 package io.github.sixcrabs.slardar.starter.authenticate.mfa;
 
-import org.winterfell.misc.hutool.mini.RandomUtil;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.spi.SlardarKeyStore;
 import io.github.sixcrabs.slardar.spi.SlardarSpiFactory;
@@ -10,6 +9,7 @@ import io.github.sixcrabs.slardar.starter.SlardarProperties;
 import com.bastiaanjansen.otp.HMACAlgorithm;
 import com.bastiaanjansen.otp.SecretGenerator;
 import com.bastiaanjansen.otp.TOTPGenerator;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
 
 import java.time.Duration;
 import java.util.Objects;

@@ -90,7 +90,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      *
      * @param name
      * @return
-     * @throws SlardarException
      */
     @Override
     public SlardarKeyStore findKeyStore(String name) {
@@ -105,7 +104,6 @@ public class SpringSlardarSpiFactory implements SlardarSpiFactory, InitializingB
      *
      * @param name
      * @return
-     * @throws SlardarException
      */
     @Override
     public SlardarCaptchaGenerator findCaptchaGenerator(String name) {

@@ -15,7 +15,7 @@ public interface SlardarHttpSecurityCustomizer {
 
     /**
      * 自定义 HttpSecurity 行为
-     * @param httpSecurity @link HttpSecurity
+     * @param httpSecurity {@linkplain HttpSecurity}
      */
     void customize(HttpSecurity httpSecurity);
 }

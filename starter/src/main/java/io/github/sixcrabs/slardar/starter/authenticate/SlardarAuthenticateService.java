@@ -1,7 +1,6 @@
 package io.github.sixcrabs.slardar.starter.authenticate;
 
 import com.google.common.collect.Lists;
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.spi.SlardarKeyStore;
 import io.github.sixcrabs.slardar.spi.SlardarSpiFactory;
 import io.github.sixcrabs.slardar.spi.authenticate.SlardarAuthenticateResultAdapter;
@@ -13,6 +12,7 @@ import io.github.sixcrabs.slardar.starter.support.LoginConcurrentPolicy;
 import io.github.sixcrabs.slardar.starter.support.LoginDeviceType;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -184,7 +184,6 @@ public class SlardarAuthenticateService {
      *
      * @param tokenValue
      * @param deviceType
-     * @return
      */
     public void renewToken(String tokenValue, LoginDeviceType deviceType) {
         String username = getUserKeyFromTokenValue(tokenValue);
@@ -203,7 +202,6 @@ public class SlardarAuthenticateService {
      *
      * @param username   用户名
      * @param deviceType 设备类型
-     * @return
      */
     public void withdrawTokensByUserAndDevice(@NonNull String username, @NonNull LoginDeviceType deviceType) {
         String prefix = keyJoiner.join(KEY_PREFIX_TOKEN, deviceType.name(), username);

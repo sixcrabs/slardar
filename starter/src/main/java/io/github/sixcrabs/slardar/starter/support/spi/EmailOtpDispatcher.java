@@ -1,6 +1,5 @@
 package io.github.sixcrabs.slardar.starter.support.spi;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.domain.Account;
 import io.github.sixcrabs.slardar.core.domain.UserProfile;
@@ -9,6 +8,7 @@ import io.github.sixcrabs.slardar.spi.mfa.SlardarOtpDispatcher;
 import io.github.sixcrabs.slardar.spi.mfa.OtpDispatchResult;
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
 import com.google.auto.service.AutoService;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;

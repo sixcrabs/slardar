@@ -1,9 +1,9 @@
 package io.github.sixcrabs.slardar.starter.filter;
 
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.SlardarSecurityHelper;
 import io.github.sixcrabs.slardar.core.domain.Account;
@@ -51,7 +51,6 @@ import static io.github.sixcrabs.slardar.starter.support.HttpServletUtil.*;
  *     <li>/logout   登出</li>
  *     <li>/changePwd   修改密码</li>
  * </ul>
- * </p>
  *
  * @author alex
  * @version v1.0 2023/3/13

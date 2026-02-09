@@ -15,12 +15,17 @@
     <artifactId>slardar-starter</artifactId>
     <packaging>jar</packaging>
 
+    <name>${project.artifactId}</name>
     <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API</description>
     <url>https://github.com/sixcrabs/slardar</url>
     <developers>
         <developer>
             <name>Alex</name>
-            <email>yxfacw@163.com</email>
+            <email>parselife@gmail.com</email>
+            <roles>
+                <role>Project Manager</role>
+                <role>Architect</role>
+            </roles>
         </developer>
     </developers>
     <licenses>
@@ -35,6 +40,11 @@
         <developerConnection>scm:git:ssh://github.com/sixcrabs/slardar.git</developerConnection>
         <url>https://github.com/sixcrabs/slardar</url>
     </scm>
+
+    <properties>
+        <spring.version>5.3.31</spring.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -56,15 +66,15 @@
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>ring-timer</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-ring-timer</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>hutool-mini</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-hutool-mini</artifactId>
+            <version>1.2.0</version>
         </dependency>
 
         <!--key store start-->
@@ -89,23 +99,27 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
+            <version>2.11.1</version>
         </dependency>
         <!--key store end-->
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+            <version>2.9.1</version>
         </dependency>
 
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
         </dependency>
 
         <!--邮件发送-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <!-- OTP -->
@@ -131,6 +145,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
         </dependency>
 
         <dependency>
@@ -139,50 +154,49 @@
             <version>0.9.1</version>
         </dependency>
 
-        <!--spring security-->
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!--spring security -->
-
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
+        <!--spring boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <version>${spring-boot.version}</version>
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
 

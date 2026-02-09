@@ -1,7 +1,7 @@
 package io.github.sixcrabs.slardar.starter.filter.request;
 
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.core.SlardarException;
 import io.github.sixcrabs.slardar.core.annotation.SlardarIgnore;
 import io.github.sixcrabs.slardar.core.SlardarContext;

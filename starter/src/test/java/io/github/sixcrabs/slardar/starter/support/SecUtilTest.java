@@ -2,8 +2,8 @@ package io.github.sixcrabs.slardar.starter.support;
 
 import com.google.common.collect.Lists;
 import io.github.sixcrabs.slardar.starter.support.SecUtil;
+import io.github.sixcrabs.winterfell.mini.ReUtil;
 import org.junit.jupiter.api.Test;
-import org.winterfell.misc.hutool.mini.ReUtil;
 
 import java.util.ArrayList;
 

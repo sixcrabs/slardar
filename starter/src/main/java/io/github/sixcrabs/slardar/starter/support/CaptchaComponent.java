@@ -1,6 +1,5 @@
 package io.github.sixcrabs.slardar.starter.support;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.captcha.generator.CodeGenerator;
 import io.github.sixcrabs.slardar.captcha.generator.MathGenerator;
 import io.github.sixcrabs.slardar.captcha.generator.RandomGenerator;
@@ -9,6 +8,7 @@ import io.github.sixcrabs.slardar.captcha.support.CaptchaUtil;
 import io.github.sixcrabs.slardar.spi.SlardarKeyStore;
 import io.github.sixcrabs.slardar.spi.SlardarSpiFactory;
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

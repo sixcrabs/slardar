@@ -14,9 +14,8 @@ import java.io.IOException;
 import static io.github.sixcrabs.slardar.starter.support.SecUtil.GSON;
 
 /**
- * 拒绝访问
+ * 拒绝访问 handler
  * @author JiajieZhang
- * @description 当接口没有访问权限时，自定义返回结果
 */
 public class SlardarAccessDeniedHandler implements AccessDeniedHandler {
 
