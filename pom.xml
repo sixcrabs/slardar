@@ -16,7 +16,6 @@
         <module>oauth</module>
     </modules>
     <packaging>pom</packaging>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
@@ -31,10 +30,9 @@
         <slardar.sso.version>1.7.0</slardar.sso.version>
     </properties>
 
-    <name>Slardar</name>
-    <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + 内置接口</description>
-    <url>https://gitee.com/parselife/slardar</url>
-
+    <name>${project.artifactId}</name>
+    <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API</description>
+    <url>https://github.com/sixcrabs/slardar</url>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -42,7 +40,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <developers>
         <developer>
             <name>Alex</name>
@@ -53,7 +50,6 @@
             </roles>
         </developer>
     </developers>
-
     <scm>
         <connection>scm:git:git://github.com/sixcrabs/slardar.git</connection>
         <developerConnection>scm:git:ssh://github.com/sixcrabs/slardar.git</developerConnection>
