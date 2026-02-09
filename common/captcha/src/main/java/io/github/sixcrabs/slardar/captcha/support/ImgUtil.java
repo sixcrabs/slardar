@@ -1,12 +1,12 @@
 package io.github.sixcrabs.slardar.captcha.support;
 
-import org.winterfell.misc.hutool.mini.*;
-import org.winterfell.misc.hutool.mini.codec.Base64Util;
-import org.winterfell.misc.hutool.mini.convert.Convert;
-import org.winterfell.misc.hutool.mini.io.FileUtil;
-import org.winterfell.misc.hutool.mini.io.IORuntimeException;
-import org.winterfell.misc.hutool.mini.io.IoUtil;
-import org.winterfell.misc.hutool.mini.io.Resource;
+import io.github.sixcrabs.winterfell.mini.*;
+import io.github.sixcrabs.winterfell.mini.codec.Base64Util;
+import io.github.sixcrabs.winterfell.mini.convert.Convert;
+import io.github.sixcrabs.winterfell.mini.io.FileUtil;
+import io.github.sixcrabs.winterfell.mini.io.IORuntimeException;
+import io.github.sixcrabs.winterfell.mini.io.IoUtil;
+import io.github.sixcrabs.winterfell.mini.io.Resource;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
@@ -427,9 +427,9 @@ public class ImgUtil {
 	 * @param cols     目标切片列数。默认2，必须是范围 [1, 20] 之内
 	 */
 	public static void sliceByRowsAndCols(Image srcImage, File destDir, int rows, int cols) {
-		if (false == destDir.exists()) {
+		if (!destDir.exists()) {
 			FileUtil.mkdir(destDir);
-		} else if (false == destDir.isDirectory()) {
+		} else if (!destDir.isDirectory()) {
 			throw new IllegalArgumentException("Destination Dir must be a Directory !");
 		}
 

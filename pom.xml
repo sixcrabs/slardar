@@ -276,7 +276,7 @@
 
     <profiles>
         <profile>
-            <id>deploy-sixcrabs</id>
+            <id>deploy-central</id>
             <build>
                 <plugins>
                     <!--   central发布插件    -->

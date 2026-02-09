@@ -12,6 +12,7 @@
     <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-spi</artifactId>
     <version>1.7.0</version>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API</description>

@@ -1,6 +1,6 @@
 package io.github.sixcrabs.slardar.captcha.support.gif;
 
-import org.winterfell.misc.hutool.mini.io.IoUtil;
+import io.github.sixcrabs.winterfell.mini.io.IoUtil;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

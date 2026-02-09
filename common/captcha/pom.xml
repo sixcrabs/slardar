@@ -12,6 +12,7 @@
     <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-captcha</artifactId>
     <version>1.7.0</version>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Slardar = Spring Security + JWT + SSO + OAuth2 + MFA + API</description>
@@ -42,11 +43,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>hutool-mini</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-hutool-mini</artifactId>
+            <version>1.2.0</version>
         </dependency>
     </dependencies>
-
 </project>

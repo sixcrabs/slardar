@@ -1,8 +1,8 @@
 package io.github.sixcrabs.slardar.captcha.support;
 
 
-import org.winterfell.misc.hutool.mini.UtilException;
-import org.winterfell.misc.hutool.mini.io.IORuntimeException;
+import io.github.sixcrabs.winterfell.mini.UtilException;
+import io.github.sixcrabs.winterfell.mini.io.IORuntimeException;
 
 import java.awt.*;
 import java.io.File;

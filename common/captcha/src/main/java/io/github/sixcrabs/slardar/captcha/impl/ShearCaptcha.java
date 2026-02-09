@@ -1,9 +1,9 @@
 package io.github.sixcrabs.slardar.captcha.impl;
 
-import org.winterfell.misc.hutool.mini.ObjectUtil;
-import org.winterfell.misc.hutool.mini.RandomUtil;
 import io.github.sixcrabs.slardar.captcha.support.GraphicsUtil;
 import io.github.sixcrabs.slardar.captcha.support.ImgUtil;
+import io.github.sixcrabs.winterfell.mini.ObjectUtil;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

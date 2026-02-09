@@ -1,10 +1,10 @@
 package io.github.sixcrabs.slardar.captcha.impl;
 
-import org.winterfell.misc.hutool.mini.RandomUtil;
 import io.github.sixcrabs.slardar.captcha.generator.CodeGenerator;
 import io.github.sixcrabs.slardar.captcha.generator.RandomGenerator;
 import io.github.sixcrabs.slardar.captcha.support.ImgUtil;
 import io.github.sixcrabs.slardar.captcha.support.gif.AnimatedGifEncoder;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

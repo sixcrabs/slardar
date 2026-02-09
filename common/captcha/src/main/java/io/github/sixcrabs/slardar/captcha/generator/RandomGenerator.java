@@ -1,8 +1,8 @@
 package io.github.sixcrabs.slardar.captcha.generator;
 
 
-import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.misc.hutool.mini.StringUtil;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 
 /**
  * 随机字符验证码生成器<br>

@@ -1,13 +1,13 @@
 package io.github.sixcrabs.slardar.captcha.support;
 
-import org.winterfell.misc.hutool.mini.AssertUtil;
-import org.winterfell.misc.hutool.mini.NumberUtil;
-import org.winterfell.misc.hutool.mini.ObjectUtil;
-import org.winterfell.misc.hutool.mini.StringUtil;
-import org.winterfell.misc.hutool.mini.io.FileUtil;
-import org.winterfell.misc.hutool.mini.io.IORuntimeException;
-import org.winterfell.misc.hutool.mini.io.IoUtil;
-import org.winterfell.misc.hutool.mini.io.Resource;
+import io.github.sixcrabs.winterfell.mini.AssertUtil;
+import io.github.sixcrabs.winterfell.mini.NumberUtil;
+import io.github.sixcrabs.winterfell.mini.ObjectUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
+import io.github.sixcrabs.winterfell.mini.io.FileUtil;
+import io.github.sixcrabs.winterfell.mini.io.IORuntimeException;
+import io.github.sixcrabs.winterfell.mini.io.IoUtil;
+import io.github.sixcrabs.winterfell.mini.io.Resource;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;

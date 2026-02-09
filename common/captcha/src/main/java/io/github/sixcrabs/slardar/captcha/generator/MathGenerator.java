@@ -1,11 +1,11 @@
 package io.github.sixcrabs.slardar.captcha.generator;
 
 
-import org.winterfell.misc.hutool.mini.CharUtil;
-import org.winterfell.misc.hutool.mini.RandomUtil;
-import org.winterfell.misc.hutool.mini.StringUtil;
+import io.github.sixcrabs.winterfell.mini.CharUtil;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 
-import static org.winterfell.misc.hutool.mini.StringUtil.sub;
+import static io.github.sixcrabs.winterfell.mini.StringUtil.sub;
 
 /**
  * 数字计算验证码生成器

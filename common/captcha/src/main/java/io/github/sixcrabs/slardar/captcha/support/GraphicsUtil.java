@@ -1,6 +1,6 @@
 package io.github.sixcrabs.slardar.captcha.support;
 
-import org.winterfell.misc.hutool.mini.ObjectUtil;
+import io.github.sixcrabs.winterfell.mini.ObjectUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
