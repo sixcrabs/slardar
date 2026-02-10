@@ -15,8 +15,8 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 ## 版本更新
 
 最新版本: 
-- `1.7.0-SNAPSHOT` : springboot 2.x + jdk 8
-- `2.0.0-SNAPSHOT`: springboot 3.x + jdk 17
+- `1.7.0` : springboot 2.x + jdk 8
+- `2.0.0`: springboot 3.x + jdk 17
 
 ```xml
 <dependency>
@@ -25,120 +25,81 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
     <version>${latest.version}</version>
 </dependency>
 ```
+> 已发布到maven中央仓库
 
-### 1.7.0-SNAPSHOT
+### 1.7.0
 - 更新升级内部依赖包的版本号
 - 增加插件`slardar-ext-firewall` 用于控制接口访问
 - 增加了`license`授权模块，可用于对应用进行授权
 - 其他一些bug修复
 
-### 1.6.0-SNAPSHOT
-- 移除了 `hutool` 的相关依赖，改为内部实现，可以避免和应用包内的 hutool 依赖冲突
-- 重写了 `keystore` 模块，支持多种存储方式(memory/mapdb/mvstore/redis), 在轻量的单体服务中，可以不必依赖redis，采用内部存储即可
-- 修复一些 bug
+## 快速开始
+新建一个 springboot web 工程，引入 `slardar-starter`, `spring-boot-starter-web` 等必要依赖
 
-## 登录 + JWT
 ### 引入依赖
 
+```xml
+        <dependency>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>slardar-starter</artifactId>
+            <version>1.7.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.7.18</version>
+        </dependency>
+```
 
 ### 实现接口
-`Slardar` 定义好了认证和权限控制的流程和步骤，需要集成方实现提供账户的 bean，slardar 会在恰当的时机调用获取到账户信息
+
+`Slardar` 定义好了认证和权限控制的流程和步骤，需要集成方提供一个实现类，用于获取账号信息，slardar 会在恰当的时机调用获取到账户信息
 
 ```java
 @Component
-public class AccountProviderImpl implements AccountProvider {
+public class SlardarProviderImpl implements AccountProvider, AuditLogIngest {
 
-    /**
-     * 模拟用户数据
-     */
-    private static final List<UserProfile> USER_PROFILES = Lists.newArrayList();
+    public static final Map<String, Account> ACCOUNTS = new ConcurrentHashMap<>(2);
 
-    private static final List<Account> ACCOUNTS = Lists.newArrayList();
-
-    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     static {
+        ACCOUNTS.put("alex", new Account().setExpireAt(LocalDateTime.now().plusDays(2))
+                .setPassword(PASSWORD_ENCODER.encode("123456"))
+                .setName("alex")
+                .setStatus(AccountStatus.accessible)
+                .setPwdValidRemainDays(2)
+                .setUserProfile(new UserProfile().setName("Alex Bone")));
 
-        UserProfile profile = new UserProfile()
-                .setAddress(RandomUtil.randomString(5))
-                .setName("张三")
-                .setTelephone("13456789765");
-        profile.setRealm("master");
-        profile.setDeleted(0);
-        profile.setId(RandomUtil.randomString(8));
-        profile.setEmail("1075xxxxx@qq.com");
-        profile.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER")));
-        profile.setAuthorities(Lists.newArrayList(new Authority().setContent("READ_URL")));
-
-        UserProfile profile2 = new UserProfile()
-                .setAddress(RandomUtil.randomString(5))
-                .setName("李四")
-                .setTelephone("13756789765");
-        profile2.setRealm("master");
-        profile2.setDeleted(0);
-        profile2.setId(RandomUtil.randomString(8));
-        profile2.setRoles(Lists.newArrayList(new Role().setName("NORMAL_USER"),
-                new Role().setName("ADMIN")));
-
-        USER_PROFILES.add(profile);
-        USER_PROFILES.add(profile2);
-
-        Account zhangsan = new Account().setName("zhangsan")
-                .setPassword(ENCODER.encode("zhangsan123"));
-        zhangsan.setRealm("master");
-        zhangsan.setId(RandomUtil.randomString(8));
-        zhangsan.setStatus(AccountStatus.accessible)
-                .setUserProfile(profile);
-        // 口令过期剩余天数
-        zhangsan.setPwdValidRemainDays(5);
-
-        Account lisi = new Account().setName("lisi")
-                .setPassword(ENCODER.encode("lisi123"));
-        lisi.setRealm("master");
-        lisi.setId(RandomUtil.randomString(8));
-        lisi.setStatus(AccountStatus.accessible)
-                .setUserProfile(profile2);
-
-        ACCOUNTS.add(zhangsan);
-        ACCOUNTS.add(lisi);
+        ACCOUNTS.put("macgrady", new Account().setStatus(AccountStatus.accessible)
+                .setPassword(PASSWORD_ENCODER.encode("654321"))
+                .setName("macgrady")
+                .setUserProfile(new UserProfile().setName("T-MAC")));
     }
 
     /**
-     * find by name
+     * find by name (and realm)
      *
-     * @param name
+     * @param accountName
      * @param realm
      * @return
      */
     @Override
-    public Account findByName(String name, String realm) throws SlardarException {
-        // 查询账户
-        return ACCOUNTS.stream().filter(account ->
-                account.getName().equals(name)
-        ).findFirst().orElse(null);
+    public Account findByName(String accountName, String realm) throws SlardarException {
+        return ACCOUNTS.get(accountName);
     }
 
     /**
-     * find by openid
+     * find by openid (pk)
      *
      * @param openId
      * @return
      */
     @Override
     public Account findByOpenId(String openId) throws SlardarException {
-        throw new SlardarException("Unsupported");
+        return null;
     }
-}
-```
-
-> 这里示例代码在本地创建了示例账户，实际应用开发时 这部分应当从数据库中获取到用户信息
-
-实现 AuditLogIngest，用于保存审计日志
-
-```java
-@Component
-public class AuditLogIngestImpl implements AuditLogIngest {
 
     /**
      * ingest log
@@ -147,26 +108,32 @@ public class AuditLogIngestImpl implements AuditLogIngest {
      */
     @Override
     public void ingest(AuditLog auditLog) {
-        // 这里入日志库或入到消息队列
         System.out.println(auditLog);
-        System.out.println(auditLog.getDetail());
     }
 }
 ```
 
-### 增加配置
+> 这里示例代码在本地创建了示例账户，实际应用开发时 这部分应当从数据库中获取到用户信息
 
-slardar 依赖 redis 实现认证信息存储、过期等状态，所以需要配置redis
+
+### 修改配置
+
+slardar 内置了登录、退出、获取详情等接口，为了方便定制化使用，提供了很多配置项来定制修改，我们可以修改默认的登录接口的url、请求方式、返回结构等：
 
 ```yaml
-skv:
-  type: redis
-  uri: redis://localhost/0
+slardar:
+  login:
+    login-result-fmt: simplified  # 默认登录接口返回简单的格式
+    post-only: false              # 允许get方式调用/login （方便演示）
+    captcha-enabled: false        # 关闭验证码
+    encrypt:
+      enabled: false              # 关闭登录密码加密
 ```
+
 ### 启动服务
 
 启动后，进行登录： 
-> `http://localhost:9600/login?username=zhangsan&password=zhangsan123`
+> `http://localhost:9600/login?username=alex&password=123456`
 
 可以看到返回成功的登录结果：
 
@@ -175,44 +142,18 @@ skv:
   "data": {
     "accountExpired": false,
     "accountLocked": false,
-    "accountName": "zhangsan",
-    "userProfile": {
-      "id": "ji7b7ugl",
-      "deleted": false,
-      "realm": "master",
-      "name": "张三",
-      "email": "1075xxxxx@qq.com",
-      "telephone": "13456789765",
-      "address": "av7lm",
-      "roles": [
-        {
-          "deleted": false,
-          "name": "NORMAL_USER"
-        }
-      ],
-      "authorities": [
-        {
-          "deleted": false,
-          "content": "READ_URL"
-        }
-      ]
-    },
-    "token": "eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNqqViouTVKyUqrKSMxLL07Mi_eNjE9Ks0hNMU8zTjNKSTExMzVOSkqzTLI0NTA1MEk0Nko0UtJRSi5KTSxJTVGyMjQ3NgYiYxMzEwsDHaXUigKImIWhpbmJmY5SZmIJsqJaAAAAAP__.O9RaROT9lpaaDeGvXEBFtmdQu76ktW2LkIh-sq_gEz7tDNQD7zOA6c5WhsM5dNCanUd9OfWLR-DmejcWd6vG1A",
-    "tokenExpiresAt": "2024-12-10 16:35:46",
-    "authorities": [
-      "ROLE_NORMAL_USER",
-      "READ_URL"
-    ],
-    "accountPwdValidRemainDays": 5
+    "accountName": "alex",
+    "token": "eyJhbGciOiJIUzUxMiIsInppcCI6IkRFRiJ9.eNpMyjsKgDAMANC7ZO6QNG0TvYzENoLgIH5AEO_u4uD6eDfs5wg92OLXkDGS6tQ0cU6VydjRtKkQoeSOIEDd3A5v0JMICnLkEmMK4Nf6mXaFS4DZjn96XgAAAP__.dn6W1zADaI2j3VkSd_m2RR-4y4fHz_uFMy12H7lyFPmz4RPoKPPWoE6bqimF_BCgwQ8S33B6jjJIPXJaLhhe4Q"
   },
   "message": "success",
   "code": 0
 }
 ```
 
-至此，一个简单的具备用户登录、认证、权限控制的security 服务就完成了
+至此，一个简单的具备用户登录认证的 security 服务就完成了
 
 ## 权限控制
+
 上述验证了用户登录(`Authentication`)相关的功能，下面看下如何利用 Slardar 实现接口资源的权限控制，支持以下几种权限控制方式：
 
 - 使用注解方式
@@ -806,5 +747,6 @@ public class MyOpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthe
 ```
 
 此时前端仅需要在微信登录调用接口时，指定请求头 `X-Auth-Type:wx-openid`,该认证请求会通过自定义的认证逻辑来验证身份
+
 
 > 以上代码仅作为示例，实际需求可能复杂许多
