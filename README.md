@@ -12,9 +12,10 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 - springboot3: 支持 `springboot3` + `jdk 17`
 
 
-## 版本更新
+## 版本说明
 
 最新版本: 
+
 - `1.7.0` : springboot 2.x + jdk 8
 - `2.0.0`: springboot 3.x + jdk 17
 
@@ -36,7 +37,7 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
 ## 快速开始
 新建一个 springboot web 工程，引入 `slardar-starter`, `spring-boot-starter-web` 等必要依赖
 
-### 引入依赖
+### 1. 引入依赖
 
 ```xml
         <dependency>
@@ -52,7 +53,7 @@ spring security 安全组件，支持 JWT SSO、MFA、OAuth2、许可授权、�
         </dependency>
 ```
 
-### 实现接口
+### 2. 实现接口
 
 `Slardar` 定义好了认证和权限控制的流程和步骤，需要集成方提供一个实现类，用于获取账号信息，slardar 会在恰当的时机调用获取到账户信息
 
@@ -116,11 +117,13 @@ public class SlardarProviderImpl implements AccountProvider, AuditLogIngest {
 > 这里示例代码在本地创建了示例账户，实际应用开发时 这部分应当从数据库中获取到用户信息
 
 
-### 修改配置
+### 3. 修改配置
 
 slardar 内置了登录、退出、获取详情等接口，为了方便定制化使用，提供了很多配置项来定制修改，我们可以修改默认的登录接口的url、请求方式、返回结构等：
 
 ```yaml
+server:
+    port: 9600 
 slardar:
   login:
     login-result-fmt: simplified  # 默认登录接口返回简单的格式
@@ -130,9 +133,10 @@ slardar:
       enabled: false              # 关闭登录密码加密
 ```
 
-### 启动服务
+### 4. 启动测试
 
-启动后，进行登录： 
+启动web应用后，进行登录： 
+
 > `http://localhost:9600/login?username=alex&password=123456`
 
 可以看到返回成功的登录结果：
@@ -750,3 +754,4 @@ public class MyOpenIdSlardarAuthenticateHandlerImpl extends AbstractSlardarAuthe
 
 
 > 以上代码仅作为示例，实际需求可能复杂许多
+
