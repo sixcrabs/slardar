@@ -47,14 +47,13 @@
 <!--        </dependency>-->
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>hutool-mini</artifactId>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-hutool-mini</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>keystore</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-keystore</artifactId>
         </dependency>
 
         <dependency>

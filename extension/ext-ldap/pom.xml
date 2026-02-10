@@ -31,8 +31,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>hutool-mini</artifactId>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-hutool-mini</artifactId>
         </dependency>
 
         <dependency>

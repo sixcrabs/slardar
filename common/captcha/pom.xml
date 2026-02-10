@@ -9,9 +9,7 @@
         <version>1.7.0</version>
     </parent>
 
-    <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-captcha</artifactId>
-    <version>1.7.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

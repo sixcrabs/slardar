@@ -9,9 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.sixcrabs</groupId>
     <artifactId>slardar-spi</artifactId>
-    <version>1.7.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

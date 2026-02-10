@@ -1,8 +1,8 @@
 package io.github.sixcrabs.slardar.oauth.client.support;
 
+import io.github.sixcrabs.winterfell.mini.MapUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import lombok.Setter;
-import org.winterfell.misc.hutool.mini.MapUtil;
-import org.winterfell.misc.hutool.mini.StringUtil;
 
 import java.util.*;
 

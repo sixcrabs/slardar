@@ -20,8 +20,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
-            <artifactId>mrc</artifactId>
+            <groupId>io.github.sixcrabs</groupId>
+            <artifactId>wf-rest-client</artifactId>
             <version>1.1.2-SNAPSHOT</version>
         </dependency>
 

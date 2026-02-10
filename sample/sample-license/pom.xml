@@ -30,7 +30,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.winterfell</groupId>
+            <groupId>io.github.sixcrabs</groupId>
             <artifactId>app-spring-boot-starter</artifactId>
         </dependency>
 

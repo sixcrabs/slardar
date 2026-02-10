@@ -2,10 +2,10 @@ package io.github.sixcrabs.slardar.oauth.client.impl;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import io.github.sixcrabs.winterfell.mini.MapUtil;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.winterfell.misc.hutool.mini.MapUtil;
 import io.github.sixcrabs.slardar.oauth.client.OAuthException;
 import io.github.sixcrabs.slardar.oauth.client.OAuthUser;
 import io.github.sixcrabs.slardar.oauth.client.token.OAuthBaseToken;
