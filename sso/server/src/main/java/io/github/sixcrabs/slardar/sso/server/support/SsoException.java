@@ -1,7 +1,8 @@
 package io.github.sixcrabs.slardar.sso.server.support;
 
 
-import org.winterfell.misc.hutool.mini.MapUtil;
+
+import io.github.sixcrabs.winterfell.mini.MapUtil;
 
 import java.util.HashMap;
 

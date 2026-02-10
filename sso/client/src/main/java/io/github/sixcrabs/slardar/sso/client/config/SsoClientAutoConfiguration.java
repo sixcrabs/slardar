@@ -1,9 +1,9 @@
 package io.github.sixcrabs.slardar.sso.client.config;
 
-import org.winterfell.misc.remote.mrc.EnableMrClients;
 import io.github.sixcrabs.slardar.sso.client.SsoClientRequestFilter;
 import io.github.sixcrabs.slardar.sso.client.SsoClientRequestHandler;
 import io.github.sixcrabs.slardar.sso.client.config.client.SsoServerApiClient;
+import io.github.sixcrabs.winterfell.remote.mrc.EnableMrClients;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

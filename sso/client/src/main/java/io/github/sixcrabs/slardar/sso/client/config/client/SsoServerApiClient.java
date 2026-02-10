@@ -1,7 +1,7 @@
 package io.github.sixcrabs.slardar.sso.client.config.client;
 
-import org.winterfell.misc.remote.mrc.MrClient;
 import io.github.sixcrabs.slardar.core.domain.Account;
+import io.github.sixcrabs.winterfell.remote.mrc.MrClient;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;

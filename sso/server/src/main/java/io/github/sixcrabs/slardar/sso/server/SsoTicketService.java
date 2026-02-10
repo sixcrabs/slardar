@@ -1,10 +1,10 @@
 package io.github.sixcrabs.slardar.sso.server;
 
-import org.winterfell.misc.hutool.mini.RandomUtil;
 import io.github.sixcrabs.slardar.spi.SlardarSpiFactory;
 import io.github.sixcrabs.slardar.sso.server.config.SsoServerProperties;
 import io.github.sixcrabs.slardar.spi.SlardarKeyStore;
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
+import io.github.sixcrabs.winterfell.mini.RandomUtil;
 
 /**
  * <p>

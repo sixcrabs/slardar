@@ -1,8 +1,8 @@
 package io.github.sixcrabs.slardar.sso.server.web;
 
-import org.winterfell.misc.hutool.mini.StringUtil;
 import io.github.sixcrabs.slardar.starter.SlardarProperties;
 import io.github.sixcrabs.slardar.starter.support.HttpServletUtil;
+import io.github.sixcrabs.winterfell.mini.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
